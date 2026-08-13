@@ -1212,7 +1212,7 @@
   .modal-body { padding: 16px 20px; overflow: auto; }
 
   /* ── Shared Add-Product Modal ───────────────────────── */
-  .addprod-shared-modal { max-width: 860px; width: 95%; }
+  .addprod-shared-modal { max-width: 1300px; width: 96vw; }
   .addprod-cat-pill { padding: 5px 13px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; border: 1.5px solid var(--border-strong); background: var(--surface); color: var(--text); transition: all 0.15s; white-space:nowrap; }
   .addprod-cat-pill:hover { border-color: var(--primary); color: var(--primary); }
   .addprod-cat-pill.active { background: var(--primary); border-color: var(--primary); color: #fff; }
@@ -2217,12 +2217,11 @@ body[data-section-theme=""] .section-color-banner {
   <div class="topnav-item" data-section="clientes" style="">Clientes</div>
   <div class="topnav-item" data-section="ventas" style="">Ventas</div>
   <div class="topnav-item" data-section="mantenimientos" style="">Mantenimientos</div>
-  <div class="topnav-item" data-section="proyectos" style="">Proyectos</div>
   <div class="topnav-item" data-section="facturacion" style="">Facturación</div>
   <div class="topnav-item" data-section="compras" style="">Compras</div>
   <div class="topnav-item" data-section="importacion">Importación</div>
-  <div class="topnav-item" data-section="micotizacion" id="topnav-micot" style="display:none">🛒 Mi Cotización <span id="micot-badge" style="background: var(--primary); color: rgb(255, 255, 255); border-radius: 10px; font-size: 10px; font-weight: 700; padding: 1px 6px; margin-left: 3px;">1</span></div>
-  <div class="topnav-item" data-section="emails" style="">✉ Emails <span id="emails-unread-badge" style="display: inline-block; background: var(--danger); color: rgb(255, 255, 255); border-radius: 10px; font-size: 10px; font-weight: 700; padding: 1px 6px; margin-left: 3px; vertical-align: middle;">184</span></div>
+  <div class="topnav-item" data-section="micotizacion" id="topnav-micot" style="display:none">🛒 Mi Cotización <span id="micot-badge" style="display:none;background:var(--primary);color:#fff;border-radius:10px;font-size:10px;font-weight:700;padding:1px 6px;margin-left:3px">0</span></div>
+  <div class="topnav-item" data-section="emails" style="">✉ Emails <span id="emails-unread-badge" style="display: inline-block; background: var(--danger); color: rgb(255, 255, 255); border-radius: 10px; font-size: 10px; font-weight: 700; padding: 1px 6px; margin-left: 3px; vertical-align: middle;">189</span></div>
   <div class="topnav-item" data-section="agenda" style="">Agenda</div>
   <div class="topnav-item" data-section="informes" style="">Informes</div>
   <div class="topnav-item" data-section="finanzas" style="">Finanzas</div>
@@ -2288,7 +2287,7 @@ body[data-section-theme=""] .section-color-banner {
   </div>
   <div class="ln-nav-body" id="ln-nav-body">
     <div class="ln-item active" data-lnav-section="inicio"><span class="ln-ico">🏠</span>Inicio</div><div class="ln-sub-item active" data-lnav-sub="inicio">Inicio</div><div class="ln-sub-item" data-lnav-sub="dashboard">Dashboard</div><div class="ln-sub-item" data-lnav-sub="dashboard-ejecutivo">Dashboard ejecutivo</div>
-    <div class="ln-item" data-lnav-section="emails"><span class="ln-ico">✉️</span>Emails <span id="emails-unread-lbadge" style="display: inline-block; background: var(--danger); color: rgb(255, 255, 255); border-radius: 8px; font-size: 10px; font-weight: 700; padding: 1px 5px; margin-left: 3px;">184</span></div>
+    <div class="ln-item" data-lnav-section="emails"><span class="ln-ico">✉️</span>Emails <span id="emails-unread-lbadge" style="display: inline-block; background: var(--danger); color: rgb(255, 255, 255); border-radius: 8px; font-size: 10px; font-weight: 700; padding: 1px 5px; margin-left: 3px;">189</span></div>
 
     <div class="ln-group-label">CATÁLOGO</div>
     <div class="ln-item" data-lnav-section="catalogo"><span class="ln-ico">📋</span>Catálogo</div>
@@ -2304,7 +2303,6 @@ body[data-section-theme=""] .section-color-banner {
 
     <div class="ln-group-label">GESTIÓN</div>
     <div class="ln-item" data-lnav-section="mantenimientos"><span class="ln-ico">🔧</span>Mantenimientos</div>
-    <div class="ln-item" data-lnav-section="proyectos"><span class="ln-ico">📐</span>Proyectos</div>
     <div class="ln-item" data-lnav-section="agenda"><span class="ln-ico">📅</span>Agenda</div>
     <div class="ln-item" data-lnav-section="crm"><span class="ln-ico">🤝</span>CRM</div>
 
@@ -2320,7 +2318,7 @@ body[data-section-theme=""] .section-color-banner {
 
     <div style="height:6px"></div>
     <div class="ln-item" data-lnav-section="chat"><span class="ln-ico">💬</span>Chat <span id="chat-unread-lbadge" style="display:none;background:var(--danger);color:white;font-size:10px;font-weight:700;padding:1px 5px;border-radius:8px;margin-left:4px"></span></div>
-    <div class="ln-item" id="lnav-micot" data-lnav-section="micotizacion" style="display:none"><span class="ln-ico">🛒</span>Mi Cotización <span id="micot-lbadge" style="background: var(--primary); color: rgb(255, 255, 255); border-radius: 8px; font-size: 10px; font-weight: 700; padding: 1px 5px; margin-left: 3px;">1</span></div>
+    <div class="ln-item" id="lnav-micot" data-lnav-section="micotizacion" style="display:none"><span class="ln-ico">🛒</span>Mi Cotización <span id="micot-lbadge" style="display:none;background:var(--primary);color:#fff;border-radius:8px;font-size:10px;font-weight:700;padding:1px 5px;margin-left:3px">0</span></div>
   </div>
 </div>
 
@@ -2400,7 +2398,7 @@ body[data-section-theme=""] .section-color-banner {
     <div id="sidebar-items"><div class="sidebar-item active" data-sub="inicio">Inicio</div><div class="sidebar-item " data-sub="dashboard">Dashboard</div><div class="sidebar-item " data-sub="dashboard-ejecutivo">Dashboard ejecutivo</div></div>
     
   </aside>
-  <main class="main" id="main"><div class="bandeja-wrap"><div class="bandeja-header"><div><h2>Bandeja de trabajo</h2><div class="sub"><span style="color:var(--danger);font-weight:700">2 críticos</span> · <span style="color:var(--primary);font-weight:700">1 alerta</span> · <span style="color:var(--warning-text);font-weight:700">5 pendientes</span></div></div><div class="actions"><button id="bandeja-refresh">⟳ Actualizar</button><button id="bandeja-ver-dashboard">Ver KPIs →</button></div></div><div class="bandeja-layout"><div class="bandeja-main bandeja-solo"><div id="solicitudes-web-slot" style="background:#fff7ed;border:2px solid #F37021;border-radius:12px;margin-bottom:16px;overflow:hidden"><div style="display:flex;align-items:center;gap:8px;padding:12px 16px;border-bottom:2px solid #F37021"><span style="font-size:18px">📋</span><span style="font-weight:800;font-size:15px;color:#c2410c">Solicitudes de cotización</span><span style="background:#ea580c;color:#fff;border-radius:10px;font-size:11px;font-weight:700;padding:2px 10px;margin-left:4px">1</span><span style="margin-left:auto;font-size:11px;color:#9a3412">Tocá una para ver el detalle</span></div><div style=""><div data-sol-toggle="sol-detail-SOL_1785418807748" style="display:flex;align-items:center;gap:10px;padding:10px 14px;cursor:pointer;border-bottom:1px solid #fde8d0;user-select:none" onmouseover="this.style.background=&#39;#fff3e8&#39;" onmouseout="this.style.background=&#39;transparent&#39;"><span id="sol-detail-SOL_1785418807748-arrow" style="font-size:11px;color:#c2410c;transition:transform .15s">▶</span><div style="flex:1;min-width:0"><span style="font-weight:700;font-size:13px;color:#1a1a1a">Buscatools P</span><span style="font-size:11px;color:#9a3412;margin-left:8px">2 productos · 10 uds.</span></div><span style="font-size:13px;font-weight:800;color:#c2410c;white-space:nowrap">$ 574,17</span><span style="font-size:11px;color:#9ca3af;white-space:nowrap;margin-left:8px">30/7, 10:40 a. m.</span><a href="https://mail.google.com/mail/?view=cm&amp;to=jmocciaro%40gmail.com" target="_blank" onclick="event.stopPropagation()" style="font-size:12px;color:#ea580c;margin-left:6px;text-decoration:none" title="jmocciaro@gmail.com">✉</a></div><div id="sol-detail-SOL_1785418807748" style="display:none;padding:12px 14px;border-bottom:1px solid #fde8d0"><div style="overflow-x:auto;margin-bottom:10px"><table style="width:100%;border-collapse:collapse"><thead><tr style="background:#fde8d0"><th style="padding:5px 8px;font-size:11px;color:#9a3412;text-align:left;font-weight:700">SKU</th><th style="padding:5px 8px;font-size:11px;color:#9a3412;text-align:left;font-weight:700">Producto</th><th style="padding:5px 8px;font-size:11px;color:#9a3412;text-align:center;font-weight:700">Cant.</th><th style="padding:5px 8px;font-size:11px;color:#9a3412;text-align:right;font-weight:700">P. Unit.</th><th style="padding:5px 8px;font-size:11px;color:#9a3412;text-align:right;font-weight:700">IVA 21%</th><th style="padding:5px 8px;font-size:11px;color:#9a3412;text-align:right;font-weight:700">Subtotal</th></tr></thead><tbody><tr><td style="padding:5px 8px;font-size:12px;color:#9a3412;font-weight:700;white-space:nowrap">SP.2520/8B</td><td style="padding:5px 8px;font-size:12px;color:var(--text)">SPEEDRILL 2520/8B ADAPTADOR</td><td style="padding:5px 8px;font-size:12px;color:var(--text-soft);text-align:center">×4</td><td style="padding:5px 8px;font-size:12px;color:var(--text-soft);text-align:right;white-space:nowrap">$ 27,79</td><td style="padding:5px 8px;font-size:12px;color:var(--text-soft);text-align:right;white-space:nowrap">$ 23,34</td><td style="padding:5px 8px;font-size:12px;font-weight:700;color:var(--text);text-align:right;white-space:nowrap">$ 134,50</td></tr><tr><td style="padding:5px 8px;font-size:12px;color:#9a3412;font-weight:700;white-space:nowrap">SP.J2316SDXL/80</td><td style="padding:5px 8px;font-size:12px;color:var(--text)">SPEEDRILL J2316SDXL/80 EMBOCADURA</td><td style="padding:5px 8px;font-size:12px;color:var(--text-soft);text-align:center">×6</td><td style="padding:5px 8px;font-size:12px;color:var(--text-soft);text-align:right;white-space:nowrap">$ 60,56</td><td style="padding:5px 8px;font-size:12px;color:var(--text-soft);text-align:right;white-space:nowrap">$ 76,31</td><td style="padding:5px 8px;font-size:12px;font-weight:700;color:var(--text);text-align:right;white-space:nowrap">$ 439,67</td></tr></tbody><tfoot><tr style="border-top:2px solid #fca86c;background:#fef9f5"><td colspan="6" style="padding:8px 8px"><div style="display:flex;align-items:center;gap:10px"><div style="flex:1"></div><div style="display:flex;gap:8px;flex-shrink:0"><div style="background:#fff7ed;border:1px solid #fde8d0;border-radius:8px;padding:6px 14px;text-align:center;min-width:100px"><div style="font-size:10px;font-weight:700;color:#9a3412;text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px">Base</div><div style="font-size:14px;font-weight:800;color:#374151">$ 474,52</div></div><div style="background:#fff7ed;border:1px solid #fde8d0;border-radius:8px;padding:6px 14px;text-align:center;min-width:100px"><div style="font-size:10px;font-weight:700;color:#9a3412;text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px">IVA 21%</div><div style="font-size:14px;font-weight:800;color:#374151">$ 99,65</div></div><div style="background:#F37021;border-radius:8px;padding:6px 14px;text-align:center;min-width:110px"><div style="font-size:10px;font-weight:700;color:rgba(255,255,255,.8);text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px">Total</div><div style="font-size:14px;font-weight:800;color:#fff">$ 574,17</div></div></div></div></td></tr></tfoot></table></div><div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px"><button data-sol-id="SOL-1785418807748" data-sol-action="eliminar" style="padding:6px 16px;background:#fff;border:1px solid #fca86c;border-radius:6px;font-size:12px;font-weight:600;color:#c2410c;cursor:pointer">🗑 Eliminar</button><button data-sol-id="SOL-1785418807748" data-sol-action="crear-cot" style="padding:6px 18px;background:#F37021;border:none;border-radius:6px;font-size:12px;font-weight:700;color:#fff;cursor:pointer">📄 Crear cotización</button></div></div></div></div><div style="background:var(--bg);border:1.5px solid var(--border);border-radius:14px;padding:18px 20px;margin-bottom:16px"><div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><div style="font-size:18px;font-weight:800;color:var(--text);flex:1">Buenas tardes, Administrador 👋</div><span style="background:rgba(239,68,68,.15);color:#ef4444;border-radius:20px;padding:2px 10px;font-size:12px;font-weight:700">12 pendientes</span></div><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:14px"><div style="background:rgba(239,68,68,.1);border:1.5px solid rgba(239,68,68,.3);border-radius:14px;overflow:hidden"><div data-pi-nav="ventas:pedidos" style="display:flex;align-items:center;gap:10px;padding:14px 16px 10px;cursor:pointer;border-bottom:1px solid rgba(239,68,68,.3)" onmouseover="this.style.opacity=&#39;.8&#39;" onmouseout="this.style.opacity=&#39;1&#39;"><div style="font-size:26px;line-height:1">🛒</div><div style="flex:1"><div style="font-size:10px;font-weight:700;color:var(--text-soft);text-transform:uppercase;letter-spacing:.6px">Pedidos de venta ›</div><div style="font-size:34px;font-weight:900;line-height:1.1;color:#ef4444">5</div></div></div><div style="padding:6px 12px 10px"><div data-pi-open="ped:PED00006" style="display:flex;align-items:center;padding:6px 8px;gap:8px;border-radius:8px;cursor:pointer;margin:2px -4px;transition:background .12s" onmouseover="this.style.background=&#39;rgba(0,0,0,.06)&#39;" onmouseout="this.style.background=&#39;&#39;"><div style="min-width:0;flex:1"><span style="font-size:12px;font-weight:700;color:var(--primary-dark)">PED00006</span><span style="font-size:11px;color:var(--text-soft);margin-left:6px">pruebaaaaa</span></div><div style="white-space:nowrap;font-size:11px;color:var(--text-muted)">3/8</div><div style="white-space:nowrap;font-size:12px;font-weight:700;color:var(--text)">$ 298</div><div style="font-size:10px;color:var(--text-muted);margin-left:2px">›</div></div><div data-pi-open="ped:PED00005" style="display:flex;align-items:center;padding:6px 8px;gap:8px;border-radius:8px;cursor:pointer;margin:2px -4px;transition:background .12s" onmouseover="this.style.background=&#39;rgba(0,0,0,.06)&#39;" onmouseout="this.style.background=&#39;&#39;"><div style="min-width:0;flex:1"><span style="font-size:12px;font-weight:700;color:var(--primary-dark)">PED00005</span><span style="font-size:11px;color:var(--text-soft);margin-left:6px">prueba 2</span></div><div style="white-space:nowrap;font-size:11px;color:var(--text-muted)">29/7</div><div style="white-space:nowrap;font-size:12px;font-weight:700;color:var(--text)">$ 197</div><div style="font-size:10px;color:var(--text-muted);margin-left:2px">›</div></div><div data-pi-open="ped:PED00004" style="display:flex;align-items:center;padding:6px 8px;gap:8px;border-radius:8px;cursor:pointer;margin:2px -4px;transition:background .12s" onmouseover="this.style.background=&#39;rgba(0,0,0,.06)&#39;" onmouseout="this.style.background=&#39;&#39;"><div style="min-width:0;flex:1"><span style="font-size:12px;font-weight:700;color:var(--primary-dark)">PED00004</span><span style="font-size:11px;color:var(--text-soft);margin-left:6px">janito</span></div><div style="white-space:nowrap;font-size:11px;color:var(--text-muted)">19/7</div><div style="white-space:nowrap;font-size:12px;font-weight:700;color:var(--text)">$ 67</div><div style="font-size:10px;color:var(--text-muted);margin-left:2px">›</div></div><div data-pi-open="ped:PED00003" style="display:flex;align-items:center;padding:6px 8px;gap:8px;border-radius:8px;cursor:pointer;margin:2px -4px;transition:background .12s" onmouseover="this.style.background=&#39;rgba(0,0,0,.06)&#39;" onmouseout="this.style.background=&#39;&#39;"><div style="min-width:0;flex:1"><span style="font-size:12px;font-weight:700;color:var(--primary-dark)">PED00003</span><span style="font-size:11px;color:var(--text-soft);margin-left:6px">janoo</span></div><div style="white-space:nowrap;font-size:11px;color:var(--text-muted)">19/7</div><div style="white-space:nowrap;font-size:12px;font-weight:700;color:var(--text)">$ 34</div><div style="font-size:10px;color:var(--text-muted);margin-left:2px">›</div></div><div data-pi-nav="ventas:pedidos" style="font-size:11px;color:var(--primary);text-align:center;padding-top:6px;cursor:pointer;font-weight:600">+ 1 más →</div></div></div><div style="background:rgba(249,115,22,.1);border:1.5px solid rgba(249,115,22,.3);border-radius:14px;overflow:hidden"><div data-pi-nav="ventas:notas-entrega" style="display:flex;align-items:center;gap:10px;padding:14px 16px 10px;cursor:pointer;border-bottom:1px solid rgba(249,115,22,.3)" onmouseover="this.style.opacity=&#39;.8&#39;" onmouseout="this.style.opacity=&#39;1&#39;"><div style="font-size:26px;line-height:1">📋</div><div style="flex:1"><div style="font-size:10px;font-weight:700;color:var(--text-soft);text-transform:uppercase;letter-spacing:.6px">Remitos sin facturar ›</div><div style="font-size:34px;font-weight:900;line-height:1.1;color:#f97316">2</div></div></div><div style="padding:6px 12px 10px"><div data-pi-open="ne:NE00002" style="display:flex;align-items:center;padding:6px 8px;gap:8px;border-radius:8px;cursor:pointer;margin:2px -4px;transition:background .12s" onmouseover="this.style.background=&#39;rgba(0,0,0,.06)&#39;" onmouseout="this.style.background=&#39;&#39;"><div style="min-width:0;flex:1"><span style="font-size:12px;font-weight:700;color:var(--primary-dark)">NE00002</span><span style="font-size:11px;color:var(--text-soft);margin-left:6px">janoo</span></div><div style="white-space:nowrap;font-size:11px;color:var(--text-muted)">19/7</div><div style="white-space:nowrap;font-size:12px;font-weight:700;color:var(--text)">$ 0</div><div style="font-size:10px;color:var(--text-muted);margin-left:2px">›</div></div><div data-pi-open="ne:NE00001" style="display:flex;align-items:center;padding:6px 8px;gap:8px;border-radius:8px;cursor:pointer;margin:2px -4px;transition:background .12s" onmouseover="this.style.background=&#39;rgba(0,0,0,.06)&#39;" onmouseout="this.style.background=&#39;&#39;"><div style="min-width:0;flex:1"><span style="font-size:12px;font-weight:700;color:var(--primary-dark)">NE00001</span><span style="font-size:11px;color:var(--text-soft);margin-left:6px">janoo</span></div><div style="white-space:nowrap;font-size:11px;color:var(--text-muted)">19/7</div><div style="white-space:nowrap;font-size:12px;font-weight:700;color:var(--text)">$ 34</div><div style="font-size:10px;color:var(--text-muted);margin-left:2px">›</div></div></div></div><div style="background:rgba(239,68,68,.1);border:1.5px solid rgba(239,68,68,.3);border-radius:14px;overflow:hidden"><div data-pi-nav="compras:pedidos-prov" style="display:flex;align-items:center;gap:10px;padding:14px 16px 10px;cursor:pointer;border-bottom:1px solid rgba(239,68,68,.3)" onmouseover="this.style.opacity=&#39;.8&#39;" onmouseout="this.style.opacity=&#39;1&#39;"><div style="font-size:26px;line-height:1">🚚</div><div style="flex:1"><div style="font-size:10px;font-weight:700;color:var(--text-soft);text-transform:uppercase;letter-spacing:.6px">Pedidos a proveedor ›</div><div style="font-size:34px;font-weight:900;line-height:1.1;color:#ef4444">5</div></div></div><div style="padding:6px 12px 10px"><div data-pi-open="pc:PC00009" style="display:flex;align-items:center;padding:6px 8px;gap:8px;border-radius:8px;cursor:pointer;margin:2px -4px;transition:background .12s" onmouseover="this.style.background=&#39;rgba(0,0,0,.06)&#39;" onmouseout="this.style.background=&#39;&#39;"><div style="min-width:0;flex:1"><span style="font-size:12px;font-weight:700;color:var(--primary-dark)">PC00009</span><span style="font-size:11px;color:var(--text-soft);margin-left:6px">—</span></div><div style="white-space:nowrap;font-size:11px;color:var(--text-muted)">9/8</div><div style="white-space:nowrap;font-size:12px;font-weight:700;color:var(--text)">$ 0</div><div style="font-size:10px;color:var(--text-muted);margin-left:2px">›</div></div><div data-pi-open="pc:PC00008" style="display:flex;align-items:center;padding:6px 8px;gap:8px;border-radius:8px;cursor:pointer;margin:2px -4px;transition:background .12s" onmouseover="this.style.background=&#39;rgba(0,0,0,.06)&#39;" onmouseout="this.style.background=&#39;&#39;"><div style="min-width:0;flex:1"><span style="font-size:12px;font-weight:700;color:var(--primary-dark)">PC00008</span><span style="font-size:11px;color:var(--text-soft);margin-left:6px">—</span></div><div style="white-space:nowrap;font-size:11px;color:var(--text-muted)">4/8</div><div style="white-space:nowrap;font-size:12px;font-weight:700;color:var(--text)">$ 0</div><div style="font-size:10px;color:var(--text-muted);margin-left:2px">›</div></div><div data-pi-open="pc:PC00007" style="display:flex;align-items:center;padding:6px 8px;gap:8px;border-radius:8px;cursor:pointer;margin:2px -4px;transition:background .12s" onmouseover="this.style.background=&#39;rgba(0,0,0,.06)&#39;" onmouseout="this.style.background=&#39;&#39;"><div style="min-width:0;flex:1"><span style="font-size:12px;font-weight:700;color:var(--primary-dark)">PC00007</span><span style="font-size:11px;color:var(--text-soft);margin-left:6px">—</span></div><div style="white-space:nowrap;font-size:11px;color:var(--text-muted)">3/8</div><div style="white-space:nowrap;font-size:12px;font-weight:700;color:var(--text)">$ 0</div><div style="font-size:10px;color:var(--text-muted);margin-left:2px">›</div></div><div data-pi-open="pc:PC00006" style="display:flex;align-items:center;padding:6px 8px;gap:8px;border-radius:8px;cursor:pointer;margin:2px -4px;transition:background .12s" onmouseover="this.style.background=&#39;rgba(0,0,0,.06)&#39;" onmouseout="this.style.background=&#39;&#39;"><div style="min-width:0;flex:1"><span style="font-size:12px;font-weight:700;color:var(--primary-dark)">PC00006</span><span style="font-size:11px;color:var(--text-soft);margin-left:6px">genérico</span></div><div style="white-space:nowrap;font-size:11px;color:var(--text-muted)">3/8</div><div style="white-space:nowrap;font-size:12px;font-weight:700;color:var(--text)">$ 0</div><div style="font-size:10px;color:var(--text-muted);margin-left:2px">›</div></div><div data-pi-nav="compras:pedidos-prov" style="font-size:11px;color:var(--primary);text-align:center;padding-top:6px;cursor:pointer;font-weight:600">+ 1 más →</div></div></div></div></div><div class="bandeja-section has-pendientes"><div class="sec-title"><span class="dot"></span>Pendientes</div><div class="pendientes-grid"><div class="pendiente-col"><div class="pendiente-col-head"><span class="pc-ico">📦</span> Stock</div><div class="pendiente-col-items"><div class="pendiente-item danger" data-bandeja-nav="catalogo:productos"><div class="pi-ico">⚠</div><div class="pi-label">Stock crítico (sin unidades)</div><div class="pi-count">2085</div></div><div class="pendiente-item orange" data-bandeja-nav="catalogo:productos"><div class="pi-ico">!</div><div class="pi-label">Stock bajo (1 a 5 unidades)</div><div class="pi-count">9</div></div><div class="pendiente-item ok" data-bandeja-nav="catalogo:productos"><div class="pi-ico">!</div><div class="pi-label">Stock correcto (más de 5)</div><div class="pi-count">107</div></div></div></div><div class="pendiente-col"><div class="pendiente-col-head"><span class="pc-ico">💵</span> Facturas</div><div class="pendiente-col-items"><div class="pendiente-item danger" data-bandeja-nav="ventas:notas-entrega"><div class="pi-ico">⚠</div><div class="pi-label">Facturas vencidas (por cobrar)</div><div class="pi-count">1</div></div><div class="pendiente-item warn" data-bandeja-nav="ventas:notas-entrega"><div class="pi-ico">!</div><div class="pi-label">Facturas por cobrar</div><div class="pi-count">1</div></div><div class="pendiente-item ok" data-bandeja-nav="compras:facturas-prov"><div class="pi-ico">✓</div><div class="pi-label">Pagos a proveedor vencidos</div><div class="pi-count">0</div></div><div class="pendiente-item ok" data-bandeja-nav="compras:facturas-prov"><div class="pi-ico">✓</div><div class="pi-label">Pagos por vencer (7 días)</div><div class="pi-count">0</div></div></div></div><div class="pendiente-col"><div class="pendiente-col-head"><span class="pc-ico">🛒</span> Ventas</div><div class="pendiente-col-items"><div class="pendiente-item warn" data-bandeja-nav="ventas:pedidos"><div class="pi-ico">!</div><div class="pi-label">Pedidos por entregar</div><div class="pi-count">5</div></div><div class="pendiente-item warn" data-bandeja-nav="ventas:notas-entrega"><div class="pi-ico">!</div><div class="pi-label">Notas de entrega pendientes</div><div class="pi-count">2</div></div></div></div><div class="pendiente-col"><div class="pendiente-col-head"><span class="pc-ico">🚚</span> Pedidos a proveedor</div><div class="pendiente-col-items"><div class="pendiente-item warn" data-bandeja-nav="compras:pedidos-prov"><div class="pi-ico">!</div><div class="pi-label">Pedidos pendientes</div><div class="pi-count">4</div></div><div class="pendiente-item warn" data-bandeja-nav="compras:pedidos-prov"><div class="pi-ico">!</div><div class="pi-label">Pedidos parciales</div><div class="pi-count">1</div></div></div></div></div></div><div class="bandeja-section"><div class="sec-title">Empezar algo nuevo</div><div class="quick-actions-grid"><div class="qa-item c-orange" data-bandeja-qa="nueva-cot"><div class="qa-ico">📄</div><div class="qa-label">Nueva cotización</div></div><div class="qa-item c-blue" data-bandeja-qa="importar-oc"><div class="qa-ico">⬆</div><div class="qa-label">Importar OC cliente</div></div><div class="qa-item c-purple" data-bandeja-qa="nuevo-pedido-compra"><div class="qa-ico">🛒</div><div class="qa-label">Pedido a proveedor</div></div><div class="qa-item c-green" data-bandeja-qa="ver-catalogo"><div class="qa-ico">🔍</div><div class="qa-label">Buscar producto</div></div><div class="qa-item c-teal" data-bandeja-qa="ver-clientes"><div class="qa-ico">👥</div><div class="qa-label">Ver clientes</div></div></div></div><div class="bandeja-resumen-wrap"><div class="sec-title">Resumen del negocio</div><div class="dashboard-grid"><div class="card"><div class="card-header"><span class="card-ico">🏷</span> Ventas</div>
+  <main class="main" id="main"><div class="bandeja-wrap"><div class="bandeja-header"><div><h2>Bandeja de trabajo</h2><div class="sub"><span style="color:var(--danger);font-weight:700">2 críticos</span> · <span style="color:var(--primary);font-weight:700">1 alerta</span> · <span style="color:var(--warning-text);font-weight:700">3 pendientes</span></div></div><div class="actions"><button id="bandeja-refresh">⟳ Actualizar</button><button id="bandeja-ver-dashboard">Ver KPIs →</button></div></div><div class="bandeja-layout"><div class="bandeja-main bandeja-solo"><div id="solicitudes-web-slot" style="background:#fff7ed;border:2px solid #F37021;border-radius:12px;margin-bottom:16px;overflow:hidden"><div style="display:flex;align-items:center;gap:8px;padding:12px 16px;border-bottom:2px solid #F37021"><span style="font-size:18px">📋</span><span style="font-weight:800;font-size:15px;color:#c2410c">Solicitudes de cotización</span><span style="background:#ea580c;color:#fff;border-radius:10px;font-size:11px;font-weight:700;padding:2px 10px;margin-left:4px">1</span><span style="margin-left:auto;font-size:11px;color:#9a3412">Tocá una para ver el detalle</span></div><div style=""><div data-sol-toggle="sol-detail-SOL_1785418807748" style="display:flex;align-items:center;gap:10px;padding:10px 14px;cursor:pointer;border-bottom:1px solid #fde8d0;user-select:none" onmouseover="this.style.background=&#39;#fff3e8&#39;" onmouseout="this.style.background=&#39;transparent&#39;"><span id="sol-detail-SOL_1785418807748-arrow" style="font-size:11px;color:#c2410c;transition:transform .15s">▶</span><div style="flex:1;min-width:0"><span style="font-weight:700;font-size:13px;color:#1a1a1a">Buscatools P</span><span style="font-size:11px;color:#9a3412;margin-left:8px">2 productos · 10 uds.</span></div><span style="font-size:13px;font-weight:800;color:#c2410c;white-space:nowrap">$ 574,17</span><span style="font-size:11px;color:#9ca3af;white-space:nowrap;margin-left:8px">30/7, 10:40 a. m.</span><a href="https://mail.google.com/mail/?view=cm&amp;to=jmocciaro%40gmail.com" target="_blank" onclick="event.stopPropagation()" style="font-size:12px;color:#ea580c;margin-left:6px;text-decoration:none" title="jmocciaro@gmail.com">✉</a></div><div id="sol-detail-SOL_1785418807748" style="display:none;padding:12px 14px;border-bottom:1px solid #fde8d0"><div style="overflow-x:auto;margin-bottom:10px"><table style="width:100%;border-collapse:collapse"><thead><tr style="background:#fde8d0"><th style="padding:5px 8px;font-size:11px;color:#9a3412;text-align:left;font-weight:700">SKU</th><th style="padding:5px 8px;font-size:11px;color:#9a3412;text-align:left;font-weight:700">Producto</th><th style="padding:5px 8px;font-size:11px;color:#9a3412;text-align:center;font-weight:700">Cant.</th><th style="padding:5px 8px;font-size:11px;color:#9a3412;text-align:right;font-weight:700">P. Unit.</th><th style="padding:5px 8px;font-size:11px;color:#9a3412;text-align:right;font-weight:700">IVA 21%</th><th style="padding:5px 8px;font-size:11px;color:#9a3412;text-align:right;font-weight:700">Subtotal</th></tr></thead><tbody><tr><td style="padding:5px 8px;font-size:12px;color:#9a3412;font-weight:700;white-space:nowrap">SP.2520/8B</td><td style="padding:5px 8px;font-size:12px;color:var(--text)">SPEEDRILL 2520/8B ADAPTADOR</td><td style="padding:5px 8px;font-size:12px;color:var(--text-soft);text-align:center">×4</td><td style="padding:5px 8px;font-size:12px;color:var(--text-soft);text-align:right;white-space:nowrap">$ 27,79</td><td style="padding:5px 8px;font-size:12px;color:var(--text-soft);text-align:right;white-space:nowrap">$ 23,34</td><td style="padding:5px 8px;font-size:12px;font-weight:700;color:var(--text);text-align:right;white-space:nowrap">$ 134,50</td></tr><tr><td style="padding:5px 8px;font-size:12px;color:#9a3412;font-weight:700;white-space:nowrap">SP.J2316SDXL/80</td><td style="padding:5px 8px;font-size:12px;color:var(--text)">SPEEDRILL J2316SDXL/80 EMBOCADURA</td><td style="padding:5px 8px;font-size:12px;color:var(--text-soft);text-align:center">×6</td><td style="padding:5px 8px;font-size:12px;color:var(--text-soft);text-align:right;white-space:nowrap">$ 60,56</td><td style="padding:5px 8px;font-size:12px;color:var(--text-soft);text-align:right;white-space:nowrap">$ 76,31</td><td style="padding:5px 8px;font-size:12px;font-weight:700;color:var(--text);text-align:right;white-space:nowrap">$ 439,67</td></tr></tbody><tfoot><tr style="border-top:2px solid #fca86c;background:#fef9f5"><td colspan="6" style="padding:8px 8px"><div style="display:flex;align-items:center;gap:10px"><div style="flex:1"></div><div style="display:flex;gap:8px;flex-shrink:0"><div style="background:#fff7ed;border:1px solid #fde8d0;border-radius:8px;padding:6px 14px;text-align:center;min-width:100px"><div style="font-size:10px;font-weight:700;color:#9a3412;text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px">Base</div><div style="font-size:14px;font-weight:800;color:#374151">$ 474,52</div></div><div style="background:#fff7ed;border:1px solid #fde8d0;border-radius:8px;padding:6px 14px;text-align:center;min-width:100px"><div style="font-size:10px;font-weight:700;color:#9a3412;text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px">IVA 21%</div><div style="font-size:14px;font-weight:800;color:#374151">$ 99,65</div></div><div style="background:#F37021;border-radius:8px;padding:6px 14px;text-align:center;min-width:110px"><div style="font-size:10px;font-weight:700;color:rgba(255,255,255,.8);text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px">Total</div><div style="font-size:14px;font-weight:800;color:#fff">$ 574,17</div></div></div></div></td></tr></tfoot></table></div><div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px"><button data-sol-id="SOL-1785418807748" data-sol-action="eliminar" style="padding:6px 16px;background:#fff;border:1px solid #fca86c;border-radius:6px;font-size:12px;font-weight:600;color:#c2410c;cursor:pointer">🗑 Eliminar</button><button data-sol-id="SOL-1785418807748" data-sol-action="crear-cot" style="padding:6px 18px;background:#F37021;border:none;border-radius:6px;font-size:12px;font-weight:700;color:#fff;cursor:pointer">📄 Crear cotización</button></div></div></div></div><div style="background:var(--bg);border:1.5px solid var(--border);border-radius:14px;padding:18px 20px;margin-bottom:16px"><div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><div style="font-size:18px;font-weight:800;color:var(--text);flex:1">Buenas tardes, Administrador 👋</div><span style="background:rgba(239,68,68,.15);color:#ef4444;border-radius:20px;padding:2px 10px;font-size:12px;font-weight:700">5 pendientes</span></div><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:14px"><div style="background:rgba(34,197,94,.1);border:1.5px solid rgba(34,197,94,.3);border-radius:14px;overflow:hidden"><div data-pi-nav="ventas:pedidos" style="display:flex;align-items:center;gap:10px;padding:14px 16px 10px;cursor:pointer;border-bottom:none" onmouseover="this.style.opacity=&#39;.8&#39;" onmouseout="this.style.opacity=&#39;1&#39;"><div style="font-size:26px;line-height:1">🛒</div><div style="flex:1"><div style="font-size:10px;font-weight:700;color:var(--text-soft);text-transform:uppercase;letter-spacing:.6px">Pedidos de venta ›</div><div style="font-size:34px;font-weight:900;line-height:1.1;color:#22c55e">0</div></div></div><div style="padding:0 12px 12px"><div style="text-align:center;padding:12px 0;color:var(--text-muted);font-size:12px">✓ Todo al día</div></div></div><div style="background:rgba(34,197,94,.1);border:1.5px solid rgba(34,197,94,.3);border-radius:14px;overflow:hidden"><div data-pi-nav="ventas:notas-entrega" style="display:flex;align-items:center;gap:10px;padding:14px 16px 10px;cursor:pointer;border-bottom:none" onmouseover="this.style.opacity=&#39;.8&#39;" onmouseout="this.style.opacity=&#39;1&#39;"><div style="font-size:26px;line-height:1">📋</div><div style="flex:1"><div style="font-size:10px;font-weight:700;color:var(--text-soft);text-transform:uppercase;letter-spacing:.6px">Remitos sin facturar ›</div><div style="font-size:34px;font-weight:900;line-height:1.1;color:#22c55e">0</div></div></div><div style="padding:0 12px 12px"><div style="text-align:center;padding:12px 0;color:var(--text-muted);font-size:12px">✓ Todo al día</div></div></div><div style="background:rgba(239,68,68,.1);border:1.5px solid rgba(239,68,68,.3);border-radius:14px;overflow:hidden"><div data-pi-nav="compras:pedidos-prov" style="display:flex;align-items:center;gap:10px;padding:14px 16px 10px;cursor:pointer;border-bottom:1px solid rgba(239,68,68,.3)" onmouseover="this.style.opacity=&#39;.8&#39;" onmouseout="this.style.opacity=&#39;1&#39;"><div style="font-size:26px;line-height:1">🚚</div><div style="flex:1"><div style="font-size:10px;font-weight:700;color:var(--text-soft);text-transform:uppercase;letter-spacing:.6px">Pedidos a proveedor ›</div><div style="font-size:34px;font-weight:900;line-height:1.1;color:#ef4444">5</div></div></div><div style="padding:6px 12px 10px"><div data-pi-open="pc:PC00009" style="display:flex;align-items:center;padding:6px 8px;gap:8px;border-radius:8px;cursor:pointer;margin:2px -4px;transition:background .12s" onmouseover="this.style.background=&#39;rgba(0,0,0,.06)&#39;" onmouseout="this.style.background=&#39;&#39;"><div style="min-width:0;flex:1"><span style="font-size:12px;font-weight:700;color:var(--primary-dark)">PC00009</span><span style="font-size:11px;color:var(--text-soft);margin-left:6px">—</span></div><div style="white-space:nowrap;font-size:11px;color:var(--text-muted)">9/8</div><div style="white-space:nowrap;font-size:12px;font-weight:700;color:var(--text)">$ 0</div><div style="font-size:10px;color:var(--text-muted);margin-left:2px">›</div></div><div data-pi-open="pc:PC00008" style="display:flex;align-items:center;padding:6px 8px;gap:8px;border-radius:8px;cursor:pointer;margin:2px -4px;transition:background .12s" onmouseover="this.style.background=&#39;rgba(0,0,0,.06)&#39;" onmouseout="this.style.background=&#39;&#39;"><div style="min-width:0;flex:1"><span style="font-size:12px;font-weight:700;color:var(--primary-dark)">PC00008</span><span style="font-size:11px;color:var(--text-soft);margin-left:6px">—</span></div><div style="white-space:nowrap;font-size:11px;color:var(--text-muted)">4/8</div><div style="white-space:nowrap;font-size:12px;font-weight:700;color:var(--text)">$ 0</div><div style="font-size:10px;color:var(--text-muted);margin-left:2px">›</div></div><div data-pi-open="pc:PC00007" style="display:flex;align-items:center;padding:6px 8px;gap:8px;border-radius:8px;cursor:pointer;margin:2px -4px;transition:background .12s" onmouseover="this.style.background=&#39;rgba(0,0,0,.06)&#39;" onmouseout="this.style.background=&#39;&#39;"><div style="min-width:0;flex:1"><span style="font-size:12px;font-weight:700;color:var(--primary-dark)">PC00007</span><span style="font-size:11px;color:var(--text-soft);margin-left:6px">—</span></div><div style="white-space:nowrap;font-size:11px;color:var(--text-muted)">3/8</div><div style="white-space:nowrap;font-size:12px;font-weight:700;color:var(--text)">$ 0</div><div style="font-size:10px;color:var(--text-muted);margin-left:2px">›</div></div><div data-pi-open="pc:PC00006" style="display:flex;align-items:center;padding:6px 8px;gap:8px;border-radius:8px;cursor:pointer;margin:2px -4px;transition:background .12s" onmouseover="this.style.background=&#39;rgba(0,0,0,.06)&#39;" onmouseout="this.style.background=&#39;&#39;"><div style="min-width:0;flex:1"><span style="font-size:12px;font-weight:700;color:var(--primary-dark)">PC00006</span><span style="font-size:11px;color:var(--text-soft);margin-left:6px">genérico</span></div><div style="white-space:nowrap;font-size:11px;color:var(--text-muted)">3/8</div><div style="white-space:nowrap;font-size:12px;font-weight:700;color:var(--text)">$ 0</div><div style="font-size:10px;color:var(--text-muted);margin-left:2px">›</div></div><div data-pi-nav="compras:pedidos-prov" style="font-size:11px;color:var(--primary);text-align:center;padding-top:6px;cursor:pointer;font-weight:600">+ 1 más →</div></div></div></div></div><div class="bandeja-section has-pendientes"><div class="sec-title"><span class="dot"></span>Pendientes</div><div class="pendientes-grid"><div class="pendiente-col"><div class="pendiente-col-head"><span class="pc-ico">📦</span> Stock</div><div class="pendiente-col-items"><div class="pendiente-item danger" data-bandeja-nav="catalogo:productos"><div class="pi-ico">⚠</div><div class="pi-label">Stock crítico (sin unidades)</div><div class="pi-count">2085</div></div><div class="pendiente-item orange" data-bandeja-nav="catalogo:productos"><div class="pi-ico">!</div><div class="pi-label">Stock bajo (1 a 5 unidades)</div><div class="pi-count">8</div></div><div class="pendiente-item ok" data-bandeja-nav="catalogo:productos"><div class="pi-ico">!</div><div class="pi-label">Stock correcto (más de 5)</div><div class="pi-count">108</div></div></div></div><div class="pendiente-col"><div class="pendiente-col-head"><span class="pc-ico">💵</span> Facturas</div><div class="pendiente-col-items"><div class="pendiente-item danger" data-bandeja-nav="ventas:notas-entrega"><div class="pi-ico">⚠</div><div class="pi-label">Facturas vencidas (por cobrar)</div><div class="pi-count">1</div></div><div class="pendiente-item warn" data-bandeja-nav="ventas:notas-entrega"><div class="pi-ico">!</div><div class="pi-label">Facturas por cobrar</div><div class="pi-count">1</div></div><div class="pendiente-item ok" data-bandeja-nav="compras:facturas-prov"><div class="pi-ico">✓</div><div class="pi-label">Pagos a proveedor vencidos</div><div class="pi-count">0</div></div><div class="pendiente-item ok" data-bandeja-nav="compras:facturas-prov"><div class="pi-ico">✓</div><div class="pi-label">Pagos por vencer (7 días)</div><div class="pi-count">0</div></div></div></div><div class="pendiente-col"><div class="pendiente-col-head"><span class="pc-ico">🛒</span> Ventas</div><div class="pendiente-col-items"><div class="pendiente-item ok" data-bandeja-nav="ventas:pedidos"><div class="pi-ico">✓</div><div class="pi-label">Pedidos por entregar</div><div class="pi-count">0</div></div><div class="pendiente-item ok" data-bandeja-nav="ventas:notas-entrega"><div class="pi-ico">✓</div><div class="pi-label">Notas de entrega pendientes</div><div class="pi-count">0</div></div></div></div><div class="pendiente-col"><div class="pendiente-col-head"><span class="pc-ico">🚚</span> Pedidos a proveedor</div><div class="pendiente-col-items"><div class="pendiente-item warn" data-bandeja-nav="compras:pedidos-prov"><div class="pi-ico">!</div><div class="pi-label">Pedidos pendientes</div><div class="pi-count">4</div></div><div class="pendiente-item warn" data-bandeja-nav="compras:pedidos-prov"><div class="pi-ico">!</div><div class="pi-label">Pedidos parciales</div><div class="pi-count">1</div></div></div></div></div></div><div class="bandeja-section"><div class="sec-title">Empezar algo nuevo</div><div class="quick-actions-grid"><div class="qa-item c-orange" data-bandeja-qa="nueva-cot"><div class="qa-ico">📄</div><div class="qa-label">Nueva cotización</div></div><div class="qa-item c-blue" data-bandeja-qa="importar-oc"><div class="qa-ico">⬆</div><div class="qa-label">Importar OC cliente</div></div><div class="qa-item c-purple" data-bandeja-qa="nuevo-pedido-compra"><div class="qa-ico">🛒</div><div class="qa-label">Pedido a proveedor</div></div><div class="qa-item c-green" data-bandeja-qa="ver-catalogo"><div class="qa-ico">🔍</div><div class="qa-label">Buscar producto</div></div><div class="qa-item c-teal" data-bandeja-qa="ver-clientes"><div class="qa-ico">👥</div><div class="qa-label">Ver clientes</div></div></div></div><div class="bandeja-resumen-wrap"><div class="sec-title">Resumen del negocio</div><div class="dashboard-grid"><div class="card"><div class="card-header"><span class="card-ico">🏷</span> Ventas</div>
     <div class="card-block"><div class="card-label">Cotizaciones</div>
       <div class="card-value">0,00 <span class="currency">USD</span> <span class="badge-count">0</span></div></div>
     <div class="card-block"><div class="card-label">Pedidos</div>
@@ -2436,7 +2434,6 @@ body[data-section-theme=""] .section-color-banner {
       <div class="app-tile" data-app="agenda"><div class="ico">📅</div><div class="label">Agenda</div></div>
       <div class="app-tile" data-app="informes"><div class="ico">📊</div><div class="label">Informes</div></div>
       <div class="app-tile" data-app="mantenimientos"><div class="ico">🔧</div><div class="label">Mantenimientos</div></div>
-      <div class="app-tile" data-app="proyectos"><div class="ico">📁</div><div class="label">Proyectos</div></div>
     </div>
   </div>
 </div>
@@ -2729,8 +2726,8 @@ function darken(hex, mix){
   return '#' + ((r<<16)|(g<<8)|b).toString(16).padStart(6,'0');
 }
 // === PERMISOS POR USUARIO (ADMIN super admin) ===
-const PERM_SECCIONES = ['catalogo','clientes','ventas','mantenimientos','proyectos','facturacion','compras','importacion','agenda','informes','finanzas','crm','chat','emails'];
-const PERM_LABELS = { catalogo:'Catálogo', clientes:'Clientes', ventas:'Ventas', mantenimientos:'Mantenimientos', proyectos:'Proyectos', facturacion:'Facturación', compras:'Compras', importacion:'Importación', agenda:'Agenda', informes:'Informes', finanzas:'Finanzas', crm:'CRM', chat:'Chat', emails:'Emails' };
+const PERM_SECCIONES = ['catalogo','clientes','ventas','mantenimientos','facturacion','compras','importacion','agenda','informes','finanzas','crm','chat','emails'];
+const PERM_LABELS = { catalogo:'Catálogo', clientes:'Clientes', ventas:'Ventas', mantenimientos:'Mantenimientos', facturacion:'Facturación', compras:'Compras', importacion:'Importación', agenda:'Agenda', informes:'Informes', finanzas:'Finanzas', crm:'CRM', chat:'Chat', emails:'Emails' };
 function loadUserPerms(){ try { return JSON.parse(localStorage.getItem('erp_user_perms') || '{}'); } catch(e){ return {}; } }
 function saveUserPerms(p){ try { localStorage.setItem('erp_user_perms', JSON.stringify(p)); } catch(e){} }
 function getPermsFor(user){
@@ -2871,6 +2868,9 @@ const SUPA_SYNC_KEYS = [
   'erp_user_perms',
   'erp_client_leads','erp_client_solicitudes','erp_client_carrito',
   'erp_compras','erp_proveedores','erp_prefs_ADMIN',
+  // Módulo Mantenimientos — sincronizado entre todos los dispositivos
+  'mant_fichas','mant_activos','mant_historico','mant_clientes',
+  'mant_marcas','mant_repuestos','mant_lotes','mant_manuales',
   'erp_prefs_JANO','erp_prefs_JUAN','erp_prefs_FACUNDO','erp_prefs_NORBERTO',
   'erp_client_accounts',  // cuentas de clientes (passwords hasheados) — sync seguro
   'buscatools_clientes_extra',  // campos extra de clientes (tel, dir, etc.)
@@ -2914,6 +2914,11 @@ function _supaOnRemoteChange(key){
        key==='erp_clientes'||key==='erp_activos'||key==='erp_mantenimientos'||
        key==='erp_contactos'){
       if(typeof renderMain==='function') setTimeout(renderMain,100);
+    }
+    // Módulo Mantenimientos: sincronizar cambios remotos
+    if(key==='mant_fichas'||key==='mant_activos'||key==='mant_historico'||
+       key==='mant_clientes'||key==='mant_marcas'||key==='mant_repuestos'){
+      if(state && state.section==='mantenimientos' && typeof renderMain==='function') setTimeout(renderMain,100);
     }
   }catch(e){}
 }
@@ -3331,7 +3336,7 @@ function applyAuthState(){
   // Left-nav: ocultar secciones internas cuando no hay sesión — solo catálogo es público
   const _teamSections = [
     'inicio','emails','clientes','ventas','facturacion',
-    'compras','importacion','mantenimientos','proyectos',
+    'compras','importacion','mantenimientos',
     'agenda','crm','informes','finanzas','chat',
     'trazabilidad','conexiones'
   ];
@@ -5468,8 +5473,8 @@ function initDashboardGrid(){
     renderMain();
   });
   document.getElementById('dash-add-widget')?.addEventListener('click', showAddWidgetPicker);
-  document.getElementById('dash-reset')?.addEventListener('click', () => {
-    if (!confirm('¿Restaurar el dashboard a su configuración por defecto?')) return;
+  document.getElementById('dash-reset')?.addEventListener('click', async () => {
+    if (!await confirmPro({ title:'Restaurar dashboard', message:'¿Restaurar el dashboard a su configuración por defecto? Se perderá tu disposición actual.', confirmLabel:'Restaurar', danger:true })) return;
     saveDashboardLayout({ items: JSON.parse(JSON.stringify(DEFAULT_DASHBOARD_LAYOUT)) });
     renderMain();
   });
@@ -13277,8 +13282,8 @@ function wireServicioEditor(){
     state.editingServicioIdx = null;
     renderMain();
   });
-  document.getElementById('ser-delete')?.addEventListener('click', () => {
-    if (!confirm('¿Eliminar este servicio? No se puede deshacer.')) return;
+  document.getElementById('ser-delete')?.addEventListener('click', async () => {
+    if (!await confirmPro({ title:'Eliminar servicio', message:'¿Eliminar este servicio? Esta acción no se puede deshacer.', confirmLabel:'Eliminar', danger:true })) return;
     eliminarServicio(state.editingServicioIdx);
     state.editingServicioIdx = null;
     showToast('Servicio eliminado', '', 'success');
@@ -14861,8 +14866,8 @@ function renderContactoForm(){
     document.getElementById('ct-save').addEventListener('click', () => _saveContacto(false));
     document.getElementById('ct-save-edit').addEventListener('click', () => _saveContacto(true));
     if (!isNew) {
-      document.getElementById('ct-delete').addEventListener('click', () => {
-        if (!confirm('¿Eliminar este contacto?')) return;
+      document.getElementById('ct-delete').addEventListener('click', async () => {
+        if (!await confirmPro({ title:'Eliminar contacto', message:'¿Eliminar este contacto? Esta acción no se puede deshacer.', confirmLabel:'Eliminar', danger:true })) return;
         CONTACTOS.splice(editingContactoIdx, 1);
         saveContactos(CONTACTOS);
         editingContactoIdx = null;
@@ -15100,7 +15105,7 @@ function wireClienteDetalle(){
     document.querySelectorAll('.mas-menu.open').forEach(o => { if (o !== m) o.classList.remove('open'); });
     m.classList.toggle('open');
   });
-  document.querySelectorAll('[data-cl-mas]').forEach(it => it.addEventListener('click', () => {
+  document.querySelectorAll('[data-cl-mas]').forEach(it => it.addEventListener('click', async () => {
     const action = it.dataset.clMas;
     document.getElementById('cl-mas-menu').classList.remove('open');
     const c = CLIENTES[state.editingClienteIdx];
@@ -15121,7 +15126,7 @@ function wireClienteDetalle(){
     }
     if (action === 'borrar-mem'){
       const c = CLIENTES[state.editingClienteIdx];
-      if (!confirm('¿Borrar TODA la memoria de productos de '+(c.nj||c.nc)+'?')) return;
+      if (!await confirmPro({ title:'Borrar memoria', message:'¿Borrar TODA la memoria de productos de '+(c.nj||c.nc)+'? No se puede deshacer.', confirmLabel:'Borrar', danger:true })) return;
       const mem = loadClienteMemoryRaw();
       delete mem[normClienteKey(c.nj||c.nc||'')];
       saveClienteMemoryRaw(mem);
@@ -15130,20 +15135,20 @@ function wireClienteDetalle(){
       return;
     }
   }));
-  document.querySelectorAll('[data-mem-del]').forEach(b => b.addEventListener('click', e => {
+  document.querySelectorAll('[data-mem-del]').forEach(b => b.addEventListener('click', async e => {
     e.stopPropagation();
     const texto = b.dataset.memDel;
     const c = CLIENTES[state.editingClienteIdx];
     if (!c) return;
-    if (!confirm('¿Eliminar este alias?\n\n"'+texto+'"')) return;
+    if (!await confirmPro({ title:'Eliminar alias', message:'¿Eliminar el alias "'+texto+'"?', confirmLabel:'Eliminar', danger:true })) return;
     deleteAliasCliente(c.nj||c.nc||'', texto);
     showToast('Alias eliminado', '', 'success');
     renderMain();
   }));
-  document.getElementById('cl-mem-clear')?.addEventListener('click', () => {
+  document.getElementById('cl-mem-clear')?.addEventListener('click', async () => {
     const c = CLIENTES[state.editingClienteIdx];
     if (!c) return;
-    if (!confirm('¿Borrar TODA la memoria de productos de '+(c.nj||c.nc)+'?')) return;
+    if (!await confirmPro({ title:'Borrar memoria', message:'¿Borrar TODA la memoria de productos de '+(c.nj||c.nc)+'? No se puede deshacer.', confirmLabel:'Borrar', danger:true })) return;
     const mem = loadClienteMemoryRaw();
     delete mem[normClienteKey(c.nj||c.nc||'')];
     saveClienteMemoryRaw(mem);
@@ -15207,15 +15212,42 @@ function renderVentas(){
 }
 function renderCotList(){
   if (!state.cotPeriod) state.cotPeriod = '6m';
+  if (!state.cotPage) state.cotPage = 1;
+  if (!state.cotPageSize) state.cotPageSize = 10;
+  if (!state.cotFilters) state.cotFilters = { ref:'', cliente:'', titulo:'', estado:'' };
+  if (!state.cotSort) state.cotSort = { field:'fecha', dir:'desc' };
   const allList = loadCotizaciones();
   setTimeout(() => wireCotList(), 0);
-  // Filtrar por período (sobre created o fecha)
+  // Filtrar por período
   let list = allList;
   const _periodMs_c = { '1m':30, '3m':90, '6m':180, '12m':365, 'all':null }[state.cotPeriod];
   if (_periodMs_c){
     const _cutoff_c = Date.now() - _periodMs_c*86400000;
     list = list.filter(c => (c.fecha ? new Date(c.fecha).getTime() : (c.created || 0)) >= _cutoff_c);
   }
+  // Filtros por columna
+  const cf = state.cotFilters;
+  if (cf.ref){ const q=cf.ref.toLowerCase(); list=list.filter(c=>(c.ref||'').toLowerCase().includes(q)); }
+  if (cf.cliente){ const q=cf.cliente.toLowerCase(); list=list.filter(c=>(c.cliente||'').toLowerCase().includes(q)); }
+  if (cf.titulo){ const q=cf.titulo.toLowerCase(); list=list.filter(c=>(c.titulo||'').toLowerCase().includes(q)); }
+  if (cf.estado){ list=list.filter(c=>(c.estado||'pendiente')===cf.estado); }
+  // Sort
+  if (state.cotSort.field){
+    const k=state.cotSort.field; const dir=state.cotSort.dir==='asc'?1:-1;
+    list=[...list].sort((a,b)=>{
+      const av=a[k]; const bv=b[k];
+      if(k==='total') return ((a.total||0)-(b.total||0))*dir;
+      return String(av||'').localeCompare(String(bv||''))*dir;
+    });
+  }
+  // Paginación
+  const _cotTotal = list.length;
+  const _cotPages = Math.max(1, Math.ceil(_cotTotal / state.cotPageSize));
+  if (state.cotPage > _cotPages) state.cotPage = _cotPages;
+  const _cotStart = (state.cotPage - 1) * state.cotPageSize;
+  const _cotEnd   = Math.min(_cotStart + state.cotPageSize, _cotTotal);
+  const pageList  = list.slice(_cotStart, _cotEnd);
+
   // Banner de borrador ocultado por pedido del usuario
   const borradorBanner = '';
   const estadoPill = (st) => {
@@ -15223,7 +15255,7 @@ function renderCotList(){
     if (st === 'rechazada') return '<span style="background:#fde8e8;color:var(--danger);padding:3px 10px;border-radius:12px;font-size:11px;font-weight:600">Rechazada</span>';
     return '<span style="background:var(--warning-light);color:var(--warning-text);padding:3px 10px;border-radius:12px;font-size:11px;font-weight:600">Pendiente</span>';
   };
-  const rows = list.length ? list.map((c) => { const i = allList.findIndex(x => x.ref === c.ref); return `
+  const rows = pageList.length ? pageList.map((c) => { const i = allList.findIndex(x => x.ref === c.ref); return `
     <tr style="cursor:pointer" data-cot-open="${i}">
       <td><input type="checkbox" class="cot-row-check" data-cot-ref="${escapeHtml(c.ref)}" onclick="event.stopPropagation()"></td>
       <td><b style="color:var(--primary)">${escapeHtml(c.ref)}</b></td>
@@ -15300,10 +15332,41 @@ function renderCotList(){
     </div>
   </div>
   <div class="data-table-wrap"><table class="data-table">
-    <thead><tr><th><input type="checkbox"></th><th>Referencia</th><th>Cliente</th><th>Título</th><th>Estado</th><th>Fecha</th><th style="text-align:right">Importe</th></tr></thead>
+    <thead>
+    <tr>
+      <th style="width:30px"><input type="checkbox" id="cot-check-all" title="Seleccionar/deseleccionar página"></th>
+      ${['ref','cliente','titulo','estado','fecha','total'].map(f=>{
+        const labels={ref:'Referencia',cliente:'Cliente',titulo:'Título',estado:'Estado',fecha:'Fecha',total:'Importe'};
+        const icon=state.cotSort.field===f?(state.cotSort.dir==='asc'?'<span style="font-size:10px">▲</span>':'<span style="font-size:10px">▼</span>'):'<span style="opacity:0.3;font-size:10px">⇅</span>';
+        const align=f==='total'?';text-align:right':'';
+        return `<th data-cot-sort="${f}" style="cursor:pointer;user-select:none${align}">${labels[f]} ${icon}</th>`;
+      }).join('')}
+    </tr>
+    <tr style="background:var(--bg)">
+      <td></td>
+      <td><input type="text" id="cot-f-ref" value="${escapeHtml(cf.ref)}" placeholder="Filtrar" style="width:100%;padding:5px 7px;border:1px solid var(--border);border-radius:4px;background:var(--surface);color:var(--text);font-size:12px;outline:none"></td>
+      <td><input type="text" id="cot-f-cliente" value="${escapeHtml(cf.cliente)}" placeholder="Filtrar" style="width:100%;padding:5px 7px;border:1px solid var(--border);border-radius:4px;background:var(--surface);color:var(--text);font-size:12px;outline:none"></td>
+      <td><input type="text" id="cot-f-titulo" value="${escapeHtml(cf.titulo)}" placeholder="Filtrar" style="width:100%;padding:5px 7px;border:1px solid var(--border);border-radius:4px;background:var(--surface);color:var(--text);font-size:12px;outline:none"></td>
+      <td><select id="cot-f-estado" style="width:100%;padding:5px 7px;border:1px solid var(--border);border-radius:4px;background:var(--surface);color:var(--text);font-size:12px;outline:none"><option value="">Todos</option><option value="pendiente"${cf.estado==='pendiente'?' selected':''}>Pendiente</option><option value="cerrada"${cf.estado==='cerrada'?' selected':''}>Cerrada</option><option value="rechazada"${cf.estado==='rechazada'?' selected':''}>Rechazada</option></select></td>
+      <td></td><td></td>
+    </tr>
+    </thead>
     <tbody>${rows}</tbody>
   </table>
-  <div class="table-footer"><div>${list.length} cotización(es)</div></div>
+  <div class="table-footer" style="display:flex;align-items:center;justify-content:space-between;padding:10px 16px;flex-wrap:wrap;gap:8px">
+    <div style="font-size:13px;color:var(--text-muted)">
+      ${_cotTotal === 0 ? '0 cotizaciones' : `Mostrando ${_cotStart+1}–${_cotEnd} de ${_cotTotal} cotización${_cotTotal!==1?'es':''}`}
+    </div>
+    <div style="display:flex;align-items:center;gap:10px">
+      <label style="font-size:12px;color:var(--text-muted)">Filas:</label>
+      <select id="cot-page-size" style="padding:4px 8px;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--text);font-size:13px;cursor:pointer">
+        ${[10,25,50,100,200,500].map(n=>`<option value="${n}"${state.cotPageSize===n?' selected':''}>${n}</option>`).join('')}
+      </select>
+      <button id="cot-prev-page" ${state.cotPage<=1?'disabled':''} style="padding:5px 11px;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--text);font-size:13px;cursor:pointer;opacity:${state.cotPage<=1?0.4:1}">‹</button>
+      <span style="font-size:13px;color:var(--text)">Pág. ${state.cotPage} / ${_cotPages}</span>
+      <button id="cot-next-page" ${state.cotPage>=_cotPages?'disabled':''} style="padding:5px 11px;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--text);font-size:13px;cursor:pointer;opacity:${state.cotPage>=_cotPages?0.4:1}">›</button>
+    </div>
+  </div>
   </div></div>`;
 }
 function wireCotList(){
@@ -15459,6 +15522,61 @@ function wireCotList(){
     state.cotForceList = false;
     renderMain();
   }));
+  // Checkbox cabecera — selecciona/deselecciona TODA la página visible
+  const checkAll = document.getElementById('cot-check-all');
+  if (checkAll){
+    checkAll.addEventListener('change', () => {
+      document.querySelectorAll('.cot-row-check').forEach(c => { c.checked = checkAll.checked; });
+    });
+    // Sincronizar estado del checkbox cabecera cuando se tilda/destilda individualmente
+    document.querySelectorAll('.cot-row-check').forEach(c => c.addEventListener('change', () => {
+      const all = document.querySelectorAll('.cot-row-check');
+      const checked = document.querySelectorAll('.cot-row-check:checked');
+      checkAll.indeterminate = checked.length > 0 && checked.length < all.length;
+      checkAll.checked = checked.length === all.length && all.length > 0;
+    }));
+  }
+
+  // Sort por columna
+  document.querySelectorAll('[data-cot-sort]').forEach(th => th.addEventListener('click', () => {
+    const f = th.dataset.cotSort;
+    if (!state.cotSort) state.cotSort = { field:'fecha', dir:'desc' };
+    if (state.cotSort.field === f) state.cotSort.dir = state.cotSort.dir === 'asc' ? 'desc' : 'asc';
+    else { state.cotSort.field = f; state.cotSort.dir = 'asc'; }
+    state.cotPage = 1; renderMain();
+  }));
+
+  // Filtros por columna
+  if (!state.cotFilters) state.cotFilters = { ref:'', cliente:'', titulo:'', estado:'' };
+  ['ref','cliente','titulo'].forEach(field => {
+    const el = document.getElementById('cot-f-'+field);
+    if (!el) return;
+    el.addEventListener('input', () => {
+      state.cotFilters[field] = el.value; state.cotPage = 1;
+      const sel = el.selectionStart; renderMain();
+      const ne = document.getElementById('cot-f-'+field);
+      if (ne){ ne.focus(); try { ne.setSelectionRange(sel,sel); } catch(e){} }
+    });
+  });
+  document.getElementById('cot-f-estado')?.addEventListener('change', e => {
+    state.cotFilters.estado = e.target.value; state.cotPage = 1; renderMain();
+  });
+
+  // Selector de filas por página
+  document.getElementById('cot-page-size')?.addEventListener('change', e => {
+    state.cotPageSize = +e.target.value;
+    state.cotPage = 1;
+    renderMain();
+  });
+
+  // Botones de paginación
+  document.getElementById('cot-prev-page')?.addEventListener('click', () => {
+    if (state.cotPage > 1){ state.cotPage--; renderMain(); }
+  });
+  document.getElementById('cot-next-page')?.addEventListener('click', () => {
+    state.cotPage++; renderMain();
+  });
+
   const searchInp = document.getElementById('cot-list-search');
   if (searchInp){
     searchInp.addEventListener('input', e => {
@@ -15466,6 +15584,9 @@ function wireCotList(){
       document.querySelectorAll('[data-cot-open]').forEach(tr => {
         tr.style.display = tr.textContent.toLowerCase().includes(q) ? '' : 'none';
       });
+      // Resetear check-all al buscar
+      const ca = document.getElementById('cot-check-all');
+      if (ca){ ca.checked = false; ca.indeterminate = false; }
     });
   }
   // Importar OC: panel inline con PDF.js
@@ -15490,6 +15611,7 @@ function wireCotList(){
   });
   document.querySelectorAll('[data-cot-period]').forEach(it => it.addEventListener('click', () => {
     state.cotPeriod = it.dataset.cotPeriod;
+    state.cotPage = 1;
     document.getElementById('cot-period-menu')?.classList.remove('open');
     renderMain();
   }));
@@ -17540,6 +17662,10 @@ function abrirModalNEParcialVentas(refPedido, onSuccess){
 }
 function renderNotasEntrega(){
   if (!state.nePeriod) state.nePeriod = '6m';
+  if (!state.nePage) state.nePage = 1;
+  if (!state.nePageSize) state.nePageSize = 25;
+  if (!state.neFilters) state.neFilters = { ref:'', cliente:'', titulo:'', estado:'' };
+  if (!state.neSort) state.neSort = { field:'fecha', dir:'desc' };
   const allList = loadNotasEntrega();
   setTimeout(() => wireNotasEntrega(), 0);
   let list = allList;
@@ -17548,12 +17674,34 @@ function renderNotasEntrega(){
     const _cutoff_n = Date.now() - _periodMs_n*86400000;
     list = list.filter(n => (n.fecha ? new Date(n.fecha).getTime() : (n.created || 0)) >= _cutoff_n);
   }
+  // Filtros por columna
+  const nf = state.neFilters;
+  if (nf.ref){ const q=nf.ref.toLowerCase(); list=list.filter(n=>(n.ref||'').toLowerCase().includes(q)); }
+  if (nf.cliente){ const q=nf.cliente.toLowerCase(); list=list.filter(n=>(n.cliente||'').toLowerCase().includes(q)); }
+  if (nf.titulo){ const q=nf.titulo.toLowerCase(); list=list.filter(n=>(n.titulo||'').toLowerCase().includes(q)); }
+  if (nf.estado){ list=list.filter(n=>(n.estado||'pendiente')===nf.estado); }
+  // Sort
+  if (state.neSort.field){
+    const k=state.neSort.field; const dir=state.neSort.dir==='asc'?1:-1;
+    list=[...list].sort((a,b)=>{
+      if(k==='total') return ((a.total||0)-(b.total||0))*dir;
+      return String(a[k]||'').localeCompare(String(b[k]||''))*dir;
+    });
+  }
+  // Paginación
+  const _neTotal = list.length;
+  const _nePages = Math.max(1, Math.ceil(_neTotal / state.nePageSize));
+  if (state.nePage > _nePages) state.nePage = _nePages;
+  const _neStart = (state.nePage - 1) * state.nePageSize;
+  const _neEnd   = Math.min(_neStart + state.nePageSize, _neTotal);
+  const nePageList = list.slice(_neStart, _neEnd);
+  const _neSortIcon = f => state.neSort.field===f?(state.neSort.dir==='asc'?'<span style="font-size:10px">▲</span>':'<span style="font-size:10px">▼</span>'):'<span style="opacity:0.3;font-size:10px">⇅</span>';
   const estadoPill = (st) => {
     if (st === 'facturada' || st === 'cerrada') return '<span style="background:var(--success-light);color:var(--success);padding:3px 10px;border-radius:12px;font-size:11px;font-weight:600">Cerrada</span>';
     if (st === 'cancelada') return '<span style="background:#fde8e8;color:var(--danger);padding:3px 10px;border-radius:12px;font-size:11px;font-weight:600">Cancelada</span>';
     return '<span style="background:var(--warning-light);color:var(--warning-text);padding:3px 10px;border-radius:12px;font-size:11px;font-weight:600">Pendiente</span>';
   };
-  const rows = list.length ? list.map((n) => { const i = allList.findIndex(x => x.ref === n.ref); return `
+  const rows = nePageList.length ? nePageList.map((n) => { const i = allList.findIndex(x => x.ref === n.ref); return `
     <tr style="cursor:pointer" data-ne-open="${i}">
       <td><input type="checkbox" class="ne-row-check" data-ne-ref="${escapeHtml(n.ref)}" onclick="event.stopPropagation()"></td>
       <td><b style="color:var(--primary)">${escapeHtml(n.ref)}</b></td>
@@ -17596,10 +17744,40 @@ function renderNotasEntrega(){
     </div>
   </div>
   <div class="data-table-wrap"><table class="data-table">
-    <thead><tr><th><input type="checkbox"></th><th>Referencia</th><th>Cliente</th><th>Título</th><th>Estado</th><th>Fecha</th><th>Origen</th><th style="text-align:right">Importe</th></tr></thead>
+    <thead>
+    <tr>
+      <th style="width:30px"><input type="checkbox" id="ne-check-all" title="Seleccionar/deseleccionar página"></th>
+      <th data-ne-sort="ref" style="cursor:pointer;user-select:none">Referencia ${_neSortIcon('ref')}</th>
+      <th data-ne-sort="cliente" style="cursor:pointer;user-select:none">Cliente ${_neSortIcon('cliente')}</th>
+      <th data-ne-sort="titulo" style="cursor:pointer;user-select:none">Título ${_neSortIcon('titulo')}</th>
+      <th style="width:120px">Estado</th>
+      <th data-ne-sort="fecha" style="cursor:pointer;user-select:none;width:110px">Fecha ${_neSortIcon('fecha')}</th>
+      <th style="width:100px;font-size:11px">Origen</th>
+      <th data-ne-sort="total" style="cursor:pointer;user-select:none;text-align:right;width:130px">Importe ${_neSortIcon('total')}</th>
+    </tr>
+    <tr style="background:var(--bg)">
+      <td></td>
+      <td><input type="text" id="ne-f-ref" value="${escapeHtml(nf.ref)}" placeholder="Filtrar" style="width:100%;padding:5px 7px;border:1px solid var(--border);border-radius:4px;background:var(--surface);color:var(--text);font-size:12px;outline:none"></td>
+      <td><input type="text" id="ne-f-cliente" value="${escapeHtml(nf.cliente)}" placeholder="Filtrar" style="width:100%;padding:5px 7px;border:1px solid var(--border);border-radius:4px;background:var(--surface);color:var(--text);font-size:12px;outline:none"></td>
+      <td><input type="text" id="ne-f-titulo" value="${escapeHtml(nf.titulo)}" placeholder="Filtrar" style="width:100%;padding:5px 7px;border:1px solid var(--border);border-radius:4px;background:var(--surface);color:var(--text);font-size:12px;outline:none"></td>
+      <td><select id="ne-f-estado" style="width:100%;padding:5px 7px;border:1px solid var(--border);border-radius:4px;background:var(--surface);color:var(--text);font-size:12px;outline:none"><option value="">Todos</option><option value="pendiente"${nf.estado==='pendiente'?' selected':''}>Pendiente</option><option value="cerrada"${nf.estado==='cerrada'?' selected':''}>Cerrada</option><option value="cancelada"${nf.estado==='cancelada'?' selected':''}>Cancelada</option></select></td>
+      <td></td><td></td><td></td>
+    </tr>
+    </thead>
     <tbody>${rows}</tbody>
   </table>
-  <div class="table-footer"><div>${list.length} nota(s) de entrega</div></div>
+  <div class="table-footer" style="display:flex;align-items:center;justify-content:space-between;padding:10px 16px;flex-wrap:wrap;gap:8px">
+    <div style="font-size:13px;color:var(--text-muted)">${_neTotal===0?'0 notas':`Mostrando ${_neStart+1}–${_neEnd} de ${_neTotal} nota${_neTotal!==1?'s':''} de entrega`}</div>
+    <div style="display:flex;align-items:center;gap:10px">
+      <label style="font-size:12px;color:var(--text-muted)">Filas:</label>
+      <select id="ne-page-size" style="padding:4px 8px;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--text);font-size:13px;cursor:pointer">
+        ${[10,25,50,100,200].map(n=>`<option value="${n}"${state.nePageSize===n?' selected':''}>${n}</option>`).join('')}
+      </select>
+      <button id="ne-prev-page" ${state.nePage<=1?'disabled':''} style="padding:5px 11px;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--text);font-size:13px;cursor:pointer;opacity:${state.nePage<=1?0.4:1}">‹</button>
+      <span style="font-size:13px;color:var(--text)">Pág. ${state.nePage} / ${_nePages}</span>
+      <button id="ne-next-page" ${state.nePage>=_nePages?'disabled':''} style="padding:5px 11px;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--text);font-size:13px;cursor:pointer;opacity:${state.nePage>=_nePages?0.4:1}">›</button>
+    </div>
+  </div>
   </div></div>`;
 }
 function wireNotasEntrega(){
@@ -17683,6 +17861,52 @@ function wireNotasEntrega(){
     state.cotForceList = false;
     renderMain();
   }));
+  // Check-all
+  const neCheckAll = document.getElementById('ne-check-all');
+  if (neCheckAll){
+    neCheckAll.addEventListener('change', () => {
+      document.querySelectorAll('.ne-row-check').forEach(c => { c.checked = neCheckAll.checked; });
+    });
+    document.querySelectorAll('.ne-row-check').forEach(c => c.addEventListener('change', () => {
+      const all = document.querySelectorAll('.ne-row-check');
+      const checked = document.querySelectorAll('.ne-row-check:checked');
+      neCheckAll.indeterminate = checked.length > 0 && checked.length < all.length;
+      neCheckAll.checked = checked.length === all.length && all.length > 0;
+    }));
+  }
+  // Sort
+  document.querySelectorAll('[data-ne-sort]').forEach(th => th.addEventListener('click', () => {
+    const f = th.dataset.neSort;
+    if (!state.neSort) state.neSort = { field:'fecha', dir:'desc' };
+    if (state.neSort.field === f) state.neSort.dir = state.neSort.dir === 'asc' ? 'desc' : 'asc';
+    else { state.neSort.field = f; state.neSort.dir = 'asc'; }
+    state.nePage = 1; renderMain();
+  }));
+  // Filtros por columna
+  if (!state.neFilters) state.neFilters = { ref:'', cliente:'', titulo:'', estado:'' };
+  ['ref','cliente','titulo'].forEach(field => {
+    const el = document.getElementById('ne-f-'+field);
+    if (!el) return;
+    el.addEventListener('input', () => {
+      state.neFilters[field] = el.value; state.nePage = 1;
+      const sel = el.selectionStart; renderMain();
+      const ne2 = document.getElementById('ne-f-'+field);
+      if (ne2){ ne2.focus(); try { ne2.setSelectionRange(sel,sel); } catch(e){} }
+    });
+  });
+  document.getElementById('ne-f-estado')?.addEventListener('change', e => {
+    state.neFilters.estado = e.target.value; state.nePage = 1; renderMain();
+  });
+  // Paginación
+  document.getElementById('ne-page-size')?.addEventListener('change', e => {
+    state.nePageSize = +e.target.value; state.nePage = 1; renderMain();
+  });
+  document.getElementById('ne-prev-page')?.addEventListener('click', () => {
+    if (state.nePage > 1){ state.nePage--; renderMain(); }
+  });
+  document.getElementById('ne-next-page')?.addEventListener('click', () => {
+    state.nePage++; renderMain();
+  });
   const searchInp = document.getElementById('ne-list-search');
   if (searchInp){
     searchInp.addEventListener('input', e => {
@@ -17837,7 +18061,7 @@ function nextPedRef(){
   }
   return 'PED' + String(max + 1).padStart(5, '0');
 }
-function generarPedidoDesdeCotizacion(refCotizacion){
+async function generarPedidoDesdeCotizacion(refCotizacion){
   const cots = loadCotizaciones();
   const cot = cots.find(c => c.ref === refCotizacion);
   if (!cot){ showToast('Cotización no encontrada', refCotizacion, 'error'); return null; }
@@ -17845,7 +18069,7 @@ function generarPedidoDesdeCotizacion(refCotizacion){
   const peds = loadPedidos();
   const existing = peds.find(p => p.fromCotizacion === refCotizacion);
   if (existing){
-    if (!confirm('Ya existe el pedido ' + existing.ref + ' generado desde esta cotización. ¿Generar otro igual?')) return null;
+    if (!await confirmPro({ title:'Pedido duplicado', message:'Ya existe el pedido ' + existing.ref + ' generado desde esta cotización. ¿Generar otro igual?', confirmLabel:'Generar igual', danger:false })) return null;
   }
   const ped = {
     ref: nextPedRef(),
@@ -17876,6 +18100,10 @@ function generarPedidoDesdeCotizacion(refCotizacion){
 }
 function renderPedidos(){
   if (!state.pedPeriod) state.pedPeriod = '6m';
+  if (!state.pedPage) state.pedPage = 1;
+  if (!state.pedPageSize) state.pedPageSize = 25;
+  if (!state.pedFilters) state.pedFilters = { ref:'', cliente:'', titulo:'', estado:'' };
+  if (!state.pedSort) state.pedSort = { field:'fecha', dir:'desc' };
   const allList = loadPedidos();
   setTimeout(() => wirePedidos(), 0);
   let list = allList;
@@ -17884,13 +18112,35 @@ function renderPedidos(){
     const _cutoff_p = Date.now() - _periodMs_p*86400000;
     list = list.filter(p => (p.fecha ? new Date(p.fecha).getTime() : (p.created || 0)) >= _cutoff_p);
   }
+  // Filtros por columna
+  const pf = state.pedFilters;
+  if (pf.ref){ const q=pf.ref.toLowerCase(); list=list.filter(p=>(p.ref||'').toLowerCase().includes(q)); }
+  if (pf.cliente){ const q=pf.cliente.toLowerCase(); list=list.filter(p=>(p.cliente||'').toLowerCase().includes(q)); }
+  if (pf.titulo){ const q=pf.titulo.toLowerCase(); list=list.filter(p=>(p.titulo||'').toLowerCase().includes(q)); }
+  if (pf.estado){ list=list.filter(p=>(p.estado||'pendiente')===pf.estado); }
+  // Sort
+  if (state.pedSort.field){
+    const k=state.pedSort.field; const dir=state.pedSort.dir==='asc'?1:-1;
+    list=[...list].sort((a,b)=>{
+      if(k==='total') return ((a.total||0)-(b.total||0))*dir;
+      return String(a[k]||'').localeCompare(String(b[k]||''))*dir;
+    });
+  }
+  // Paginación
+  const _pedTotal = list.length;
+  const _pedPages = Math.max(1, Math.ceil(_pedTotal / state.pedPageSize));
+  if (state.pedPage > _pedPages) state.pedPage = _pedPages;
+  const _pedStart = (state.pedPage - 1) * state.pedPageSize;
+  const _pedEnd   = Math.min(_pedStart + state.pedPageSize, _pedTotal);
+  const pageList  = list.slice(_pedStart, _pedEnd);
   const estadoPill = (st) => {
     if (st === 'entregado') return '<span style="background:var(--success-light);color:var(--success);padding:3px 10px;border-radius:12px;font-size:11px;font-weight:600">Entregado</span>';
     if (st === 'cancelado') return '<span style="background:#fde8e8;color:var(--danger);padding:3px 10px;border-radius:12px;font-size:11px;font-weight:600">Cancelado</span>';
     if (st === 'parcial') return '<span style="background:#FFEDD5;color:#C2410C;padding:3px 10px;border-radius:12px;font-size:11px;font-weight:600">Parcial ⏳</span>';
     return '<span style="background:var(--warning-light);color:var(--warning-text);padding:3px 10px;border-radius:12px;font-size:11px;font-weight:600">Pendiente</span>';
   };
-  const rows = list.length ? list.map((p) => { const i = allList.findIndex(x => x.ref === p.ref);
+  const _pedSortIcon = f => state.pedSort.field===f?(state.pedSort.dir==='asc'?'<span style="font-size:10px">▲</span>':'<span style="font-size:10px">▼</span>'):'<span style="opacity:0.3;font-size:10px">⇅</span>';
+  const rows = pageList.length ? pageList.map((p) => { const i = allList.findIndex(x => x.ref === p.ref);
     const showNeBtn = p.estado !== 'entregado' && p.estado !== 'cancelado';
     return `
     <tr style="cursor:pointer" data-ped-open="${i}">
@@ -17970,10 +18220,41 @@ function renderPedidos(){
     </div>
   </div>
   <div class="data-table-wrap"><table class="data-table">
-    <thead><tr><th><input type="checkbox"></th><th>Referencia</th><th>Cliente</th><th>Título</th><th>Estado</th><th>Fecha</th><th>Origen</th><th style="text-align:right">Importe</th><th></th></tr></thead>
+    <thead>
+    <tr>
+      <th style="width:30px"><input type="checkbox" id="ped-check-all" title="Seleccionar/deseleccionar página"></th>
+      <th data-ped-sort="ref" style="cursor:pointer;user-select:none">Referencia ${_pedSortIcon('ref')}</th>
+      <th data-ped-sort="cliente" style="cursor:pointer;user-select:none">Cliente ${_pedSortIcon('cliente')}</th>
+      <th data-ped-sort="titulo" style="cursor:pointer;user-select:none">Título ${_pedSortIcon('titulo')}</th>
+      <th style="width:120px">Estado</th>
+      <th data-ped-sort="fecha" style="cursor:pointer;user-select:none;width:110px">Fecha ${_pedSortIcon('fecha')}</th>
+      <th style="width:100px;font-size:11px">Origen</th>
+      <th data-ped-sort="total" style="cursor:pointer;user-select:none;text-align:right;width:130px">Importe ${_pedSortIcon('total')}</th>
+      <th style="width:130px"></th>
+    </tr>
+    <tr style="background:var(--bg)">
+      <td></td>
+      <td><input type="text" id="ped-f-ref" value="${escapeHtml(pf.ref)}" placeholder="Filtrar" style="width:100%;padding:5px 7px;border:1px solid var(--border);border-radius:4px;background:var(--surface);color:var(--text);font-size:12px;outline:none"></td>
+      <td><input type="text" id="ped-f-cliente" value="${escapeHtml(pf.cliente)}" placeholder="Filtrar" style="width:100%;padding:5px 7px;border:1px solid var(--border);border-radius:4px;background:var(--surface);color:var(--text);font-size:12px;outline:none"></td>
+      <td><input type="text" id="ped-f-titulo" value="${escapeHtml(pf.titulo)}" placeholder="Filtrar" style="width:100%;padding:5px 7px;border:1px solid var(--border);border-radius:4px;background:var(--surface);color:var(--text);font-size:12px;outline:none"></td>
+      <td><select id="ped-f-estado" style="width:100%;padding:5px 7px;border:1px solid var(--border);border-radius:4px;background:var(--surface);color:var(--text);font-size:12px;outline:none"><option value="">Todos</option><option value="pendiente"${pf.estado==='pendiente'?' selected':''}>Pendiente</option><option value="parcial"${pf.estado==='parcial'?' selected':''}>Parcial</option><option value="entregado"${pf.estado==='entregado'?' selected':''}>Entregado</option><option value="cancelado"${pf.estado==='cancelado'?' selected':''}>Cancelado</option></select></td>
+      <td></td><td></td><td></td><td></td>
+    </tr>
+    </thead>
     <tbody>${rows}</tbody>
   </table>
-  <div class="table-footer"><div>${list.length} pedido(s)</div></div>
+  <div class="table-footer" style="display:flex;align-items:center;justify-content:space-between;padding:10px 16px;flex-wrap:wrap;gap:8px">
+    <div style="font-size:13px;color:var(--text-muted)">${_pedTotal===0?'0 pedidos':`Mostrando ${_pedStart+1}–${_pedEnd} de ${_pedTotal} pedido${_pedTotal!==1?'s':''}`}</div>
+    <div style="display:flex;align-items:center;gap:10px">
+      <label style="font-size:12px;color:var(--text-muted)">Filas:</label>
+      <select id="ped-page-size" style="padding:4px 8px;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--text);font-size:13px;cursor:pointer">
+        ${[10,25,50,100,200].map(n=>`<option value="${n}"${state.pedPageSize===n?' selected':''}>${n}</option>`).join('')}
+      </select>
+      <button id="ped-prev-page" ${state.pedPage<=1?'disabled':''} style="padding:5px 11px;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--text);font-size:13px;cursor:pointer;opacity:${state.pedPage<=1?0.4:1}">‹</button>
+      <span style="font-size:13px;color:var(--text)">Pág. ${state.pedPage} / ${_pedPages}</span>
+      <button id="ped-next-page" ${state.pedPage>=_pedPages?'disabled':''} style="padding:5px 11px;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--text);font-size:13px;cursor:pointer;opacity:${state.pedPage>=_pedPages?0.4:1}">›</button>
+    </div>
+  </div>
   </div></div>`;
 }
 // Función global para el Más menu de pedidos (llamada directamente desde onclick)
@@ -18074,6 +18355,52 @@ function wirePedidos(){
     state.cotForceList = false;
     renderMain();
   }));
+  // Check-all
+  const pedCheckAll = document.getElementById('ped-check-all');
+  if (pedCheckAll){
+    pedCheckAll.addEventListener('change', () => {
+      document.querySelectorAll('.ped-row-check').forEach(c => { c.checked = pedCheckAll.checked; });
+    });
+    document.querySelectorAll('.ped-row-check').forEach(c => c.addEventListener('change', () => {
+      const all = document.querySelectorAll('.ped-row-check');
+      const checked = document.querySelectorAll('.ped-row-check:checked');
+      pedCheckAll.indeterminate = checked.length > 0 && checked.length < all.length;
+      pedCheckAll.checked = checked.length === all.length && all.length > 0;
+    }));
+  }
+  // Sort
+  document.querySelectorAll('[data-ped-sort]').forEach(th => th.addEventListener('click', () => {
+    const f = th.dataset.pedSort;
+    if (!state.pedSort) state.pedSort = { field:'fecha', dir:'desc' };
+    if (state.pedSort.field === f) state.pedSort.dir = state.pedSort.dir === 'asc' ? 'desc' : 'asc';
+    else { state.pedSort.field = f; state.pedSort.dir = 'asc'; }
+    state.pedPage = 1; renderMain();
+  }));
+  // Filtros por columna
+  if (!state.pedFilters) state.pedFilters = { ref:'', cliente:'', titulo:'', estado:'' };
+  ['ref','cliente','titulo'].forEach(field => {
+    const el = document.getElementById('ped-f-'+field);
+    if (!el) return;
+    el.addEventListener('input', () => {
+      state.pedFilters[field] = el.value; state.pedPage = 1;
+      const sel = el.selectionStart; renderMain();
+      const ne = document.getElementById('ped-f-'+field);
+      if (ne){ ne.focus(); try { ne.setSelectionRange(sel,sel); } catch(e){} }
+    });
+  });
+  document.getElementById('ped-f-estado')?.addEventListener('change', e => {
+    state.pedFilters.estado = e.target.value; state.pedPage = 1; renderMain();
+  });
+  // Paginación
+  document.getElementById('ped-page-size')?.addEventListener('change', e => {
+    state.pedPageSize = +e.target.value; state.pedPage = 1; renderMain();
+  });
+  document.getElementById('ped-prev-page')?.addEventListener('click', () => {
+    if (state.pedPage > 1){ state.pedPage--; renderMain(); }
+  });
+  document.getElementById('ped-next-page')?.addEventListener('click', () => {
+    state.pedPage++; renderMain();
+  });
   const searchInp = document.getElementById('ped-list-search');
   if (searchInp){
     searchInp.addEventListener('input', e => {
@@ -20915,8 +21242,8 @@ function showEventoModal(eventoId, defaultFecha){
     showToast(isEdit ? 'Evento actualizado' : 'Evento creado', titulo, 'success');
     renderMain();
   });
-  modal.querySelector('#ev-delete')?.addEventListener('click', () => {
-    if (!confirm('¿Eliminar este evento?')) return;
+  modal.querySelector('#ev-delete')?.addEventListener('click', async () => {
+    if (!await confirmPro({ title:'Eliminar evento', message:'¿Eliminar este evento? Esta acción no se puede deshacer.', confirmLabel:'Eliminar', danger:true })) return;
     const list = loadEventos().filter(e => e.id !== formData.id);
     saveEventos(list);
     modal.remove();
@@ -21342,13 +21669,14 @@ function renderBibliotecaArchivos(){
   const tableRows = rows.map((f, idx) =>
     '<tr>' +
     '<td style="width:36px;text-align:center;font-size:20px">' + adjuntoIcon(f.type) + '</td>' +
-    '<td><div style="font-weight:600;color:var(--text);max-width:280px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="' + escapeHtml(f.name) + '">' + escapeHtml(f.name) + '</div>' +
+    '<td><div data-arch-preview="' + idx + '" style="font-weight:600;color:var(--primary);max-width:280px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer;text-decoration:underline" title="' + escapeHtml(f.name) + '">' + escapeHtml(f.name) + '</div>' +
       '<div style="font-size:11px;color:var(--text-soft);margin-top:2px">' + fmtFileSize(f.size) + (f.type ? ' · ' + escapeHtml(f.type.split('/')[1]||f.type) : '') + '</div></td>' +
     '<td><span style="display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;background:var(--bg);color:var(--text-soft);border:1px solid var(--border)">' + escapeHtml(DOC_LABELS[f.docType] || f.docType) + '</span></td>' +
     '<td><button class="btn-link" data-arch-nav="' + escapeHtml(f.docType) + '" data-arch-ref="' + escapeHtml(f.ref) + '" style="font-weight:600;color:var(--primary);background:none;border:none;cursor:pointer;padding:0;font-size:13px;text-decoration:underline">' + escapeHtml(f.ref) + '</button></td>' +
     '<td style="font-size:12px;color:var(--text-soft);white-space:nowrap">' + escapeHtml(f.by || '—') + '</td>' +
     '<td style="font-size:12px;color:var(--text-soft);white-space:nowrap">' + escapeHtml((f.at||'').replace('T',' ').slice(0,16) || '—') + '</td>' +
     '<td style="text-align:right;white-space:nowrap">' +
+      '<button class="btn-secondary" data-arch-preview="' + idx + '" style="padding:5px 10px;font-size:12px;margin-right:4px">👁 Ver</button>' +
       '<button class="btn-secondary" data-arch-dl="' + idx + '" style="padding:5px 10px;font-size:12px">⬇ Descargar</button>' +
     '</td>' +
     '</tr>'
@@ -21362,6 +21690,46 @@ function renderBibliotecaArchivos(){
       state._archBuscaT = setTimeout(() => { state._archBusca = e.target.value; renderMain(); }, 250);
     });
     document.getElementById('arch-orden')?.addEventListener('change', e => { state._archOrden = e.target.value; renderMain(); });
+    // Previsualizar archivo
+    document.querySelectorAll('[data-arch-preview]').forEach(el => el.addEventListener('click', () => {
+      const f = rows[+el.dataset.archPreview]; if (!f || !f.dataUrl) return;
+      const isImg = (f.type||'').startsWith('image/');
+      const isPdf = (f.type||'').includes('pdf') || (f.name||'').toLowerCase().endsWith('.pdf');
+      const overlay = document.createElement('div');
+      overlay.style.cssText = 'position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.75);display:flex;align-items:center;justify-content:center;padding:24px';
+      const inner = document.createElement('div');
+      inner.style.cssText = 'background:var(--surface);border-radius:12px;box-shadow:0 8px 40px rgba(0,0,0,0.4);overflow:hidden;max-width:90vw;max-height:92vh;display:flex;flex-direction:column;min-width:320px';
+      const header = document.createElement('div');
+      header.style.cssText = 'display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--border);gap:12px';
+      header.innerHTML = '<div style="font-weight:700;font-size:14px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:60vw">' + escapeHtml(f.name) + '</div>'
+        + '<div style="display:flex;gap:8px;flex-shrink:0">'
+        + '<button class="btn-secondary" id="arch-prev-dl" style="padding:5px 12px;font-size:12px">⬇ Descargar</button>'
+        + '<button class="btn-secondary" id="arch-prev-close" style="padding:5px 12px;font-size:12px">✕ Cerrar</button>'
+        + '</div>';
+      inner.appendChild(header);
+      const body = document.createElement('div');
+      body.style.cssText = 'flex:1;overflow:auto;display:flex;align-items:center;justify-content:center;padding:0;background:#111';
+      if (isPdf){
+        const iframe = document.createElement('iframe');
+        iframe.src = f.dataUrl;
+        iframe.style.cssText = 'width:min(860px,85vw);height:80vh;border:none;background:#fff';
+        body.appendChild(iframe);
+      } else if (isImg){
+        const img = document.createElement('img');
+        img.src = f.dataUrl; img.alt = f.name;
+        img.style.cssText = 'max-width:85vw;max-height:78vh;object-fit:contain;display:block';
+        body.appendChild(img);
+      } else {
+        body.style.background = 'var(--surface)';
+        body.innerHTML = '<div style="padding:40px;text-align:center;color:var(--text-soft)"><div style="font-size:48px;margin-bottom:12px">📄</div><div style="font-size:14px">Vista previa no disponible para este tipo de archivo.</div><div style="margin-top:12px;font-size:12px;color:var(--text-muted)">' + escapeHtml(f.name) + '</div></div>';
+      }
+      inner.appendChild(body);
+      overlay.appendChild(inner);
+      document.body.appendChild(overlay);
+      overlay.addEventListener('click', e => { if (e.target === overlay) overlay.remove(); });
+      inner.querySelector('#arch-prev-close').addEventListener('click', () => overlay.remove());
+      inner.querySelector('#arch-prev-dl').addEventListener('click', () => { const a = document.createElement('a'); a.href = f.dataUrl; a.download = f.name; a.click(); });
+    }));
     // Descargar
     document.querySelectorAll('[data-arch-dl]').forEach(b => b.addEventListener('click', () => {
       const f = rows[+b.dataset.archDl]; if (!f || !f.dataUrl) return;
@@ -22414,11 +22782,11 @@ function renderRecibosList(){
 }
 
 function wireRecibosList(){
-  document.querySelectorAll('[data-rec-open]').forEach(tr => tr.addEventListener('click', () => {
+  document.querySelectorAll('[data-rec-open]').forEach(tr => tr.addEventListener('click', async () => {
     const idx = +tr.dataset.recOpen;
     const r = loadRecibos()[idx];
     if (!r) return;
-    if (confirm('Recibo ' + r.ref + '\nFactura: ' + r.facturaRef + '\nMonto: USD ' + fmtNum(r.monto||0) + '\nFecha: ' + r.fecha + '\nForma de pago: ' + r.formaPago + '\n' + (r.notas||'') + '\n\n¿Eliminar este recibo?')){
+    if (await confirmPro({ title:'Eliminar recibo ' + r.ref, message:'Factura: ' + r.facturaRef + '\nMonto: USD ' + fmtNum(r.monto||0) + '\nFecha: ' + r.fecha + '\nForma de pago: ' + r.formaPago + (r.notas ? '\n' + r.notas : '') + '\n\n¿Eliminar este recibo? No se puede deshacer.', confirmLabel:'Eliminar', danger:true })){
       const list = loadRecibos();
       const facturaRef = list[idx].facturaRef;
       list.splice(idx, 1);
@@ -22452,11 +22820,11 @@ function renderNotasCreditoList(){
 }
 
 function wireNotasCreditoList(){
-  document.querySelectorAll('[data-nc-open]').forEach(tr => tr.addEventListener('click', () => {
+  document.querySelectorAll('[data-nc-open]').forEach(tr => tr.addEventListener('click', async () => {
     const idx = +tr.dataset.ncOpen;
     const n = loadNotasCredito()[idx];
     if (!n) return;
-    if (confirm('Nota de crédito ' + n.ref + '\nFactura: ' + n.facturaRef + '\nMonto: USD ' + fmtNum(n.monto||0) + '\nFecha: ' + n.fecha + '\nMotivo: ' + n.motivo + '\n\n¿Eliminar esta nota de crédito?')){
+    if (await confirmPro({ title:'Eliminar nota de crédito ' + n.ref, message:'Factura: ' + n.facturaRef + '\nMonto: USD ' + fmtNum(n.monto||0) + '\nFecha: ' + n.fecha + '\nMotivo: ' + n.motivo + '\n\n¿Eliminar esta nota de crédito? No se puede deshacer.', confirmLabel:'Eliminar', danger:true })){
       const list = loadNotasCredito();
       const facturaRef = list[idx].facturaRef;
       list.splice(idx, 1);
@@ -22646,10 +23014,10 @@ function wireCRMLeads(){
     };
   });
   document.getElementById('crm-leads-refresh')?.addEventListener('click', () => renderMain());
-  document.querySelectorAll('[data-lead-del]').forEach(b => b.addEventListener('click', e => {
+  document.querySelectorAll('[data-lead-del]').forEach(b => b.addEventListener('click', async e => {
     e.stopPropagation();
     const idx = parseInt(b.dataset.leadDel, 10);
-    if (!confirm('¿Eliminar este lead?')) return;
+    if (!await confirmPro({ title:'Eliminar lead', message:'¿Eliminar este lead? Esta acción no se puede deshacer.', confirmLabel:'Eliminar', danger:true })) return;
     const list = loadLeads();
     list.splice(idx, 1);
     saveLeads(list);
@@ -23254,6 +23622,58 @@ function _mantGetActivo(id){ return loadMantActivos().find(function(a){ return a
 function _mantGetFicha(id){ return loadMantFichas().find(function(f){ return f.id===id; })||null; }
 function _mantGetCliente(id){ return loadMantClientes().find(function(c){ return c.id===id; })||null; }
 
+// ── Notificaciones de Mantenimientos ─────────────────────────────────────────
+// Envía un mensaje interno al técnico asignado y/o al equipo cuando una ficha cambia.
+const MANT_NOTIFY_TEAM = ['JANO','NORBERTO','FACUNDO','JUAN','BRIAN']; // todos reciben cambios críticos
+function _mantNotify(ficha, evento, extra){
+  if (!ficha) return;
+  var yo = (state&&state.user||'Sistema').toUpperCase();
+  var tecnico = (ficha.tecnico||ficha.asignadoA||'').toUpperCase();
+  var activoLabel = ficha.ref || ficha.activoId || '?';
+
+  var mensajes = {
+    'nueva':        '🔧 Nueva ficha de servicio creada para activo ' + activoLabel,
+    'asignado':     '📋 Te asignaron la ficha ' + activoLabel + (extra ? ' — Técnico: ' + extra : ''),
+    'completado':   '✅ Ficha ' + activoLabel + ' completada por ' + yo,
+    'cotizacion':   '💰 Cotización generada para ficha ' + activoLabel,
+    'aprobada':     '✔ Cotización APROBADA — ficha ' + activoLabel + ' lista para reparar',
+    'rechazada':    '✖ Cotización RECHAZADA — ficha ' + activoLabel,
+    'pausada':      '⏸ Ficha ' + activoLabel + ' pausada por ' + yo,
+    'reanudada':    '▶ Ficha ' + activoLabel + ' reanudada por ' + yo,
+    'entregado':    '📦 Activo ' + activoLabel + ' entregado al cliente',
+  };
+  var texto = mensajes[evento] || ('📌 Ficha ' + activoLabel + ': ' + evento);
+
+  // Destinatarios: técnico asignado (si es distinto de yo) + JANO (IT/logística) siempre
+  var dest = new Set(['JANO']);
+  if (tecnico && tecnico !== yo) dest.add(tecnico);
+  // Para eventos críticos, notificar a todo el equipo
+  if (evento === 'completado' || evento === 'entregado' || evento === 'aprobada') {
+    MANT_NOTIFY_TEAM.forEach(function(u){ dest.add(u); });
+  }
+  dest.delete(yo); // yo no me notifico a mí mismo
+
+  if (!dest.size) return;
+  try {
+    var msgs = JSON.parse(localStorage.getItem('erp_bandeja_mensajes')||'[]');
+    var ts = Date.now();
+    dest.forEach(function(para){
+      msgs.push({
+        id: 'mant_ntf_' + ts + '_' + para,
+        de: yo,
+        para: para,
+        texto: texto,
+        tipo: 'mant',
+        at: ts,
+        leido: false
+      });
+    });
+    localStorage.setItem('erp_bandeja_mensajes', JSON.stringify(msgs));
+    // Si el destinatario está logueado en este tab, mostrar toast
+    if (dest.has(yo)) showToast('Mantenimiento', texto, 'info');
+  } catch(e){}
+}
+
 // PARTS list for diagnostico/reparacion
 const MANT_PARTS = [
   {key:'carcasa', label:'CARCASA/ENCASTRE'},
@@ -23370,6 +23790,7 @@ function _mantRenderSidebar(cont){
     if(fichas[idx].pausada) fichas[idx].pausadaAt = Date.now();
     else fichas[idx].pausadaAt = null;
     saveMantFichas(fichas);
+    _mantNotify(fichas[idx], fichas[idx].pausada ? 'pausada' : 'reanudada');
     renderSidebar(); renderMain(); setTimeout(function(){ wireMant(); },0);
     showToast(fichas[idx].pausada?'Pausada':'Reanudada','',fichas[idx].pausada?'warning':'success');
   }); }
@@ -23409,8 +23830,10 @@ function _mantDashboard(){
   // filter
   var filt = state.mantDashFilter||'todos';
   var srch = (state.mantDashSearch||'').toLowerCase();
+  var _myUser = (state&&state.user||'').toUpperCase();
   var list = activos.slice();
   if(filt==='con-servicio') list = list.filter(function(a){ return fichas.some(function(f){ return f.activoId===a.id && !f.pausada; }); });
+  else if(filt==='mis-fichas') list = list.filter(function(a){ return fichas.some(function(f){ return f.activoId===a.id && !f.pausada && (f.tecnico||'').toUpperCase()===_myUser; }); });
   else if(filt!=='todos') list = list.filter(function(a){ return (a.modelo||'(sin modelo)')===filt; });
   if(srch){
     list = list.filter(function(a){
@@ -23492,6 +23915,11 @@ function _mantDashboard(){
       +'</div>'
       // Estado
       +'<div style="flex-shrink:0">'+estadoBadge+'</div>'
+      // Técnico asignado (solo si tiene ficha activa)
+      +(fichaActiva && fichaActiva.tecnico
+        ? '<div style="flex-shrink:0;text-align:center"><div style="font-size:9px;color:var(--text-muted);text-transform:uppercase;font-weight:700;letter-spacing:.4px;margin-bottom:3px">Técnico</div>'
+          +'<div style="background:var(--surface-alt);border:1px solid var(--border);border-radius:20px;padding:3px 10px;font-size:11px;font-weight:700;color:var(--text)">👤 '+escapeHtml(fichaActiva.tecnico)+'</div></div>'
+        : '')
       // Button
       +'<div class="mant-card-btn-wrap" style="flex-shrink:0;margin-left:auto">'
       +'<button data-mant-servicio="'+escapeHtml(a.id)+'" style="padding:10px 22px;background:var(--primary);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap">Servicio →</button>'
@@ -23503,9 +23931,9 @@ function _mantDashboard(){
     ? '<div style="text-align:center;padding:60px;color:var(--text-soft)"><div style="font-size:32px;margin-bottom:12px">🔧</div><div style="font-size:14px;margin-bottom:16px">No hay activos registrados</div><button data-mant-view="mant-activos" style="padding:10px 20px;background:var(--primary);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer">+ Agregar activo</button></div>'
     : cardRows;
 
-  var _filterKeys = ['todos','con-servicio'].concat(uniqueModelos);
+  var _filterKeys = ['todos','con-servicio','mis-fichas'].concat(uniqueModelos);
   var filterBtns = _filterKeys.map(function(f){
-    var label = f==='todos'?'Todos':f==='con-servicio'?'Con servicio':f;
+    var label = f==='todos'?'Todos':f==='con-servicio'?'Con servicio':f==='mis-fichas'?'Mis fichas':f;
     var active = filt===f;
     return '<button data-mant-filter="'+escapeHtml(f)+'" style="padding:7px 18px;border:'+(active?'2px solid var(--primary)':'1px solid var(--border)')+';background:'+(active?'var(--primary-light)':'transparent')+';color:'+(active?'var(--primary)':'var(--text-soft)')+';border-radius:20px;font-size:12px;font-weight:'+(active?'700':'500')+';cursor:pointer;white-space:nowrap">'+escapeHtml(label)+'</button>';
   }).join('');
@@ -23736,7 +24164,10 @@ function _mantStepDiagnostico(ficha, activo){
     +'<input id="diag-fecha" type="date" value="'+escapeHtml(fechaIngreso)+'" style="flex:1;padding:8px;border:1px solid var(--primary,#F37021);border-radius:6px;background:var(--bg);color:var(--text);font-size:12px;box-sizing:border-box;cursor:pointer;color-scheme:dark">'
     +'<button id="diag-fecha-save" style="padding:7px 10px;background:var(--primary,#F37021);color:#fff;border:none;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap" title="Guardar fecha">✓</button>'
     +'</div></div>'
-    +'<div><div style="font-size:10px;color:var(--text-soft);text-transform:uppercase;font-weight:700;margin-bottom:4px">TÉCNICO / RESPONSABLE</div><input id="diag-tecnico" value="'+escapeHtml(tecnico)+'" style="width:100%;padding:8px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text);font-size:12px;box-sizing:border-box"></div>'
+    +'<div><div style="font-size:10px;color:var(--text-soft);text-transform:uppercase;font-weight:700;margin-bottom:4px">TÉCNICO / RESPONSABLE</div>'
+    +'<select id="diag-tecnico" style="width:100%;padding:8px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text);font-size:12px">'
+    +['JANO','NORBERTO','FACUNDO','JUAN','BRIAN','ADMIN'].map(function(u){ return '<option value="'+u+'"'+(tecnico.toUpperCase()===u?' selected':'')+'>'+u.charAt(0)+u.slice(1).toLowerCase()+'</option>'; }).join('')
+    +'</select></div>'
     +'<div><div style="font-size:10px;color:var(--text-soft);text-transform:uppercase;font-weight:700;margin-bottom:4px">TIPO SERVICIO</div><select id="diag-tipo" style="width:100%;padding:8px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text);font-size:12px">'+tipoOpts+'</select></div>'
     +'</div>'
     +'<div class="mant-3col-grid" style="display:grid;grid-template-columns:1fr 2fr 2fr;gap:12px">'
@@ -25409,7 +25840,7 @@ function wireMant(){
     var fichas=loadMantFichas(); var idx=fichas.findIndex(function(f){ return f.id===state.mantFichaId; }); if(idx<0) return;
     _mantSaveCot(); fichas=loadMantFichas(); idx=fichas.findIndex(function(f){ return f.id===state.mantFichaId; });
     fichas[idx].estadoCotizacion='APROBADA'; fichas[idx].fechaAprobacion=_mantFmtDateInput(Date.now()); fichas[idx].updatedAt=Date.now();
-    saveMantFichas(fichas); renderMain(); setTimeout(function(){ wireMant(); },0); showToast('Cotización aprobada','','success');
+    saveMantFichas(fichas); _mantNotify(fichas[idx],'aprobada'); renderMain(); setTimeout(function(){ wireMant(); },0); showToast('Cotización aprobada','','success');
   }); }
   var cotRechazar = document.getElementById('cot-rechazar');
   var cotPendiente = document.getElementById('cot-pendiente');
@@ -25427,7 +25858,7 @@ function wireMant(){
     var fichas=loadMantFichas(); var idx=fichas.findIndex(function(f){ return f.id===state.mantFichaId; }); if(idx<0) return;
     _mantSaveCot(); fichas=loadMantFichas(); idx=fichas.findIndex(function(f){ return f.id===state.mantFichaId; });
     fichas[idx].estadoCotizacion='RECHAZADA'; fichas[idx].updatedAt=Date.now();
-    saveMantFichas(fichas); renderMain(); setTimeout(function(){ wireMant(); },0); showToast('Cotización rechazada','','warning');
+    saveMantFichas(fichas); _mantNotify(fichas[idx],'rechazada'); renderMain(); setTimeout(function(){ wireMant(); },0); showToast('Cotización rechazada','','warning');
   }); }
 
   // ---- Reparacion ----
@@ -25772,6 +26203,7 @@ function _mantOpenOrCreateFicha(activoId){
     };
     fichas.push(newFicha);
     saveMantFichas(fichas);
+    _mantNotify(newFicha, 'nueva');
     // Update activo serviciosCount
     var activos = loadMantActivos();
     var ai = activos.findIndex(function(a){ return a.id===activoId; });
@@ -25787,7 +26219,11 @@ function _mantSaveDiag(){
   var idx = fichas.findIndex(function(f){ return f.id===state.mantFichaId; });
   if(idx<0) return;
   fichas[idx].fechaIngreso = document.getElementById('diag-fecha')?.value||fichas[idx].fechaIngreso||'';
+  var _prevTecnico = (fichas[idx].tecnico||'').toUpperCase();
   fichas[idx].tecnico = document.getElementById('diag-tecnico')?.value||'';
+  // Notificar si se reasignó el técnico
+  var _newTecnico = (fichas[idx].tecnico||'').toUpperCase();
+  if (_newTecnico && _newTecnico !== _prevTecnico) _mantNotify(fichas[idx], 'asignado', fichas[idx].tecnico);
   fichas[idx].tipoServicio = document.getElementById('diag-tipo')?.value||'CORRECTIVO';
   fichas[idx].aprietesIngreso = document.getElementById('diag-aprietes')?.value||'';
   fichas[idx].condicionVisual = document.getElementById('diag-condvis')?.value||'';
@@ -25940,6 +26376,7 @@ function _mantCerrarFicha(){
   // remove from fichas
   fichas.splice(idx,1);
   saveMantFichas(fichas);
+  _mantNotify(ficha, 'completado');
   // update activo ultimoServicio
   var activos = loadMantActivos();
   var ai = activos.findIndex(function(a){ return a.id===ficha.activoId; });
@@ -26186,6 +26623,27 @@ function nextPcRef(){
 
 function renderPedidosCompraList(){
   const list = loadPedidosCompra();
+  if (!state.pcPage) state.pcPage = 1;
+  if (!state.pcPageSize) state.pcPageSize = 25;
+  if (!state.pcFilters) state.pcFilters = { ref:'', proveedor:'', titulo:'', estado:'' };
+  if (!state.pcSort) state.pcSort = { field:'fecha', dir:'desc' };
+  const cf = state.pcFilters;
+  let displayList = list.slice();
+  if (cf.ref){ const q=cf.ref.toLowerCase(); displayList=displayList.filter(p=>(p.ref||'').toLowerCase().includes(q)); }
+  if (cf.proveedor){ const q=cf.proveedor.toLowerCase(); displayList=displayList.filter(p=>(p.proveedor||'').toLowerCase().includes(q)); }
+  if (cf.titulo){ const q=cf.titulo.toLowerCase(); displayList=displayList.filter(p=>(p.titulo||'').toLowerCase().includes(q)); }
+  if (cf.estado){ displayList=displayList.filter(p=>(p.estado||'pendiente')===cf.estado); }
+  if (state.pcSort.field){
+    const k=state.pcSort.field, dir=state.pcSort.dir==='asc'?1:-1;
+    displayList=[...displayList].sort((a,b)=>{
+      if(k==='total') return ((a.total||0)-(b.total||0))*dir;
+      const av=a[k], bv=b[k]; return String(av||'').localeCompare(String(bv||''))*dir;
+    });
+  }
+  const totalPages=Math.max(1,Math.ceil(displayList.length/state.pcPageSize));
+  if (state.pcPage>totalPages) state.pcPage=totalPages;
+  const pageList=displayList.slice((state.pcPage-1)*state.pcPageSize, state.pcPage*state.pcPageSize);
+  const pcSI = f => state.pcSort.field===f ? (state.pcSort.dir==='asc'?' ▲':' ▼') : ' ⇅';
   setTimeout(() => wirePedidosCompraList(), 0);
   const hasPCBorrador = pedidoCompraBorrador && pedidoCompraBorrador.items && pedidoCompraBorrador.items.length > 0 && (pedidoCompraBorrador.proveedor || pedidoCompraBorrador.titulo || pedidoCompraBorrador.items.some(it => it.sku || it.nombre));
   const pcBorradorBanner = hasPCBorrador ? (
@@ -26205,8 +26663,9 @@ function renderPedidosCompraList(){
     if (st === 'cancelado') return '<span style="background:#fde8e8;color:var(--danger);padding:3px 10px;border-radius:12px;font-size:11px;font-weight:600">Cancelado</span>';
     return '<span style="background:var(--warning-light);color:var(--warning-text);padding:3px 10px;border-radius:12px;font-size:11px;font-weight:600">Pendiente</span>';
   };
-  const rows = list.length ? list.map((p, i) => `
-    <tr style="cursor:pointer" data-pc-open="${i}">
+  const rows = pageList.length ? pageList.map(p => {
+    const origIdx = list.indexOf(p);
+    return `<tr style="cursor:pointer" data-pc-open="${origIdx}">
       <td><input type="checkbox" class="pc-row-check" data-pc-ref="${escapeHtml(p.ref)}" onclick="event.stopPropagation()"></td>
       <td><b style="color:var(--primary)">${escapeHtml(p.ref)}</b></td>
       <td>${escapeHtml(p.proveedor||'')}</td>
@@ -26214,7 +26673,7 @@ function renderPedidosCompraList(){
       <td>${estadoPill(p.estado||'pendiente')}</td>
       <td>${escapeHtml(p.fecha||'')}</td>
       <td style="text-align:right"><b>USD ${fmtNum(p.total||0)}</b></td>
-    </tr>`).join('') :
+    </tr>`;}).join('') :
     '<tr><td colspan="7" style="text-align:center;padding:50px;color:var(--text-soft)"><div style="font-size:32px;margin-bottom:10px">📥</div>Sin pedidos a proveedor aún.<br><span style="font-size:12px">Apretá <b>+ Nuevo</b> para crear uno.</span></td></tr>';
   return `<div style="padding:24px 32px">
   ${pcBorradorBanner}
@@ -26238,13 +26697,93 @@ function renderPedidosCompraList(){
     </div>
   </div>
   <div class="data-table-wrap"><table class="data-table">
-    <thead><tr><th><input type="checkbox"></th><th>Referencia</th><th>Proveedor</th><th>Título</th><th>Estado</th><th>Fecha</th><th style="text-align:right">Importe</th><th></th></tr></thead>
+    <thead>
+      <tr>
+        <th style="width:30px"><input type="checkbox" id="pc-check-all"></th>
+        <th data-pc-sort="ref" style="cursor:pointer;user-select:none">Referencia${pcSI('ref')}</th>
+        <th data-pc-sort="proveedor" style="cursor:pointer;user-select:none">Proveedor${pcSI('proveedor')}</th>
+        <th data-pc-sort="titulo" style="cursor:pointer;user-select:none">Título${pcSI('titulo')}</th>
+        <th data-pc-sort="estado" style="cursor:pointer;user-select:none">Estado${pcSI('estado')}</th>
+        <th data-pc-sort="fecha" style="cursor:pointer;user-select:none">Fecha${pcSI('fecha')}</th>
+        <th data-pc-sort="total" style="text-align:right;cursor:pointer;user-select:none">Importe${pcSI('total')}</th>
+      </tr>
+      <tr style="background:var(--bg)">
+        <td></td>
+        <td><input type="text" id="pc-f-ref" value="${cf.ref}" placeholder="Filtrar" style="width:100%;padding:4px 6px;border:1px solid var(--border);border-radius:4px;background:var(--surface);color:var(--text);font-size:12px"></td>
+        <td><input type="text" id="pc-f-proveedor" value="${cf.proveedor}" placeholder="Filtrar" style="width:100%;padding:4px 6px;border:1px solid var(--border);border-radius:4px;background:var(--surface);color:var(--text);font-size:12px"></td>
+        <td><input type="text" id="pc-f-titulo" value="${cf.titulo}" placeholder="Filtrar" style="width:100%;padding:4px 6px;border:1px solid var(--border);border-radius:4px;background:var(--surface);color:var(--text);font-size:12px"></td>
+        <td><select id="pc-f-estado" style="width:100%;padding:4px 6px;border:1px solid var(--border);border-radius:4px;background:var(--surface);color:var(--text);font-size:12px">
+          <option value="">Todos</option>
+          <option value="pendiente" ${cf.estado==='pendiente'?'selected':''}>Pendiente</option>
+          <option value="parcial" ${cf.estado==='parcial'?'selected':''}>Parcial</option>
+          <option value="recibido" ${cf.estado==='recibido'?'selected':''}>Recibido</option>
+          <option value="cancelado" ${cf.estado==='cancelado'?'selected':''}>Cancelado</option>
+        </select></td>
+        <td></td><td></td>
+      </tr>
+    </thead>
     <tbody>${rows}</tbody>
   </table>
-  <div class="table-footer"><div>${list.length} pedido(s) a proveedor</div></div>
+  <div class="table-footer" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+    <div>${displayList.length} pedido(s)${displayList.length !== list.length ? ' (filtrados de '+list.length+')' : ''}</div>
+    <div style="display:flex;align-items:center;gap:8px">
+      <label style="font-size:12px;color:var(--text-soft)">Filas:
+        <select id="pc-page-size" style="margin-left:4px;padding:2px 6px;border:1px solid var(--border);border-radius:4px;background:var(--surface);color:var(--text);font-size:12px">
+          ${[10,25,50,100,200].map(n=>`<option value="${n}" ${state.pcPageSize===n?'selected':''}>${n}</option>`).join('')}
+        </select>
+      </label>
+      <button id="pc-prev-page" class="btn-secondary" style="padding:4px 10px;font-size:12px" ${state.pcPage<=1?'disabled':''}>‹</button>
+      <span style="font-size:12px">Pág ${state.pcPage}/${totalPages}</span>
+      <button id="pc-next-page" class="btn-secondary" style="padding:4px 10px;font-size:12px" ${state.pcPage>=totalPages?'disabled':''}>›</button>
+    </div>
+  </div>
   </div></div>`;
 }
 function wirePedidosCompraList(){
+  // Check-all with indeterminate
+  const pcCheckAll = document.getElementById('pc-check-all');
+  if (pcCheckAll){
+    pcCheckAll.addEventListener('change', () => {
+      document.querySelectorAll('.pc-row-check').forEach(c => { c.checked = pcCheckAll.checked; });
+    });
+    document.querySelectorAll('.pc-row-check').forEach(c => c.addEventListener('change', () => {
+      const all = document.querySelectorAll('.pc-row-check');
+      const checked = document.querySelectorAll('.pc-row-check:checked');
+      pcCheckAll.indeterminate = checked.length > 0 && checked.length < all.length;
+      pcCheckAll.checked = checked.length === all.length && all.length > 0;
+    }));
+  }
+  // Sort
+  document.querySelectorAll('[data-pc-sort]').forEach(th => th.addEventListener('click', () => {
+    const f = th.dataset.pcSort;
+    if (state.pcSort.field === f) state.pcSort.dir = state.pcSort.dir === 'asc' ? 'desc' : 'asc';
+    else { state.pcSort.field = f; state.pcSort.dir = 'asc'; }
+    state.pcPage = 1; renderMain();
+  }));
+  // Filters - text inputs
+  ['ref','proveedor','titulo'].forEach(field => {
+    const el = document.getElementById('pc-f-'+field);
+    if (!el) return;
+    el.addEventListener('input', () => {
+      state.pcFilters[field] = el.value; state.pcPage = 1;
+      const sel = el.selectionStart; renderMain();
+      const ne = document.getElementById('pc-f-'+field);
+      if (ne){ ne.focus(); try { ne.setSelectionRange(sel,sel); } catch(e){} }
+    });
+  });
+  document.getElementById('pc-f-estado')?.addEventListener('change', e => {
+    state.pcFilters.estado = e.target.value; state.pcPage = 1; renderMain();
+  });
+  // Pagination
+  document.getElementById('pc-page-size')?.addEventListener('change', e => {
+    state.pcPageSize = parseInt(e.target.value)||25; state.pcPage = 1; renderMain();
+  });
+  document.getElementById('pc-prev-page')?.addEventListener('click', () => {
+    if (state.pcPage > 1){ state.pcPage--; renderMain(); }
+  });
+  document.getElementById('pc-next-page')?.addEventListener('click', () => {
+    state.pcPage++; renderMain();
+  });
   document.getElementById('pc-list-mas-btn')?.addEventListener('click', e => {
     e.stopPropagation();
     const m = document.getElementById('pc-list-mas-menu');
@@ -27167,14 +27706,36 @@ function generarFacturaProvDesdeNEP(refNEP){
 
 function renderFacturasProvList(){
   const list = loadFacturasProveedor();
+  if (!state.fpPage) state.fpPage = 1;
+  if (!state.fpPageSize) state.fpPageSize = 25;
+  if (!state.fpFilters) state.fpFilters = { ref:'', proveedor:'', titulo:'', estado:'' };
+  if (!state.fpSort) state.fpSort = { field:'fecha', dir:'desc' };
+  const cf = state.fpFilters;
+  let displayList = list.slice();
+  if (cf.ref){ const q=cf.ref.toLowerCase(); displayList=displayList.filter(f=>(f.ref||'').toLowerCase().includes(q)); }
+  if (cf.proveedor){ const q=cf.proveedor.toLowerCase(); displayList=displayList.filter(f=>(f.proveedor||'').toLowerCase().includes(q)); }
+  if (cf.titulo){ const q=cf.titulo.toLowerCase(); displayList=displayList.filter(f=>(f.titulo||'').toLowerCase().includes(q)); }
+  if (cf.estado){ displayList=displayList.filter(f=>(f.estado||'pendiente')===cf.estado); }
+  if (state.fpSort.field){
+    const k=state.fpSort.field, dir=state.fpSort.dir==='asc'?1:-1;
+    displayList=[...displayList].sort((a,b)=>{
+      if(k==='total') return ((a.total||0)-(b.total||0))*dir;
+      const av=a[k], bv=b[k]; return String(av||'').localeCompare(String(bv||''))*dir;
+    });
+  }
+  const totalPagesFP=Math.max(1,Math.ceil(displayList.length/state.fpPageSize));
+  if (state.fpPage>totalPagesFP) state.fpPage=totalPagesFP;
+  const pageList=displayList.slice((state.fpPage-1)*state.fpPageSize, state.fpPage*state.fpPageSize);
+  const fpSI = f => state.fpSort.field===f ? (state.fpSort.dir==='asc'?' ▲':' ▼') : ' ⇅';
   setTimeout(() => wireFacturasProvList(), 0);
   const estadoPill = (st) => {
     if (st === 'pagada') return '<span style="background:var(--success-light);color:var(--success);padding:3px 10px;border-radius:12px;font-size:11px;font-weight:600">Pagada</span>';
     if (st === 'cancelada') return '<span style="background:#fde8e8;color:var(--danger);padding:3px 10px;border-radius:12px;font-size:11px;font-weight:600">Cancelada</span>';
     return '<span style="background:var(--warning-light);color:var(--warning-text);padding:3px 10px;border-radius:12px;font-size:11px;font-weight:600">Pendiente</span>';
   };
-  const rows = list.length ? list.map((f, i) => `
-    <tr style="cursor:pointer" data-fp-open="${i}">
+  const rows = pageList.length ? pageList.map(f => {
+    const origIdx = list.indexOf(f);
+    return `<tr style="cursor:pointer" data-fp-open="${origIdx}">
       <td><input type="checkbox" class="fp-row-check" data-fp-ref="${escapeHtml(f.ref)}" onclick="event.stopPropagation()"></td>
       <td><b style="color:var(--primary)">${escapeHtml(f.ref)}</b></td>
       <td>${escapeHtml(f.proveedor||'')}</td>
@@ -27183,36 +27744,106 @@ function renderFacturasProvList(){
       <td>${escapeHtml(f.fecha||'')}</td>
       <td style="font-size:11px;color:var(--text-soft)">${escapeHtml(f.fromNEP||'')}</td>
       <td style="text-align:right"><b>USD ${fmtNum(f.total||0)}</b></td>
-    </tr>`).join('') :
+    </tr>`;}).join('') :
     '<tr><td colspan="8" style="text-align:center;padding:50px;color:var(--text-soft)"><div style="font-size:32px;margin-bottom:10px">🧾</div>Sin facturas de proveedor.<br><span style="font-size:12px">Generá una desde una NEP.</span></td></tr>';
   return `<div style="padding:24px 32px">
   <div class="page-header" style="padding:0 0 12px">
     <div style="display:flex;gap:8px;align-items:center"></div>
-    <div style="display:flex;gap:8px;align-items:center">
-      <input type="text" id="fp-list-search" placeholder="Buscar..." style="padding:8px 12px;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--text);font-size:13px;min-width:260px;outline:none">
-    </div>
+    <div></div>
   </div>
   <div class="data-table-wrap"><table class="data-table">
-    <thead><tr><th><input type="checkbox"></th><th>Referencia</th><th>Proveedor</th><th>Título</th><th>Estado</th><th>Fecha</th><th>Origen</th><th style="text-align:right">Importe</th></tr></thead>
+    <thead>
+      <tr>
+        <th style="width:30px"><input type="checkbox" id="fp-check-all"></th>
+        <th data-fp-sort="ref" style="cursor:pointer;user-select:none">Referencia${fpSI('ref')}</th>
+        <th data-fp-sort="proveedor" style="cursor:pointer;user-select:none">Proveedor${fpSI('proveedor')}</th>
+        <th data-fp-sort="titulo" style="cursor:pointer;user-select:none">Título${fpSI('titulo')}</th>
+        <th data-fp-sort="estado" style="cursor:pointer;user-select:none">Estado${fpSI('estado')}</th>
+        <th data-fp-sort="fecha" style="cursor:pointer;user-select:none">Fecha${fpSI('fecha')}</th>
+        <th>Origen</th>
+        <th data-fp-sort="total" style="text-align:right;cursor:pointer;user-select:none">Importe${fpSI('total')}</th>
+      </tr>
+      <tr style="background:var(--bg)">
+        <td></td>
+        <td><input type="text" id="fp-f-ref" value="${cf.ref}" placeholder="Filtrar" style="width:100%;padding:4px 6px;border:1px solid var(--border);border-radius:4px;background:var(--surface);color:var(--text);font-size:12px"></td>
+        <td><input type="text" id="fp-f-proveedor" value="${cf.proveedor}" placeholder="Filtrar" style="width:100%;padding:4px 6px;border:1px solid var(--border);border-radius:4px;background:var(--surface);color:var(--text);font-size:12px"></td>
+        <td><input type="text" id="fp-f-titulo" value="${cf.titulo}" placeholder="Filtrar" style="width:100%;padding:4px 6px;border:1px solid var(--border);border-radius:4px;background:var(--surface);color:var(--text);font-size:12px"></td>
+        <td><select id="fp-f-estado" style="width:100%;padding:4px 6px;border:1px solid var(--border);border-radius:4px;background:var(--surface);color:var(--text);font-size:12px">
+          <option value="">Todos</option>
+          <option value="pendiente" ${cf.estado==='pendiente'?'selected':''}>Pendiente</option>
+          <option value="pagada" ${cf.estado==='pagada'?'selected':''}>Pagada</option>
+          <option value="cancelada" ${cf.estado==='cancelada'?'selected':''}>Cancelada</option>
+        </select></td>
+        <td></td><td></td><td></td>
+      </tr>
+    </thead>
     <tbody>${rows}</tbody>
   </table>
-  <div class="table-footer"><div>${list.length} factura(s) de proveedor</div></div>
+  <div class="table-footer" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+    <div>${displayList.length} factura(s)${displayList.length !== list.length ? ' (filtradas de '+list.length+')' : ''}</div>
+    <div style="display:flex;align-items:center;gap:8px">
+      <label style="font-size:12px;color:var(--text-soft)">Filas:
+        <select id="fp-page-size" style="margin-left:4px;padding:2px 6px;border:1px solid var(--border);border-radius:4px;background:var(--surface);color:var(--text);font-size:12px">
+          ${[10,25,50,100,200].map(n=>`<option value="${n}" ${state.fpPageSize===n?'selected':''}>${n}</option>`).join('')}
+        </select>
+      </label>
+      <button id="fp-prev-page" class="btn-secondary" style="padding:4px 10px;font-size:12px" ${state.fpPage<=1?'disabled':''}>‹</button>
+      <span style="font-size:12px">Pág ${state.fpPage}/${totalPagesFP}</span>
+      <button id="fp-next-page" class="btn-secondary" style="padding:4px 10px;font-size:12px" ${state.fpPage>=totalPagesFP?'disabled':''}>›</button>
+    </div>
+  </div>
   </div></div>`;
 }
 function wireFacturasProvList(){
+  // Check-all with indeterminate
+  const fpCheckAll = document.getElementById('fp-check-all');
+  if (fpCheckAll){
+    fpCheckAll.addEventListener('change', () => {
+      document.querySelectorAll('.fp-row-check').forEach(c => { c.checked = fpCheckAll.checked; });
+    });
+    document.querySelectorAll('.fp-row-check').forEach(c => c.addEventListener('change', () => {
+      const all = document.querySelectorAll('.fp-row-check');
+      const checked = document.querySelectorAll('.fp-row-check:checked');
+      fpCheckAll.indeterminate = checked.length > 0 && checked.length < all.length;
+      fpCheckAll.checked = checked.length === all.length && all.length > 0;
+    }));
+  }
+  // Sort
+  document.querySelectorAll('[data-fp-sort]').forEach(th => th.addEventListener('click', () => {
+    const f = th.dataset.fpSort;
+    if (state.fpSort.field === f) state.fpSort.dir = state.fpSort.dir === 'asc' ? 'desc' : 'asc';
+    else { state.fpSort.field = f; state.fpSort.dir = 'asc'; }
+    state.fpPage = 1; renderMain();
+  }));
+  // Filters - text inputs
+  ['ref','proveedor','titulo'].forEach(field => {
+    const el = document.getElementById('fp-f-'+field);
+    if (!el) return;
+    el.addEventListener('input', () => {
+      state.fpFilters[field] = el.value; state.fpPage = 1;
+      const sel = el.selectionStart; renderMain();
+      const ne = document.getElementById('fp-f-'+field);
+      if (ne){ ne.focus(); try { ne.setSelectionRange(sel,sel); } catch(e){} }
+    });
+  });
+  document.getElementById('fp-f-estado')?.addEventListener('change', e => {
+    state.fpFilters.estado = e.target.value; state.fpPage = 1; renderMain();
+  });
+  // Pagination
+  document.getElementById('fp-page-size')?.addEventListener('change', e => {
+    state.fpPageSize = parseInt(e.target.value)||25; state.fpPage = 1; renderMain();
+  });
+  document.getElementById('fp-prev-page')?.addEventListener('click', () => {
+    if (state.fpPage > 1){ state.fpPage--; renderMain(); }
+  });
+  document.getElementById('fp-next-page')?.addEventListener('click', () => {
+    state.fpPage++; renderMain();
+  });
+  // Row open
   document.querySelectorAll('[data-fp-open]').forEach(tr => tr.addEventListener('click', () => {
     state.editingFacturaProvIdx = +tr.dataset.fpOpen;
     renderMain();
   }));
-  const inp = document.getElementById('fp-list-search');
-  if (inp){
-    inp.addEventListener('input', e => {
-      const q = e.target.value.toLowerCase();
-      document.querySelectorAll('[data-fp-open]').forEach(tr => {
-        tr.style.display = tr.textContent.toLowerCase().includes(q) ? '' : 'none';
-      });
-    });
-  }
 }
 function renderFacturaProvEditor(){
   const list = loadFacturasProveedor();
@@ -28166,8 +28797,8 @@ function wireTrazabilidad(){
   });
   // Clear log
   var fb = document.getElementById('traz-clear-log');
-  if(fb) fb.addEventListener('click', function(){
-    if(confirm('Borrar todo el registro de actividad?')){
+  if(fb) fb.addEventListener('click', async function(){
+    if(await confirmPro({ title:'Borrar trazabilidad', message:'¿Borrar todo el registro de actividad? Esta acción no se puede deshacer.', confirmLabel:'Borrar todo', danger:true })){
       localStorage.removeItem('erp_trazabilidad_log');
       state.trazSelectedUser = null;
       renderMain();
@@ -29335,7 +29966,7 @@ function wireImportacion(){
       const ok = await confirmPro({title:'Vaciar lista', message:'¿Vaciar todos los productos de la calculadora de importación?', confirmLabel:'Vaciar', danger:true});
       if (!ok) return;
     } else {
-      if (!confirm('¿Vaciar todos los productos?')) return;
+      if (!await confirmPro({ title:'Vaciar productos', message:'¿Vaciar todos los productos de la importación? Esta acción no se puede deshacer.', confirmLabel:'Vaciar', danger:true })) return;
     }
     saveImpItems([]);
     renderMain();
@@ -29727,8 +30358,8 @@ window._cloneSavePrompt = function(cloneId, modalId){
   document.getElementById(modalId)?.remove();
 };
 
-window._cloneResetPrompt = function(cloneId, modalId){
-  if (!confirm('¿Restaurar el prompt default? Se perderán tus cambios.')) return;
+window._cloneResetPrompt = async function(cloneId, modalId){
+  if (!await confirmPro({ title:'Restaurar prompt', message:'¿Restaurar el prompt por defecto? Se perderán tus cambios personalizados.', confirmLabel:'Restaurar', danger:true })) return;
   resetCloneCustomPrompt(cloneId);
   mostrarToast('↩ Perfil restaurado al default — ' + (AI_CLONE_LABEL[cloneId]||cloneId));
   document.getElementById(modalId)?.remove();
@@ -31371,8 +32002,14 @@ function _ocShowResults(pfx, tipoDoc, items, cliente, moneda, closeModal, showUp
     +'<span style="font-size:12px;font-weight:700;color:var(--text)">Seleccionar producto</span>'
     +'<button id="oc-picker-close" style="border:none;background:none;font-size:18px;cursor:pointer;color:var(--text-muted);padding:0 4px;line-height:1">×</button>'
     +'</div>'
+    +'<div id="oc-picker-search-wrap">'
     +'<input id="oc-match-search" placeholder="🔍" style="width:100%;box-sizing:border-box;padding:7px 10px;border:1px solid var(--border);border-radius:7px;font-size:12px;background:var(--bg);color:var(--text);outline:none">'
-    +'<div id="oc-match-list" style="max-height:220px;overflow-y:auto;margin-top:8px;display:flex;flex-direction:column;gap:2px"></div>';
+    +'<div id="oc-match-list" style="max-height:200px;overflow-y:auto;margin-top:8px;display:flex;flex-direction:column;gap:2px"></div>'
+    +'<div style="padding-top:8px;margin-top:6px;border-top:1px solid var(--border)">'
+    +'<button id="oc-create-prod-btn" style="width:100%;padding:7px 10px;border:1px dashed var(--primary);background:transparent;color:var(--primary);border-radius:7px;cursor:pointer;font-size:12px;font-weight:700">➕ Crear producto nuevo</button>'
+    +'</div>'
+    +'</div>'
+    +'<div id="oc-picker-create-form" style="display:none"></div>';
   document.body.appendChild(picker);
 
   function closePicker(){ picker.style.display='none'; }
@@ -31381,13 +32018,21 @@ function _ocShowResults(pfx, tipoDoc, items, cliente, moneda, closeModal, showUp
     var rect = btn.getBoundingClientRect();
     var top  = rect.bottom + 6;
     var left = Math.max(8, Math.min(rect.left - 60, window.innerWidth - 360));
-    if(top + 290 > window.innerHeight) top = rect.top - 300;
+    if(top + 340 > window.innerHeight) top = rect.top - 350;
     picker.style.top = top+'px'; picker.style.left = left+'px'; picker.style.display = 'block';
+    // Reset to search view
+    var searchWrap = document.getElementById('oc-picker-search-wrap');
+    var createDiv  = document.getElementById('oc-picker-create-form');
+    if(searchWrap) searchWrap.style.display = 'block';
+    if(createDiv)  createDiv.style.display = 'none';
     var si = document.getElementById('oc-match-search');
     var li = document.getElementById('oc-match-list');
     if(si) si.value = '';
     renderPickerList(li, '', idx);
     if(si){ si.oninput = function(){ renderPickerList(li, si.value, idx); }; setTimeout(function(){ si.focus(); }, 30); }
+    // Wire create button for this idx
+    var createBtn = document.getElementById('oc-create-prod-btn');
+    if(createBtn){ createBtn.onclick = function(){ showCreateForm(idx); }; }
   }
 
   function renderPickerList(listEl, query, idx){
@@ -31401,7 +32046,7 @@ function _ocShowResults(pfx, tipoDoc, items, cliente, moneda, closeModal, showUp
     }) : prods;
     filtered = filtered.slice(0,60);
     if(!filtered.length){
-      listEl.innerHTML = '<div style="text-align:center;padding:16px;color:var(--text-muted);font-size:12px">Sin resultados</div>'; return;
+      listEl.innerHTML = '<div style="text-align:center;padding:12px 8px;color:var(--text-muted);font-size:12px">Sin resultados — usá <b>➕ Crear producto nuevo</b> para agregarlo.</div>'; return;
     }
     listEl.innerHTML = filtered.map(function(p){
       var nm = escapeHtml(p.nombre||p.descripcion||p.codigo||'');
@@ -31439,6 +32084,143 @@ function _ocShowResults(pfx, tipoDoc, items, cliente, moneda, closeModal, showUp
     }
     var cell = document.getElementById('oc-match-cell-'+idx);
     if(cell) cell.innerHTML = renderMatchCell(it, idx);
+  }
+
+  function _ocAutoSku(nombre){
+    // Genera un SKU a partir de las palabras del nombre + timestamp corto
+    var words = (nombre||'').toUpperCase().replace(/[^A-Z0-9 ]/g,'').split(/\s+/).filter(Boolean);
+    var prefix = words.slice(0,3).map(function(w){ return w.slice(0,3); }).join('');
+    if(!prefix) prefix = 'PROD';
+    var suffix = String(Date.now()).slice(-4);
+    return prefix + '-' + suffix;
+  }
+
+  var _ocCreateIdx = null; // which item we're creating for
+
+  function showCreateForm(idx){
+    _ocCreateIdx = idx;
+    var it = items[idx] || {};
+    var rawDesc = it.rawDesc || it.desc || '';
+    var ocPrice = Number(it.punit) || 0;
+    var autoSku = _ocAutoSku(rawDesc);
+
+    var searchWrap = document.getElementById('oc-picker-search-wrap');
+    var createDiv  = document.getElementById('oc-picker-create-form');
+    if(searchWrap) searchWrap.style.display = 'none';
+    if(!createDiv) return;
+    createDiv.style.display = 'block';
+    createDiv.innerHTML =
+      '<div style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">Nuevo producto</div>'
+      +'<div style="margin-bottom:8px">'
+      +'<label style="font-size:11px;color:var(--text-muted);display:block;margin-bottom:3px">SKU <span style="color:var(--danger)">*</span></label>'
+      +'<input id="oc-np-sku" value="'+escapeHtml(autoSku)+'" style="width:100%;box-sizing:border-box;padding:7px 10px;border:1px solid var(--border);border-radius:7px;font-size:12px;background:var(--bg);color:var(--text);outline:none;font-family:monospace">'
+      +'</div>'
+      +'<div style="margin-bottom:8px">'
+      +'<label style="font-size:11px;color:var(--text-muted);display:block;margin-bottom:3px">Nombre <span style="color:var(--danger)">*</span></label>'
+      +'<input id="oc-np-nombre" value="'+escapeHtml(rawDesc)+'" style="width:100%;box-sizing:border-box;padding:7px 10px;border:1px solid var(--border);border-radius:7px;font-size:12px;background:var(--bg);color:var(--text);outline:none">'
+      +'</div>'
+      +'<div style="margin-bottom:12px">'
+      +'<label style="font-size:11px;color:var(--text-muted);display:block;margin-bottom:3px">Precio costo (USD)</label>'
+      +'<input id="oc-np-precio" type="number" min="0" step="0.01" value="'+(ocPrice||'')+'" placeholder="0.00" style="width:100%;box-sizing:border-box;padding:7px 10px;border:1px solid var(--border);border-radius:7px;font-size:12px;background:var(--bg);color:var(--text);outline:none">'
+      +'</div>'
+      +'<div id="oc-np-err" style="display:none;color:var(--danger);font-size:11px;margin-bottom:8px;padding:6px 8px;background:#fde8e8;border-radius:6px"></div>'
+      +'<div style="display:flex;gap:8px">'
+      +'<button id="oc-np-back" style="flex:1;padding:8px;border:1px solid var(--border);background:transparent;color:var(--text);border-radius:7px;font-size:12px;cursor:pointer">← Volver</button>'
+      +'<button id="oc-np-save" style="flex:2;padding:8px;background:var(--primary);color:#fff;border:none;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer">✓ Crear y matchear</button>'
+      +'</div>';
+
+    // Wiring
+    document.getElementById('oc-np-back').onclick = function(){
+      createDiv.style.display = 'none';
+      if(searchWrap) searchWrap.style.display = 'block';
+      _ocCreateIdx = null;
+      var si = document.getElementById('oc-match-search');
+      if(si) setTimeout(function(){ si.focus(); }, 30);
+    };
+    document.getElementById('oc-np-save').onclick = function(){ _ocSaveInlineProduct(); };
+    // Enter in last field triggers save
+    document.getElementById('oc-np-precio').onkeydown = function(e){ if(e.key==='Enter') _ocSaveInlineProduct(); };
+    setTimeout(function(){
+      var skuInp = document.getElementById('oc-np-sku');
+      if(skuInp){ skuInp.focus(); skuInp.select(); }
+    }, 30);
+  }
+
+  async function _ocSaveInlineProduct(){
+    var sku    = (document.getElementById('oc-np-sku')?.value || '').trim().toUpperCase();
+    var nombre = (document.getElementById('oc-np-nombre')?.value || '').trim();
+    var precio = parseFloat(document.getElementById('oc-np-precio')?.value) || 0;
+    var errEl  = document.getElementById('oc-np-err');
+    var saveBtn = document.getElementById('oc-np-save');
+
+    if(!sku || !nombre){
+      errEl.textContent = 'El SKU y el Nombre son obligatorios.';
+      errEl.style.display = 'block';
+      return;
+    }
+    // Check duplicate SKU
+    var prods = (typeof PRODUCTOS !== 'undefined' && Array.isArray(PRODUCTOS)) ? PRODUCTOS : [];
+    if(prods.find(function(p){ return p.sku === sku; })){
+      errEl.textContent = 'Ya existe un producto con ese SKU.';
+      errEl.style.display = 'block';
+      return;
+    }
+    errEl.style.display = 'none';
+    if(saveBtn){ saveBtn.disabled = true; saveBtn.textContent = '⏳ Creando…'; }
+
+    // Try Supabase RPC
+    var created = false;
+    if(typeof SUPA_URL !== 'undefined' && SUPA_URL && typeof SUPA_ORG_ID !== 'undefined' && SUPA_ORG_ID){
+      try {
+        var params = {
+          p_org_id: SUPA_ORG_ID,
+          p_sku: sku,
+          p_name: nombre,
+          p_cost_usd: precio > 0 ? precio : null,
+          p_price_usd: precio > 0 ? Math.round(precio * 1.3 * 100) / 100 : 0,
+          p_status: 'active',
+          p_uom: 'unidad',
+          p_attributes: {},
+          p_tags: [],
+          p_stock_qty: 0,
+          p_stock_min: 0,
+        };
+        var res = await fetch(SUPA_URL + '/rest/v1/rpc/erp_create_product', {
+          method: 'POST',
+          headers: typeof _supaH !== 'undefined' ? { ..._supaH, 'Prefer': 'return=representation' } : { 'Content-Type': 'application/json' },
+          body: JSON.stringify(params)
+        });
+        if(res.ok){ created = true; }
+        else {
+          var rj = await res.json().catch(function(){ return {}; });
+          var msg = (rj && (rj.error || rj.message)) || ('Error HTTP ' + res.status);
+          if(msg.includes('SKU') || msg.includes('23505')) msg = 'Ya existe un producto con ese SKU.';
+          errEl.textContent = msg;
+          errEl.style.display = 'block';
+          if(saveBtn){ saveBtn.disabled = false; saveBtn.textContent = '✓ Crear y matchear'; }
+          return;
+        }
+      } catch(e){
+        // Sin conexión: seguimos igual, lo guardamos local
+        created = true;
+      }
+    } else {
+      created = true; // modo offline — solo local
+    }
+
+    if(created){
+      // Agregar a PRODUCTOS en memoria
+      var newProd = { sku: sku, nombre: nombre, codigo: sku, descripcion: nombre, pu: precio, precio_venta: Math.round(precio * 1.3 * 100) / 100, activo: true };
+      if(typeof PRODUCTOS !== 'undefined' && Array.isArray(PRODUCTOS)) PRODUCTOS.push(newProd);
+      // Persistir override local
+      if(typeof setProductoOverride === 'function') setProductoOverride(sku, { nombre: nombre, pu: precio, activo: true });
+      // Matchear el item
+      var midx = _ocCreateIdx;
+      _ocCreateIdx = null;
+      closePicker();
+      applyMatch(midx, sku, nombre, precio);
+      if(typeof showToast === 'function') showToast('✅ Producto creado', sku + ' — ' + nombre, 'success');
+    }
   }
 
   setTimeout(function(){
@@ -33172,11 +33954,13 @@ function _labelsSaveModal(editIdx) {
 }
 
 function _labelsDelete(i) {
-  if (!confirm('¿Eliminar esta etiqueta?')) return;
-  const labels = _labelsLoad();
-  labels.splice(i, 1);
-  _labelsSave(labels);
-  renderMain();
+  confirmPro({ title:'Eliminar etiqueta', message:'¿Eliminar esta etiqueta? No se puede deshacer.', confirmLabel:'Eliminar', danger:true }).then(ok => {
+    if (!ok) return;
+    const labels = _labelsLoad();
+    labels.splice(i, 1);
+    _labelsSave(labels);
+    renderMain();
+  });
 }
 
 // ══════════════════════════════════════════════════════
@@ -33837,7 +34621,7 @@ _appInit();
       <div style="padding:12px 16px 0">
         <input type="text" id="addprod-shared-search" placeholder="Buscar por SKU, nombre o descripción..." style="width:100%;padding:10px 12px;border:1px solid var(--border-strong);border-radius:6px;background:var(--surface);color:var(--text);font-size:13px;outline:none;box-sizing:border-box">
       </div>
-      <div id="addprod-shared-results" style="max-height:320px;overflow:auto;margin:10px 16px;border:1px solid var(--border);border-radius:6px"></div>
+      <div id="addprod-shared-results" style="max-height:480px;overflow:auto;margin:10px 16px;border:1px solid var(--border);border-radius:6px"></div>
       <div style="padding:10px 16px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--border)">
         <span id="addprod-shared-count" style="font-size:12px;color:var(--text-soft)"></span>
         <button class="btn-secondary" id="addprod-goto-catalog-shared">Ir al Catálogo →</button>
@@ -34075,13 +34859,77 @@ function _renderSharedAddProdResults(){
     cont.innerHTML = '<div style="padding:24px;text-align:center;color:var(--text-soft)">Sin resultados para los filtros aplicados.</div>';
     return;
   }
+  // — Columnas de atributos dinámicas por categoría (keys internos) —
+  var cat = _addProdFilter.cat || '';
+  var attrCols = [];
+  if (cat === 'punta') {
+    attrCols = [
+      { key:'marca',    label:'Marca',     align:'left'   },
+      { key:'serie',    label:'Serie',     align:'left'   },
+      { key:'tipo',     label:'Tipo',      align:'left'   },
+      { key:'medida',   label:'Medida',    align:'center' },
+      { key:'largo',    label:'Largo mm',  align:'center' },
+      { key:'encastre', label:'Encastre',  align:'center' },
+    ];
+  } else if (cat === 'balanceador') {
+    attrCols = [
+      { key:'marca',    label:'Marca',     align:'left'   },
+      { key:'min_kg',   label:'Min kg',    align:'center' },
+      { key:'max_kg',   label:'Max kg',    align:'center' },
+    ];
+  } else if (cat === 'atornillador') {
+    attrCols = [
+      { key:'marca',     label:'Marca',      align:'left'   },
+      { key:'tipo',      label:'Tipo',       align:'left'   },
+      { key:'encastre',  label:'Encastre',   align:'center' },
+      { key:'torq_min',  label:'Torq min',   align:'center' },
+      { key:'torq_max',  label:'Torq max',   align:'center' },
+      { key:'ergonomia', label:'Ergonomía',  align:'center' },
+    ];
+  } else if (cat === 'llave de impacto') {
+    attrCols = [
+      { key:'marca',     label:'Marca',     align:'left'   },
+      { key:'encastre',  label:'Encastre',  align:'center' },
+      { key:'torq_min',  label:'Torq min',  align:'center' },
+      { key:'torq_max',  label:'Torq max',  align:'center' },
+    ];
+  } else if (cat === 'llave dinamométrica') {
+    attrCols = [
+      { key:'marca',     label:'Marca',     align:'left'   },
+      { key:'encastre',  label:'Encastre',  align:'center' },
+      { key:'torq_min',  label:'Torq min',  align:'center' },
+      { key:'torq_max',  label:'Torq max',  align:'center' },
+    ];
+  } else if (cat === 'remachadora') {
+    attrCols = [
+      { key:'marca',  label:'Marca',  align:'left'   },
+      { key:'tipo',   label:'Tipo',   align:'left'   },
+      { key:'medida', label:'Medida', align:'center' },
+    ];
+  } else if (cat === 'accesorio') {
+    attrCols = [
+      { key:'marca',  label:'Marca',  align:'left'   },
+      { key:'tipo',   label:'Tipo',   align:'left'   },
+      { key:'medida', label:'Medida', align:'center' },
+    ];
+  } else {
+    // "Todos" — mostrar categoría y marca
+    attrCols = [
+      { key:'cat',   label:'Categoría', align:'left' },
+      { key:'marca', label:'Marca',     align:'left' },
+    ];
+  }
+  var thStyle = 'padding:7px 10px;color:var(--text-soft);font-weight:600;border-bottom:1px solid var(--border);white-space:nowrap';
   var html = '<table style="width:100%;border-collapse:collapse;font-size:12px">';
   html += '<thead><tr style="background:var(--bg);position:sticky;top:0;z-index:1">';
-  html += '<th style="padding:7px 10px;text-align:left;color:var(--text-soft);font-weight:600;border-bottom:1px solid var(--border)">SKU</th>';
-  html += '<th style="padding:7px 10px;text-align:left;color:var(--text-soft);font-weight:600;border-bottom:1px solid var(--border)">Nombre</th>';
-  html += '<th style="padding:7px 10px;text-align:right;color:var(--text-soft);font-weight:600;border-bottom:1px solid var(--border)">SV</th>';
-  html += '<th style="padding:7px 10px;text-align:right;color:var(--text-soft);font-weight:600;border-bottom:1px solid var(--border)">SR</th>';
-  html += '<th style="padding:7px 10px;text-align:right;color:var(--text-soft);font-weight:600;border-bottom:1px solid var(--border)">Precio</th>';
+  html += '<th style="' + thStyle + ';text-align:left">SKU</th>';
+  html += '<th style="' + thStyle + ';text-align:left">Nombre</th>';
+  attrCols.forEach(function(col){
+    html += '<th style="' + thStyle + ';text-align:' + col.align + '">' + col.label + '</th>';
+  });
+  html += '<th style="' + thStyle + ';text-align:right">SV</th>';
+  html += '<th style="' + thStyle + ';text-align:right">SR</th>';
+  html += '<th style="' + thStyle + ';text-align:right">Precio</th>';
   html += '</tr></thead><tbody>';
   res.forEach(function(p){
     var sv = (typeof getEffectiveStock === 'function') ? getEffectiveStock(p, 'sv') : (p.sv || 0);
@@ -34090,11 +34938,16 @@ function _renderSharedAddProdResults(){
     var price = (typeof getEffectivePrecio === 'function') ? getEffectivePrecio(p) : (p.precio || p.price || 0);
     var priceStr = price ? '$' + Number(price).toLocaleString('es-AR') : '—';
     html += '<tr class="addprod-result-row" data-sku="' + escapeHtml(p.sku || '') + '" style="cursor:pointer;border-bottom:1px solid var(--border);transition:background .12s">';
-    html += '<td style="padding:7px 10px;font-family:monospace;font-weight:600;color:var(--primary)">' + escapeHtml(p.sku || '') + '</td>';
+    html += '<td style="padding:7px 10px;font-family:monospace;font-weight:600;color:var(--primary);white-space:nowrap">' + escapeHtml(p.sku || '') + '</td>';
     html += '<td style="padding:7px 10px;color:var(--text)">' + escapeHtml(p.nombre || '') + '</td>';
+    attrCols.forEach(function(col){
+      var val = p[col.key];
+      var display = (val !== undefined && val !== null && val !== '') ? escapeHtml(String(val)) : '<span style="color:var(--text-soft)">—</span>';
+      html += '<td style="padding:7px 10px;text-align:' + col.align + ';color:var(--text-soft);white-space:nowrap">' + display + '</td>';
+    });
     html += '<td style="padding:7px 10px;text-align:right;font-weight:700;color:' + svColor + '">' + sv + '</td>';
     html += '<td style="padding:7px 10px;text-align:right;color:var(--text-soft)">' + sr + '</td>';
-    html += '<td style="padding:7px 10px;text-align:right;color:var(--text)">' + priceStr + '</td>';
+    html += '<td style="padding:7px 10px;text-align:right;color:var(--text);white-space:nowrap">' + priceStr + '</td>';
     html += '</tr>';
   });
   html += '</tbody></table>';
