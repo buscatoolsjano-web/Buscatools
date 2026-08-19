@@ -2187,6 +2187,43 @@ body[data-section-theme=""] .section-color-banner {
     .sidebar { display: flex !important; }
   }
 
+/* ── Cliente Autocomplete Dropdown ───────────────────────────── */
+.cli-ac-wrap { position: relative; flex: 1; min-width: 0; }
+.cli-ac-dropdown {
+  display: none;
+  position: absolute;
+  top: calc(100% + 2px);
+  left: 0; right: 0;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 6px 24px rgba(0,0,0,.13);
+  z-index: 9999;
+  max-height: 300px;
+  overflow-y: auto;
+}
+.cli-ac-item {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 9px 12px;
+  cursor: pointer;
+  border-bottom: 1px solid var(--border);
+  transition: background .1s;
+}
+.cli-ac-item:last-child { border-bottom: none; }
+.cli-ac-item:hover { background: var(--primary-light); }
+.cli-ac-ref {
+  font-family: monospace;
+  font-size: 11px;
+  color: var(--text-soft);
+  min-width: 62px;
+  flex-shrink: 0;
+}
+.cli-ac-name { font-weight: 600; color: var(--text); font-size: 13px; }
+.cli-ac-nc { font-size: 12px; color: var(--text-soft); }
+.cli-ac-empty { padding: 12px; color: var(--text-soft); font-size: 13px; text-align: center; }
+
 </style>
 </head>
 <body style="font-family: system-ui, -apple-system, sans-serif;">
@@ -2328,6 +2365,7 @@ body[data-section-theme=""] .section-color-banner {
 <div id="top-header">
   <div id="th-page-title">Inicio</div>
   <span id="supa-sync-badge-th" style="display: none; font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 12px; cursor: pointer; transition: 0.3s; background: rgba(99, 102, 241, 0.25); color: rgb(99, 102, 241);" onclick="_supaForceFullSync()">↑ Sync</span>
+  <button id="personal-float-btn" class="th-ai-pill" title="Mi Asistente Personal" style="background: linear-gradient(135deg, rgb(124, 58, 237), rgb(155, 89, 182)); border-width: medium; border-style: none; border-color: currentcolor; border-image: none;">🧠 <span>Mi Asistente</span></button>
   <button id="ai-float-btn" class="th-ai-pill" title="Asistente IA" style="">🤖 <span>Asistente IA</span></button>
   <button class="th-icon-btn" onclick="abrirTemaModal()" title="Personalizar apariencia">🎨</button>
   <div id="th-user-mini">
@@ -2400,7 +2438,7 @@ body[data-section-theme=""] .section-color-banner {
     <div id="sidebar-items"><div class="sidebar-item active" data-sub="inicio">Inicio</div><div class="sidebar-item " data-sub="dashboard">Dashboard</div><div class="sidebar-item " data-sub="dashboard-ejecutivo">Dashboard ejecutivo</div></div>
     
   </aside>
-  <main class="main" id="main"><div class="bandeja-wrap"><div class="bandeja-header"><div><h2>Bandeja de trabajo</h2><div class="sub"><span style="color:var(--danger);font-weight:700">2 críticos</span> · <span style="color:var(--primary);font-weight:700">1 alerta</span> · <span style="color:var(--warning-text);font-weight:700">3 pendientes</span></div></div><div class="actions"><button id="bandeja-refresh">⟳ Actualizar</button><button id="bandeja-ver-dashboard">Ver KPIs →</button></div></div><div class="bandeja-layout"><div class="bandeja-main bandeja-solo"><div id="solicitudes-web-slot" style="background:#fff7ed;border:2px solid #F37021;border-radius:12px;margin-bottom:16px;overflow:hidden"><div style="display:flex;align-items:center;gap:8px;padding:12px 16px;border-bottom:2px solid #F37021"><span style="font-size:18px">📋</span><span style="font-weight:800;font-size:15px;color:#c2410c">Solicitudes de cotización</span><span style="background:#ea580c;color:#fff;border-radius:10px;font-size:11px;font-weight:700;padding:2px 10px;margin-left:4px">1</span><span style="margin-left:auto;font-size:11px;color:#9a3412">Tocá una para ver el detalle</span></div><div style=""><div data-sol-toggle="sol-detail-SOL_1785418807748" style="display:flex;align-items:center;gap:10px;padding:10px 14px;cursor:pointer;border-bottom:1px solid #fde8d0;user-select:none" onmouseover="this.style.background=&#39;#fff3e8&#39;" onmouseout="this.style.background=&#39;transparent&#39;"><span id="sol-detail-SOL_1785418807748-arrow" style="font-size:11px;color:#c2410c;transition:transform .15s">▶</span><div style="flex:1;min-width:0"><span style="font-weight:700;font-size:13px;color:#1a1a1a">Buscatools P</span><span style="font-size:11px;color:#9a3412;margin-left:8px">2 productos · 10 uds.</span></div><span style="font-size:13px;font-weight:800;color:#c2410c;white-space:nowrap">$ 574,17</span><span style="font-size:11px;color:#9ca3af;white-space:nowrap;margin-left:8px">30/7, 10:40 a. m.</span><a href="https://mail.google.com/mail/?view=cm&amp;to=jmocciaro%40gmail.com" target="_blank" onclick="event.stopPropagation()" style="font-size:12px;color:#ea580c;margin-left:6px;text-decoration:none" title="jmocciaro@gmail.com">✉</a></div><div id="sol-detail-SOL_1785418807748" style="display:none;padding:12px 14px;border-bottom:1px solid #fde8d0"><div style="overflow-x:auto;margin-bottom:10px"><table style="width:100%;border-collapse:collapse"><thead><tr style="background:#fde8d0"><th style="padding:5px 8px;font-size:11px;color:#9a3412;text-align:left;font-weight:700">SKU</th><th style="padding:5px 8px;font-size:11px;color:#9a3412;text-align:left;font-weight:700">Producto</th><th style="padding:5px 8px;font-size:11px;color:#9a3412;text-align:center;font-weight:700">Cant.</th><th style="padding:5px 8px;font-size:11px;color:#9a3412;text-align:right;font-weight:700">P. Unit.</th><th style="padding:5px 8px;font-size:11px;color:#9a3412;text-align:right;font-weight:700">IVA 21%</th><th style="padding:5px 8px;font-size:11px;color:#9a3412;text-align:right;font-weight:700">Subtotal</th></tr></thead><tbody><tr><td style="padding:5px 8px;font-size:12px;color:#9a3412;font-weight:700;white-space:nowrap">SP.2520/8B</td><td style="padding:5px 8px;font-size:12px;color:var(--text)">SPEEDRILL 2520/8B ADAPTADOR</td><td style="padding:5px 8px;font-size:12px;color:var(--text-soft);text-align:center">×4</td><td style="padding:5px 8px;font-size:12px;color:var(--text-soft);text-align:right;white-space:nowrap">$ 27,79</td><td style="padding:5px 8px;font-size:12px;color:var(--text-soft);text-align:right;white-space:nowrap">$ 23,34</td><td style="padding:5px 8px;font-size:12px;font-weight:700;color:var(--text);text-align:right;white-space:nowrap">$ 134,50</td></tr><tr><td style="padding:5px 8px;font-size:12px;color:#9a3412;font-weight:700;white-space:nowrap">SP.J2316SDXL/80</td><td style="padding:5px 8px;font-size:12px;color:var(--text)">SPEEDRILL J2316SDXL/80 EMBOCADURA</td><td style="padding:5px 8px;font-size:12px;color:var(--text-soft);text-align:center">×6</td><td style="padding:5px 8px;font-size:12px;color:var(--text-soft);text-align:right;white-space:nowrap">$ 60,56</td><td style="padding:5px 8px;font-size:12px;color:var(--text-soft);text-align:right;white-space:nowrap">$ 76,31</td><td style="padding:5px 8px;font-size:12px;font-weight:700;color:var(--text);text-align:right;white-space:nowrap">$ 439,67</td></tr></tbody><tfoot><tr style="border-top:2px solid #fca86c;background:#fef9f5"><td colspan="6" style="padding:8px 8px"><div style="display:flex;align-items:center;gap:10px"><div style="flex:1"></div><div style="display:flex;gap:8px;flex-shrink:0"><div style="background:#fff7ed;border:1px solid #fde8d0;border-radius:8px;padding:6px 14px;text-align:center;min-width:100px"><div style="font-size:10px;font-weight:700;color:#9a3412;text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px">Base</div><div style="font-size:14px;font-weight:800;color:#374151">$ 474,52</div></div><div style="background:#fff7ed;border:1px solid #fde8d0;border-radius:8px;padding:6px 14px;text-align:center;min-width:100px"><div style="font-size:10px;font-weight:700;color:#9a3412;text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px">IVA 21%</div><div style="font-size:14px;font-weight:800;color:#374151">$ 99,65</div></div><div style="background:#F37021;border-radius:8px;padding:6px 14px;text-align:center;min-width:110px"><div style="font-size:10px;font-weight:700;color:rgba(255,255,255,.8);text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px">Total</div><div style="font-size:14px;font-weight:800;color:#fff">$ 574,17</div></div></div></div></td></tr></tfoot></table></div><div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px"><button data-sol-id="SOL-1785418807748" data-sol-action="eliminar" style="padding:6px 16px;background:#fff;border:1px solid #fca86c;border-radius:6px;font-size:12px;font-weight:600;color:#c2410c;cursor:pointer">🗑 Eliminar</button><button data-sol-id="SOL-1785418807748" data-sol-action="crear-cot" style="padding:6px 18px;background:#F37021;border:none;border-radius:6px;font-size:12px;font-weight:700;color:#fff;cursor:pointer">📄 Crear cotización</button></div></div></div></div><div style="background:var(--bg);border:1.5px solid var(--border);border-radius:14px;padding:18px 20px;margin-bottom:16px"><div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><div style="font-size:18px;font-weight:800;color:var(--text);flex:1">Buenas tardes, Administrador 👋</div><span style="background:rgba(239,68,68,.15);color:#ef4444;border-radius:20px;padding:2px 10px;font-size:12px;font-weight:700">5 pendientes</span></div><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:14px"><div style="background:rgba(34,197,94,.1);border:1.5px solid rgba(34,197,94,.3);border-radius:14px;overflow:hidden"><div data-pi-nav="ventas:pedidos" style="display:flex;align-items:center;gap:10px;padding:14px 16px 10px;cursor:pointer;border-bottom:none" onmouseover="this.style.opacity=&#39;.8&#39;" onmouseout="this.style.opacity=&#39;1&#39;"><div style="font-size:26px;line-height:1">🛒</div><div style="flex:1"><div style="font-size:10px;font-weight:700;color:var(--text-soft);text-transform:uppercase;letter-spacing:.6px">Pedidos de venta ›</div><div style="font-size:34px;font-weight:900;line-height:1.1;color:#22c55e">0</div></div></div><div style="padding:0 12px 12px"><div style="text-align:center;padding:12px 0;color:var(--text-muted);font-size:12px">✓ Todo al día</div></div></div><div style="background:rgba(34,197,94,.1);border:1.5px solid rgba(34,197,94,.3);border-radius:14px;overflow:hidden"><div data-pi-nav="ventas:notas-entrega" style="display:flex;align-items:center;gap:10px;padding:14px 16px 10px;cursor:pointer;border-bottom:none" onmouseover="this.style.opacity=&#39;.8&#39;" onmouseout="this.style.opacity=&#39;1&#39;"><div style="font-size:26px;line-height:1">📋</div><div style="flex:1"><div style="font-size:10px;font-weight:700;color:var(--text-soft);text-transform:uppercase;letter-spacing:.6px">Remitos sin facturar ›</div><div style="font-size:34px;font-weight:900;line-height:1.1;color:#22c55e">0</div></div></div><div style="padding:0 12px 12px"><div style="text-align:center;padding:12px 0;color:var(--text-muted);font-size:12px">✓ Todo al día</div></div></div><div style="background:rgba(239,68,68,.1);border:1.5px solid rgba(239,68,68,.3);border-radius:14px;overflow:hidden"><div data-pi-nav="compras:pedidos-prov" style="display:flex;align-items:center;gap:10px;padding:14px 16px 10px;cursor:pointer;border-bottom:1px solid rgba(239,68,68,.3)" onmouseover="this.style.opacity=&#39;.8&#39;" onmouseout="this.style.opacity=&#39;1&#39;"><div style="font-size:26px;line-height:1">🚚</div><div style="flex:1"><div style="font-size:10px;font-weight:700;color:var(--text-soft);text-transform:uppercase;letter-spacing:.6px">Pedidos a proveedor ›</div><div style="font-size:34px;font-weight:900;line-height:1.1;color:#ef4444">5</div></div></div><div style="padding:6px 12px 10px"><div data-pi-open="pc:PC00009" style="display:flex;align-items:center;padding:6px 8px;gap:8px;border-radius:8px;cursor:pointer;margin:2px -4px;transition:background .12s" onmouseover="this.style.background=&#39;rgba(0,0,0,.06)&#39;" onmouseout="this.style.background=&#39;&#39;"><div style="min-width:0;flex:1"><span style="font-size:12px;font-weight:700;color:var(--primary-dark)">PC00009</span><span style="font-size:11px;color:var(--text-soft);margin-left:6px">—</span></div><div style="white-space:nowrap;font-size:11px;color:var(--text-muted)">9/8</div><div style="white-space:nowrap;font-size:12px;font-weight:700;color:var(--text)">$ 0</div><div style="font-size:10px;color:var(--text-muted);margin-left:2px">›</div></div><div data-pi-open="pc:PC00008" style="display:flex;align-items:center;padding:6px 8px;gap:8px;border-radius:8px;cursor:pointer;margin:2px -4px;transition:background .12s" onmouseover="this.style.background=&#39;rgba(0,0,0,.06)&#39;" onmouseout="this.style.background=&#39;&#39;"><div style="min-width:0;flex:1"><span style="font-size:12px;font-weight:700;color:var(--primary-dark)">PC00008</span><span style="font-size:11px;color:var(--text-soft);margin-left:6px">—</span></div><div style="white-space:nowrap;font-size:11px;color:var(--text-muted)">4/8</div><div style="white-space:nowrap;font-size:12px;font-weight:700;color:var(--text)">$ 0</div><div style="font-size:10px;color:var(--text-muted);margin-left:2px">›</div></div><div data-pi-open="pc:PC00007" style="display:flex;align-items:center;padding:6px 8px;gap:8px;border-radius:8px;cursor:pointer;margin:2px -4px;transition:background .12s" onmouseover="this.style.background=&#39;rgba(0,0,0,.06)&#39;" onmouseout="this.style.background=&#39;&#39;"><div style="min-width:0;flex:1"><span style="font-size:12px;font-weight:700;color:var(--primary-dark)">PC00007</span><span style="font-size:11px;color:var(--text-soft);margin-left:6px">—</span></div><div style="white-space:nowrap;font-size:11px;color:var(--text-muted)">3/8</div><div style="white-space:nowrap;font-size:12px;font-weight:700;color:var(--text)">$ 0</div><div style="font-size:10px;color:var(--text-muted);margin-left:2px">›</div></div><div data-pi-open="pc:PC00006" style="display:flex;align-items:center;padding:6px 8px;gap:8px;border-radius:8px;cursor:pointer;margin:2px -4px;transition:background .12s" onmouseover="this.style.background=&#39;rgba(0,0,0,.06)&#39;" onmouseout="this.style.background=&#39;&#39;"><div style="min-width:0;flex:1"><span style="font-size:12px;font-weight:700;color:var(--primary-dark)">PC00006</span><span style="font-size:11px;color:var(--text-soft);margin-left:6px">genérico</span></div><div style="white-space:nowrap;font-size:11px;color:var(--text-muted)">3/8</div><div style="white-space:nowrap;font-size:12px;font-weight:700;color:var(--text)">$ 0</div><div style="font-size:10px;color:var(--text-muted);margin-left:2px">›</div></div><div data-pi-nav="compras:pedidos-prov" style="font-size:11px;color:var(--primary);text-align:center;padding-top:6px;cursor:pointer;font-weight:600">+ 1 más →</div></div></div></div></div><div class="bandeja-section has-pendientes"><div class="sec-title"><span class="dot"></span>Pendientes</div><div class="pendientes-grid"><div class="pendiente-col"><div class="pendiente-col-head"><span class="pc-ico">📦</span> Stock</div><div class="pendiente-col-items"><div class="pendiente-item danger" data-bandeja-nav="catalogo:productos"><div class="pi-ico">⚠</div><div class="pi-label">Stock crítico (sin unidades)</div><div class="pi-count">2085</div></div><div class="pendiente-item orange" data-bandeja-nav="catalogo:productos"><div class="pi-ico">!</div><div class="pi-label">Stock bajo (1 a 5 unidades)</div><div class="pi-count">8</div></div><div class="pendiente-item ok" data-bandeja-nav="catalogo:productos"><div class="pi-ico">!</div><div class="pi-label">Stock correcto (más de 5)</div><div class="pi-count">108</div></div></div></div><div class="pendiente-col"><div class="pendiente-col-head"><span class="pc-ico">💵</span> Facturas</div><div class="pendiente-col-items"><div class="pendiente-item danger" data-bandeja-nav="ventas:notas-entrega"><div class="pi-ico">⚠</div><div class="pi-label">Facturas vencidas (por cobrar)</div><div class="pi-count">1</div></div><div class="pendiente-item warn" data-bandeja-nav="ventas:notas-entrega"><div class="pi-ico">!</div><div class="pi-label">Facturas por cobrar</div><div class="pi-count">1</div></div><div class="pendiente-item ok" data-bandeja-nav="compras:facturas-prov"><div class="pi-ico">✓</div><div class="pi-label">Pagos a proveedor vencidos</div><div class="pi-count">0</div></div><div class="pendiente-item ok" data-bandeja-nav="compras:facturas-prov"><div class="pi-ico">✓</div><div class="pi-label">Pagos por vencer (7 días)</div><div class="pi-count">0</div></div></div></div><div class="pendiente-col"><div class="pendiente-col-head"><span class="pc-ico">🛒</span> Ventas</div><div class="pendiente-col-items"><div class="pendiente-item ok" data-bandeja-nav="ventas:pedidos"><div class="pi-ico">✓</div><div class="pi-label">Pedidos por entregar</div><div class="pi-count">0</div></div><div class="pendiente-item ok" data-bandeja-nav="ventas:notas-entrega"><div class="pi-ico">✓</div><div class="pi-label">Notas de entrega pendientes</div><div class="pi-count">0</div></div></div></div><div class="pendiente-col"><div class="pendiente-col-head"><span class="pc-ico">🚚</span> Pedidos a proveedor</div><div class="pendiente-col-items"><div class="pendiente-item warn" data-bandeja-nav="compras:pedidos-prov"><div class="pi-ico">!</div><div class="pi-label">Pedidos pendientes</div><div class="pi-count">4</div></div><div class="pendiente-item warn" data-bandeja-nav="compras:pedidos-prov"><div class="pi-ico">!</div><div class="pi-label">Pedidos parciales</div><div class="pi-count">1</div></div></div></div></div></div><div class="bandeja-section"><div class="sec-title">Empezar algo nuevo</div><div class="quick-actions-grid"><div class="qa-item c-orange" data-bandeja-qa="nueva-cot"><div class="qa-ico">📄</div><div class="qa-label">Nueva cotización</div></div><div class="qa-item c-blue" data-bandeja-qa="importar-oc"><div class="qa-ico">⬆</div><div class="qa-label">Importar OC cliente</div></div><div class="qa-item c-purple" data-bandeja-qa="nuevo-pedido-compra"><div class="qa-ico">🛒</div><div class="qa-label">Pedido a proveedor</div></div><div class="qa-item c-green" data-bandeja-qa="ver-catalogo"><div class="qa-ico">🔍</div><div class="qa-label">Buscar producto</div></div><div class="qa-item c-teal" data-bandeja-qa="ver-clientes"><div class="qa-ico">👥</div><div class="qa-label">Ver clientes</div></div></div></div><div class="bandeja-resumen-wrap"><div class="sec-title">Resumen del negocio</div><div class="dashboard-grid"><div class="card"><div class="card-header"><span class="card-ico">🏷</span> Ventas</div>
+  <main class="main" id="main"><div class="bandeja-wrap"><div class="bandeja-header"><div><h2>Bandeja de trabajo</h2><div class="sub"><span style="color:var(--danger);font-weight:700">2 críticos</span> · <span style="color:var(--primary);font-weight:700">1 alerta</span> · <span style="color:var(--warning-text);font-weight:700">3 pendientes</span></div></div><div class="actions"><button id="bandeja-refresh">⟳ Actualizar</button><button id="bandeja-ver-dashboard">Ver KPIs →</button></div></div><div class="bandeja-layout"><div class="bandeja-main bandeja-solo"><div id="solicitudes-web-slot" style="background:#fff7ed;border:2px solid #F37021;border-radius:12px;margin-bottom:16px;overflow:hidden"><div style="display:flex;align-items:center;gap:8px;padding:12px 16px;border-bottom:2px solid #F37021"><span style="font-size:18px">📋</span><span style="font-weight:800;font-size:15px;color:#c2410c">Solicitudes de cotización</span><span style="background:#ea580c;color:#fff;border-radius:10px;font-size:11px;font-weight:700;padding:2px 10px;margin-left:4px">1</span><span style="margin-left:auto;font-size:11px;color:#9a3412">Tocá una para ver el detalle</span></div><div style=""><div data-sol-toggle="sol-detail-SOL_1785418807748" style="display: flex; align-items: center; gap: 10px; padding: 10px 14px; cursor: pointer; border-bottom: 1px solid rgb(253, 232, 208); user-select: none; background: transparent;" onmouseover="this.style.background=&#39;#fff3e8&#39;" onmouseout="this.style.background=&#39;transparent&#39;"><span id="sol-detail-SOL_1785418807748-arrow" style="font-size:11px;color:#c2410c;transition:transform .15s">▶</span><div style="flex:1;min-width:0"><span style="font-weight:700;font-size:13px;color:#1a1a1a">Buscatools P</span><span style="font-size:11px;color:#9a3412;margin-left:8px">2 productos · 10 uds.</span></div><span style="font-size:13px;font-weight:800;color:#c2410c;white-space:nowrap">$ 574,17</span><span style="font-size:11px;color:#9ca3af;white-space:nowrap;margin-left:8px">30/7, 10:40 a. m.</span><a href="https://mail.google.com/mail/?view=cm&amp;to=jmocciaro%40gmail.com" target="_blank" onclick="event.stopPropagation()" style="font-size:12px;color:#ea580c;margin-left:6px;text-decoration:none" title="jmocciaro@gmail.com">✉</a></div><div id="sol-detail-SOL_1785418807748" style="display:none;padding:12px 14px;border-bottom:1px solid #fde8d0"><div style="overflow-x:auto;margin-bottom:10px"><table style="width:100%;border-collapse:collapse"><thead><tr style="background:#fde8d0"><th style="padding:5px 8px;font-size:11px;color:#9a3412;text-align:left;font-weight:700">SKU</th><th style="padding:5px 8px;font-size:11px;color:#9a3412;text-align:left;font-weight:700">Producto</th><th style="padding:5px 8px;font-size:11px;color:#9a3412;text-align:center;font-weight:700">Cant.</th><th style="padding:5px 8px;font-size:11px;color:#9a3412;text-align:right;font-weight:700">P. Unit.</th><th style="padding:5px 8px;font-size:11px;color:#9a3412;text-align:right;font-weight:700">IVA 21%</th><th style="padding:5px 8px;font-size:11px;color:#9a3412;text-align:right;font-weight:700">Subtotal</th></tr></thead><tbody><tr><td style="padding:5px 8px;font-size:12px;color:#9a3412;font-weight:700;white-space:nowrap">SP.2520/8B</td><td style="padding:5px 8px;font-size:12px;color:var(--text)">SPEEDRILL 2520/8B ADAPTADOR</td><td style="padding:5px 8px;font-size:12px;color:var(--text-soft);text-align:center">×4</td><td style="padding:5px 8px;font-size:12px;color:var(--text-soft);text-align:right;white-space:nowrap">$ 27,79</td><td style="padding:5px 8px;font-size:12px;color:var(--text-soft);text-align:right;white-space:nowrap">$ 23,34</td><td style="padding:5px 8px;font-size:12px;font-weight:700;color:var(--text);text-align:right;white-space:nowrap">$ 134,50</td></tr><tr><td style="padding:5px 8px;font-size:12px;color:#9a3412;font-weight:700;white-space:nowrap">SP.J2316SDXL/80</td><td style="padding:5px 8px;font-size:12px;color:var(--text)">SPEEDRILL J2316SDXL/80 EMBOCADURA</td><td style="padding:5px 8px;font-size:12px;color:var(--text-soft);text-align:center">×6</td><td style="padding:5px 8px;font-size:12px;color:var(--text-soft);text-align:right;white-space:nowrap">$ 60,56</td><td style="padding:5px 8px;font-size:12px;color:var(--text-soft);text-align:right;white-space:nowrap">$ 76,31</td><td style="padding:5px 8px;font-size:12px;font-weight:700;color:var(--text);text-align:right;white-space:nowrap">$ 439,67</td></tr></tbody><tfoot><tr style="border-top:2px solid #fca86c;background:#fef9f5"><td colspan="6" style="padding:8px 8px"><div style="display:flex;align-items:center;gap:10px"><div style="flex:1"></div><div style="display:flex;gap:8px;flex-shrink:0"><div style="background:#fff7ed;border:1px solid #fde8d0;border-radius:8px;padding:6px 14px;text-align:center;min-width:100px"><div style="font-size:10px;font-weight:700;color:#9a3412;text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px">Base</div><div style="font-size:14px;font-weight:800;color:#374151">$ 474,52</div></div><div style="background:#fff7ed;border:1px solid #fde8d0;border-radius:8px;padding:6px 14px;text-align:center;min-width:100px"><div style="font-size:10px;font-weight:700;color:#9a3412;text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px">IVA 21%</div><div style="font-size:14px;font-weight:800;color:#374151">$ 99,65</div></div><div style="background:#F37021;border-radius:8px;padding:6px 14px;text-align:center;min-width:110px"><div style="font-size:10px;font-weight:700;color:rgba(255,255,255,.8);text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px">Total</div><div style="font-size:14px;font-weight:800;color:#fff">$ 574,17</div></div></div></div></td></tr></tfoot></table></div><div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px"><button data-sol-id="SOL-1785418807748" data-sol-action="eliminar" style="padding:6px 16px;background:#fff;border:1px solid #fca86c;border-radius:6px;font-size:12px;font-weight:600;color:#c2410c;cursor:pointer">🗑 Eliminar</button><button data-sol-id="SOL-1785418807748" data-sol-action="crear-cot" style="padding:6px 18px;background:#F37021;border:none;border-radius:6px;font-size:12px;font-weight:700;color:#fff;cursor:pointer">📄 Crear cotización</button></div></div></div></div><div style="background:var(--bg);border:1.5px solid var(--border);border-radius:14px;padding:18px 20px;margin-bottom:16px"><div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><div style="font-size:18px;font-weight:800;color:var(--text);flex:1">Buenas tardes, Administrador 👋</div><span style="background:rgba(239,68,68,.15);color:#ef4444;border-radius:20px;padding:2px 10px;font-size:12px;font-weight:700">5 pendientes</span></div><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:14px"><div style="background:rgba(34,197,94,.1);border:1.5px solid rgba(34,197,94,.3);border-radius:14px;overflow:hidden"><div data-pi-nav="ventas:pedidos" style="display:flex;align-items:center;gap:10px;padding:14px 16px 10px;cursor:pointer;border-bottom:none" onmouseover="this.style.opacity=&#39;.8&#39;" onmouseout="this.style.opacity=&#39;1&#39;"><div style="font-size:26px;line-height:1">🛒</div><div style="flex:1"><div style="font-size:10px;font-weight:700;color:var(--text-soft);text-transform:uppercase;letter-spacing:.6px">Pedidos de venta ›</div><div style="font-size:34px;font-weight:900;line-height:1.1;color:#22c55e">0</div></div></div><div style="padding:0 12px 12px"><div style="text-align:center;padding:12px 0;color:var(--text-muted);font-size:12px">✓ Todo al día</div></div></div><div style="background:rgba(34,197,94,.1);border:1.5px solid rgba(34,197,94,.3);border-radius:14px;overflow:hidden"><div data-pi-nav="ventas:notas-entrega" style="display: flex; align-items: center; gap: 10px; padding: 14px 16px 10px; cursor: pointer; border-bottom-width: medium; border-bottom-style: none; border-bottom-color: currentcolor; opacity: 1;" onmouseover="this.style.opacity=&#39;.8&#39;" onmouseout="this.style.opacity=&#39;1&#39;"><div style="font-size:26px;line-height:1">📋</div><div style="flex:1"><div style="font-size:10px;font-weight:700;color:var(--text-soft);text-transform:uppercase;letter-spacing:.6px">Remitos sin facturar ›</div><div style="font-size:34px;font-weight:900;line-height:1.1;color:#22c55e">0</div></div></div><div style="padding:0 12px 12px"><div style="text-align:center;padding:12px 0;color:var(--text-muted);font-size:12px">✓ Todo al día</div></div></div><div style="background:rgba(239,68,68,.1);border:1.5px solid rgba(239,68,68,.3);border-radius:14px;overflow:hidden"><div data-pi-nav="compras:pedidos-prov" style="display:flex;align-items:center;gap:10px;padding:14px 16px 10px;cursor:pointer;border-bottom:1px solid rgba(239,68,68,.3)" onmouseover="this.style.opacity=&#39;.8&#39;" onmouseout="this.style.opacity=&#39;1&#39;"><div style="font-size:26px;line-height:1">🚚</div><div style="flex:1"><div style="font-size:10px;font-weight:700;color:var(--text-soft);text-transform:uppercase;letter-spacing:.6px">Pedidos a proveedor ›</div><div style="font-size:34px;font-weight:900;line-height:1.1;color:#ef4444">5</div></div></div><div style="padding:6px 12px 10px"><div data-pi-open="pc:PC00009" style="display:flex;align-items:center;padding:6px 8px;gap:8px;border-radius:8px;cursor:pointer;margin:2px -4px;transition:background .12s" onmouseover="this.style.background=&#39;rgba(0,0,0,.06)&#39;" onmouseout="this.style.background=&#39;&#39;"><div style="min-width:0;flex:1"><span style="font-size:12px;font-weight:700;color:var(--primary-dark)">PC00009</span><span style="font-size:11px;color:var(--text-soft);margin-left:6px">—</span></div><div style="white-space:nowrap;font-size:11px;color:var(--text-muted)">9/8</div><div style="white-space:nowrap;font-size:12px;font-weight:700;color:var(--text)">$ 0</div><div style="font-size:10px;color:var(--text-muted);margin-left:2px">›</div></div><div data-pi-open="pc:PC00008" style="display:flex;align-items:center;padding:6px 8px;gap:8px;border-radius:8px;cursor:pointer;margin:2px -4px;transition:background .12s" onmouseover="this.style.background=&#39;rgba(0,0,0,.06)&#39;" onmouseout="this.style.background=&#39;&#39;"><div style="min-width:0;flex:1"><span style="font-size:12px;font-weight:700;color:var(--primary-dark)">PC00008</span><span style="font-size:11px;color:var(--text-soft);margin-left:6px">—</span></div><div style="white-space:nowrap;font-size:11px;color:var(--text-muted)">4/8</div><div style="white-space:nowrap;font-size:12px;font-weight:700;color:var(--text)">$ 0</div><div style="font-size:10px;color:var(--text-muted);margin-left:2px">›</div></div><div data-pi-open="pc:PC00007" style="display:flex;align-items:center;padding:6px 8px;gap:8px;border-radius:8px;cursor:pointer;margin:2px -4px;transition:background .12s" onmouseover="this.style.background=&#39;rgba(0,0,0,.06)&#39;" onmouseout="this.style.background=&#39;&#39;"><div style="min-width:0;flex:1"><span style="font-size:12px;font-weight:700;color:var(--primary-dark)">PC00007</span><span style="font-size:11px;color:var(--text-soft);margin-left:6px">—</span></div><div style="white-space:nowrap;font-size:11px;color:var(--text-muted)">3/8</div><div style="white-space:nowrap;font-size:12px;font-weight:700;color:var(--text)">$ 0</div><div style="font-size:10px;color:var(--text-muted);margin-left:2px">›</div></div><div data-pi-open="pc:PC00006" style="display:flex;align-items:center;padding:6px 8px;gap:8px;border-radius:8px;cursor:pointer;margin:2px -4px;transition:background .12s" onmouseover="this.style.background=&#39;rgba(0,0,0,.06)&#39;" onmouseout="this.style.background=&#39;&#39;"><div style="min-width:0;flex:1"><span style="font-size:12px;font-weight:700;color:var(--primary-dark)">PC00006</span><span style="font-size:11px;color:var(--text-soft);margin-left:6px">genérico</span></div><div style="white-space:nowrap;font-size:11px;color:var(--text-muted)">3/8</div><div style="white-space:nowrap;font-size:12px;font-weight:700;color:var(--text)">$ 0</div><div style="font-size:10px;color:var(--text-muted);margin-left:2px">›</div></div><div data-pi-nav="compras:pedidos-prov" style="font-size:11px;color:var(--primary);text-align:center;padding-top:6px;cursor:pointer;font-weight:600">+ 1 más →</div></div></div></div></div><div class="bandeja-section has-pendientes"><div class="sec-title"><span class="dot"></span>Pendientes</div><div class="pendientes-grid"><div class="pendiente-col"><div class="pendiente-col-head"><span class="pc-ico">📦</span> Stock</div><div class="pendiente-col-items"><div class="pendiente-item danger" data-bandeja-nav="catalogo:productos"><div class="pi-ico">⚠</div><div class="pi-label">Stock crítico (sin unidades)</div><div class="pi-count">2085</div></div><div class="pendiente-item orange" data-bandeja-nav="catalogo:productos"><div class="pi-ico">!</div><div class="pi-label">Stock bajo (1 a 5 unidades)</div><div class="pi-count">8</div></div><div class="pendiente-item ok" data-bandeja-nav="catalogo:productos"><div class="pi-ico">!</div><div class="pi-label">Stock correcto (más de 5)</div><div class="pi-count">108</div></div></div></div><div class="pendiente-col"><div class="pendiente-col-head"><span class="pc-ico">💵</span> Facturas</div><div class="pendiente-col-items"><div class="pendiente-item danger" data-bandeja-nav="ventas:notas-entrega"><div class="pi-ico">⚠</div><div class="pi-label">Facturas vencidas (por cobrar)</div><div class="pi-count">1</div></div><div class="pendiente-item warn" data-bandeja-nav="ventas:notas-entrega"><div class="pi-ico">!</div><div class="pi-label">Facturas por cobrar</div><div class="pi-count">1</div></div><div class="pendiente-item ok" data-bandeja-nav="compras:facturas-prov"><div class="pi-ico">✓</div><div class="pi-label">Pagos a proveedor vencidos</div><div class="pi-count">0</div></div><div class="pendiente-item ok" data-bandeja-nav="compras:facturas-prov"><div class="pi-ico">✓</div><div class="pi-label">Pagos por vencer (7 días)</div><div class="pi-count">0</div></div></div></div><div class="pendiente-col"><div class="pendiente-col-head"><span class="pc-ico">🛒</span> Ventas</div><div class="pendiente-col-items"><div class="pendiente-item ok" data-bandeja-nav="ventas:pedidos"><div class="pi-ico">✓</div><div class="pi-label">Pedidos por entregar</div><div class="pi-count">0</div></div><div class="pendiente-item ok" data-bandeja-nav="ventas:notas-entrega"><div class="pi-ico">✓</div><div class="pi-label">Notas de entrega pendientes</div><div class="pi-count">0</div></div></div></div><div class="pendiente-col"><div class="pendiente-col-head"><span class="pc-ico">🚚</span> Pedidos a proveedor</div><div class="pendiente-col-items"><div class="pendiente-item warn" data-bandeja-nav="compras:pedidos-prov"><div class="pi-ico">!</div><div class="pi-label">Pedidos pendientes</div><div class="pi-count">4</div></div><div class="pendiente-item warn" data-bandeja-nav="compras:pedidos-prov"><div class="pi-ico">!</div><div class="pi-label">Pedidos parciales</div><div class="pi-count">1</div></div></div></div></div></div><div class="bandeja-section"><div class="sec-title">Empezar algo nuevo</div><div class="quick-actions-grid"><div class="qa-item c-orange" data-bandeja-qa="nueva-cot"><div class="qa-ico">📄</div><div class="qa-label">Nueva cotización</div></div><div class="qa-item c-blue" data-bandeja-qa="importar-oc"><div class="qa-ico">⬆</div><div class="qa-label">Importar OC cliente</div></div><div class="qa-item c-purple" data-bandeja-qa="nuevo-pedido-compra"><div class="qa-ico">🛒</div><div class="qa-label">Pedido a proveedor</div></div><div class="qa-item c-green" data-bandeja-qa="ver-catalogo"><div class="qa-ico">🔍</div><div class="qa-label">Buscar producto</div></div><div class="qa-item c-teal" data-bandeja-qa="ver-clientes"><div class="qa-ico">👥</div><div class="qa-label">Ver clientes</div></div></div></div><div class="bandeja-resumen-wrap"><div class="sec-title">Resumen del negocio</div><div class="dashboard-grid"><div class="card"><div class="card-header"><span class="card-ico">🏷</span> Ventas</div>
     <div class="card-block"><div class="card-label">Cotizaciones</div>
       <div class="card-value">0,00 <span class="currency">USD</span> <span class="badge-count">0</span></div></div>
     <div class="card-block"><div class="card-label">Pedidos</div>
@@ -2730,7 +2768,7 @@ function darken(hex, mix){
 }
 // === PERMISOS POR USUARIO (ADMIN super admin) ===
 const PERM_SECCIONES = ['catalogo','clientes','ventas','mantenimientos','facturacion','compras','importacion','agenda','informes','finanzas','crm','chat','emails','whatsapp'];
-const PERM_LABELS = { catalogo:'Catálogo', clientes:'Clientes', ventas:'Ventas', mantenimientos:'Mantenimientos', facturacion:'Facturación', compras:'Compras', importacion:'Importación', agenda:'Agenda', informes:'Informes', finanzas:'Finanzas', crm:'CRM', chat:'Chat', emails:'Emails' };
+const PERM_LABELS = { catalogo:'Catálogo', clientes:'Clientes', ventas:'Ventas', mantenimientos:'Mantenimientos', facturacion:'Facturación', compras:'Compras', importacion:'Importación', agenda:'Agenda', informes:'Informes', finanzas:'Finanzas', crm:'CRM', chat:'Chat', emails:'Emails', whatsapp:'WhatsApp' };
 function loadUserPerms(){ try { return JSON.parse(localStorage.getItem('erp_user_perms') || '{}'); } catch(e){ return {}; } }
 function saveUserPerms(p){ try { localStorage.setItem('erp_user_perms', JSON.stringify(p)); } catch(e){} }
 function getPermsFor(user){
@@ -3270,10 +3308,11 @@ const _DEFAULT_HASHES={
   JANO:'cd44f06e58315b16f6b0e832a4a87840fb220ab98d617699c2e4dad78c80b213',
   JUAN:'f6ccb3e8d609012238c0b39e60b2c9632b3cdede91e035dad1de43469768f4cc',
   FACUNDO:'75984463897e38ebf26119419c901d6d2d0ebba276a8bb949bb378c6fed4aa68',
-  NORBERTO:'9365387267af9d21621dbb9cdf36a9902c379f70115b065009610fae4f21ec34'
+  NORBERTO:'9365387267af9d21621dbb9cdf36a9902c379f70115b065009610fae4f21ec34',
+  BRIAN:'' // contraseña vacía — ADMIN debe asignarle una desde el panel de usuarios
 };
-const TEAM_USERS = ['ADMIN','JANO','JUAN','FACUNDO','NORBERTO'];
-const TEAM_LABELS = { ADMIN:'Administración', JANO:'Jano', JUAN:'Juan', FACUNDO:'Facundo', NORBERTO:'Norberto' };
+const TEAM_USERS = ['ADMIN','JANO','JUAN','FACUNDO','NORBERTO','BRIAN'];
+const TEAM_LABELS = { ADMIN:'Administración', JANO:'Jano', JUAN:'Juan', FACUNDO:'Facundo', NORBERTO:'Norberto', BRIAN:'Brian' };
 function loadAuthUsers(){
   try{
     let base = null;
@@ -3330,6 +3369,7 @@ function applyAuthState(){
   if(b){ b.style.display=logged?'':'none'; b.style.visibility=logged?'visible':'hidden'; b.style.opacity=logged?'1':'0'; }
   const ap=document.getElementById('btn-apps');   if(ap) ap.style.display=logged?'':'none';
   const fab=document.getElementById('ai-float-btn'); if(fab) fab.style.display=logged?'':'none';
+  setTimeout(()=>{ try{ ensurePersonalBtn(); }catch(e){} }, 50);
   const adm=document.getElementById('btn-admin-users'); if(adm) adm.style.display=(state.user==='ADMIN')?'':'none';
   // Top-header nuevo: toggle entre avatar usuario y botones de auth
   const thMini=document.getElementById('th-user-mini');
@@ -5785,6 +5825,9 @@ const AI_DEFAULT_MODELS = {
 // Ej: 'https://buscatools-ai.TU-USUARIO.workers.dev'
 const AI_WORKER_URL = 'https://buscatools-ai.buscatools-jano.workers.dev';
 const AI_WORKER_TOKEN = 'bt-ai-xK9mP4nQ7vR2sL5w';
+// Asistente personal — caché de historial de sesión
+let _personalChatHistory = null; // null=no cargado, []=vacío, [...]= mensajes
+let _personalChatLoading = false;
 function mostrarAiConfigModal(){
   const cfg = loadAiConfig();
   const provider = cfg.provider || 'claude';
@@ -9226,7 +9269,7 @@ function _aiGuardarBorradorComoDoc(){
     if (isEdit){ nes[editingIdx] = ne; } else { nes.unshift(ne); }
     saveNotasEntrega(nes);
     if (!isEdit){ try { applyStockDeductions(ne.items, 'sr', ne.ref); } catch(e){} }
-    try{ if(typeof logActivity==='function') logActivity(state.user||'ADMIN', isEdit?'Editó nota de entrega':'Creó nota de entrega', ne.ref + (ne.cliente?' · '+ne.cliente:'')); }catch(e){}
+    try{ if(typeof logActivity==='function') logActivity(state.user||'ADMIN', isEdit?'Editó nota de entrega':'Creó nota de entrega', ne.ref + (ne.cliente?' · '+ne.cliente:''), { ref: ne.ref, cliente: ne.cliente||'', items: (ne.items||[]).length }); }catch(e){}
     clearBorrador();
     return { ok:true, ref: ne.ref, tipo:'ne', doc: ne, msg: (isEdit ? 'NE actualizada ' : 'NE creada ') + ne.ref + ' · USD ' + fmtNum(ne.total) };
   }
@@ -9251,7 +9294,7 @@ function _aiGuardarBorradorComoDoc(){
     if (isEdit){ peds[editingIdx] = ped; } else { peds.unshift(ped); }
     savePedidos(peds);
     if (!isEdit){ try { applyStockDeductions(ped.items, 'sv', ped.ref); } catch(e){} }
-    try{ if(typeof logActivity==='function') logActivity(state.user||'ADMIN', isEdit?'Editó pedido':'Creó pedido', ped.ref + (ped.cliente?' · '+ped.cliente:'')); }catch(e){}
+    try{ if(typeof logActivity==='function') logActivity(state.user||'ADMIN', isEdit?'Editó pedido':'Creó pedido', ped.ref + (ped.cliente?' · '+ped.cliente:''), { ref: ped.ref, cliente: ped.cliente||'', total: ped.total||0, items: (ped.items||[]).length }); }catch(e){}
     clearBorrador();
     return { ok:true, ref: ped.ref, tipo:'ped', doc: ped, msg: (isEdit ? 'Pedido actualizado ' : 'Pedido creado ') + ped.ref + ' · USD ' + fmtNum(ped.total) };
   }
@@ -9272,7 +9315,7 @@ function _aiGuardarBorradorComoDoc(){
   if (isEdit){ list[editingIdx] = cot; } else { list.unshift(cot); }
   saveCotizaciones(list);
   clearBorrador();
-  try{ if(typeof logActivity==='function') logActivity(state.user||'ADMIN', isEdit?'Editó cotización':'Creó cotización', cot.ref + (cot.cliente?' · '+cot.cliente:'')); }catch(e){}
+  try{ if(typeof logActivity==='function') logActivity(state.user||'ADMIN', isEdit?'Editó cotización':'Creó cotización', cot.ref + (cot.cliente?' · '+cot.cliente:''), { ref: cot.ref, cliente: cot.cliente||'', total: cot.total||0, moneda: cot.moneda||'USD', items: (cot.items||[]).length }); }catch(e){}
   return { ok:true, ref: cot.ref, tipo:'cot', doc: cot, msg: (isEdit ? 'Cotización actualizada ' : 'Cotización creada ') + cot.ref + ' · USD ' + fmtNum(cot.total) };
 }
 
@@ -11013,13 +11056,140 @@ function ensureAiFloatingBtn(){
   btn.addEventListener('click', () => { if(document.getElementById('ai-panel')){ cerrarAiAsistente(); } else { abrirAiAsistente(); } });
   document.getElementById('top-header')?.insertBefore(btn, document.querySelector('#top-header .th-icon-btn'));
 }
+// ─── Botón "Mi Asistente" (asistente personal por usuario) ───────────────────
+function ensurePersonalBtn(){
+  const btn = document.getElementById('personal-float-btn');
+  if (!btn) return;
+  try { if (!esUsuarioInterno()) { btn.style.display = 'none'; return; } } catch(_){}
+  if (!state.user) { btn.style.display = 'none'; return; }
+  btn.style.display = '';
+  if (!btn._pwired){
+    btn._pwired = true;
+    btn.addEventListener('click', () => {
+      if (document.getElementById('personal-panel')) cerrarPersonalPanel();
+      else abrirPersonalPanel();
+    });
+  }
+}
+setTimeout(() => { try { ensurePersonalBtn(); } catch(e){} }, 1100);
+
+// ─── Panel flotante del asistente personal ────────────────────────────────────
+function cerrarPersonalPanel(){
+  const p = document.getElementById('personal-panel');
+  if (p) p.remove();
+}
+
+function abrirPersonalPanel(){
+  if (!state.user) return;
+  try { if (!esUsuarioInterno()) return; } catch(_){}
+  cerrarPersonalPanel();
+
+  const me = state.user;
+  const panel = document.createElement('div');
+  panel.id = 'personal-panel';
+  panel.style.cssText = 'position:fixed;top:48px;right:0;bottom:0;width:440px;max-width:92vw;background:var(--surface);border-left:1px solid var(--border);box-shadow:-8px 0 32px rgba(0,0,0,0.15);z-index:9997;display:flex;flex-direction:column;animation:aiSlideIn .2s ease-out';
+
+  const renderMsgs = () => {
+    const msgs = _personalChatHistory || [];
+    const box = panel.querySelector('#pers-msgs');
+    if (!box) return;
+    if (msgs.length === 0){
+      box.innerHTML = '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:12px;color:var(--text-muted);text-align:center;padding:24px"><div style="font-size:40px">🧠</div><div style="font-weight:600;font-size:15px">Tu asistente personal</div><div style="font-size:13px">Sé lo que hiciste hoy en el ERP.<br>Preguntame lo que quieras.</div></div>';
+      return;
+    }
+    box.innerHTML = msgs.map(m => {
+      const isU = m.role === 'user';
+      return `<div style="display:flex;justify-content:${isU?'flex-end':'flex-start'};margin-bottom:8px">
+        <div style="max-width:82%;padding:10px 14px;border-radius:${isU?'16px 16px 4px 16px':'16px 16px 16px 4px'};background:${isU?'var(--primary)':'var(--card)'};color:${isU?'#fff':'var(--text)'};font-size:13px;line-height:1.5;white-space:pre-wrap">${escapeHtml(m.content)}</div>
+      </div>`;
+    }).join('');
+    setTimeout(() => { box.scrollTop = box.scrollHeight; }, 30);
+  };
+
+  panel.innerHTML =
+    `<div style="padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;background:var(--bg)">
+      <div style="width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;background:rgba(124,58,237,.12)">🧠</div>
+      <div style="flex:1">
+        <div style="font-weight:700;color:var(--text);font-size:14px">Mi Asistente Personal</div>
+        <div style="font-size:11px;color:var(--text-soft)">Sé todo lo que hiciste en el ERP hoy</div>
+      </div>
+      <button id="pers-close-btn" style="background:transparent;border:none;font-size:20px;cursor:pointer;color:var(--text-soft);padding:0 4px">×</button>
+    </div>
+    <div id="pers-msgs" style="flex:1;overflow-y:auto;padding:18px;display:flex;flex-direction:column"></div>
+    <div id="pers-loading" style="display:none;padding:8px 18px;font-size:12px;color:var(--text-muted)">⏳ Pensando...</div>
+    <div style="border-top:1px solid var(--border);padding:12px 16px;background:var(--surface);display:flex;gap:8px;align-items:flex-end">
+      <textarea id="pers-input" placeholder="Escribí tu consulta…" rows="1" style="flex:1;padding:9px 12px;border:1px solid var(--border);border-radius:18px;background:var(--bg);color:var(--text);font-size:13px;outline:none;resize:none;max-height:120px;font-family:inherit"></textarea>
+      <button id="pers-send-btn" style="padding:9px 18px;border-radius:18px;background:linear-gradient(135deg,#7c3aed,#9b59b6);color:#fff;border:none;cursor:pointer;font-size:13px;font-weight:600;flex-shrink:0">Enviar</button>
+    </div>`;
+
+  document.body.appendChild(panel);
+
+  // Close
+  panel.querySelector('#pers-close-btn').addEventListener('click', cerrarPersonalPanel);
+
+  // Auto-resize textarea
+  const inp = panel.querySelector('#pers-input');
+  inp.addEventListener('input', () => { inp.style.height='auto'; inp.style.height=Math.min(inp.scrollHeight,120)+'px'; });
+
+  // Render existing history
+  renderMsgs();
+
+  // Load history from Supabase on first open
+  if (_personalChatHistory === null){
+    _personalChatHistory = [];
+    const loadingEl = panel.querySelector('#pers-loading');
+    if (loadingEl) { loadingEl.style.display=''; loadingEl.textContent='⏳ Cargando historial...'; }
+    const _pUrl = (typeof loadAiConfig==='function' ? (loadAiConfig().workerUrl||'') : '') || AI_WORKER_URL || '';
+    fetch(_pUrl + '/personal/history?user_id=' + encodeURIComponent(me), {
+      headers: { 'X-Worker-Token': AI_WORKER_TOKEN }
+    }).then(r => r.json()).then(d => {
+      if (Array.isArray(d.history)) _personalChatHistory = d.history;
+      if (loadingEl) loadingEl.style.display='none';
+      renderMsgs();
+    }).catch(() => { if (loadingEl) loadingEl.style.display='none'; });
+  }
+
+  // Send
+  const sendBtn = panel.querySelector('#pers-send-btn');
+  const loadingEl = panel.querySelector('#pers-loading');
+  const doSend = async () => {
+    const txt = (inp.value || '').trim();
+    if (!txt) return;
+    if (_personalChatHistory === null) _personalChatHistory = [];
+    _personalChatHistory.push({ role: 'user', content: txt });
+    inp.value = ''; inp.style.height = 'auto';
+    sendBtn.disabled = true; sendBtn.textContent = '⏳';
+    if (loadingEl) { loadingEl.style.display=''; loadingEl.textContent='⏳ Pensando...'; }
+    try { logActivity(me, 'Consulta asistente personal', txt.slice(0,200), { action_type:'ia_personal', entity:'asistente', section: state.section }); } catch(_){}
+    renderMsgs();
+    try {
+      const _pUrl = (typeof loadAiConfig==='function' ? (loadAiConfig().workerUrl||'') : '') || AI_WORKER_URL || '';
+      const r = await fetch(_pUrl + '/personal', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-Worker-Token': AI_WORKER_TOKEN },
+        body: JSON.stringify({ user_id: me, user_name: me, user_role: state.role||'', section: state.section||'', message: txt }),
+      });
+      const d = await r.json();
+      _personalChatHistory.push({ role: 'assistant', content: d.content || 'Sin respuesta.' });
+    } catch(e) {
+      _personalChatHistory.push({ role: 'assistant', content: '❌ Error: ' + e.message });
+    }
+    sendBtn.disabled = false; sendBtn.textContent = 'Enviar';
+    if (loadingEl) loadingEl.style.display = 'none';
+    renderMsgs();
+  };
+  sendBtn.addEventListener('click', doSend);
+  inp.addEventListener('keydown', e => { if (e.key==='Enter' && !e.shiftKey){ e.preventDefault(); doSend(); } });
+  setTimeout(() => inp.focus(), 100);
+}
+
 // Mostrar el botón en boot también (por si arrancamos fuera de Catálogo)
 setTimeout(() => { try { ensureAiFloatingBtn(); } catch(e){} }, 1000);
 // Sacar el botón si cambiamos de sección
 const _origNavigateTo = navigateTo;
 window.navigateTo = function(section, sub){
   _origNavigateTo(section, sub);
-  setTimeout(() => ensureAiFloatingBtn(), 0);
+  setTimeout(() => { ensureAiFloatingBtn(); ensurePersonalBtn(); }, 0);
 };
 
 // Precio de venta y compra de un producto (catálogo)
@@ -14673,6 +14843,73 @@ let contactosPage = 1; let contactosSearch = '';
 let contactosSortCol = null; let contactosSortDir = 'asc';
 let editingContactoIdx = null; // null=lista, -1=nuevo, >=0=editar
 
+// ── Autocomplete de cliente estilo STEL ────────────────────────────
+function _wireClienteAutocomplete(inp, drop, onSelect) {
+  function _buildItems(query) {
+    const q = (query || '').toLowerCase().trim();
+    const all = (typeof CLIENTES !== 'undefined') ? CLIENTES : [];
+    let matches;
+    if (!q) {
+      matches = all.slice(0, 8);
+    } else {
+      matches = all.filter(c =>
+        (c.nj||'').toLowerCase().includes(q) ||
+        (c.nc||'').toLowerCase().includes(q) ||
+        (c.ref||'').toLowerCase().includes(q)
+      ).slice(0, 12);
+    }
+    if (!matches.length) {
+      drop.innerHTML = '<div class="cli-ac-empty">Sin resultados</div>';
+    } else {
+      drop.innerHTML = matches.map(c => {
+        const nm = escapeHtml(c.nj||'');
+        const nc = c.nc ? escapeHtml(c.nc) : '';
+        const ref = escapeHtml(c.ref||'');
+        return `<div class="cli-ac-item" data-val="${nm}">
+          <span class="cli-ac-ref">${ref}</span>
+          <span class="cli-ac-name">${nm}</span>
+          ${nc && nc !== nm ? '<span class="cli-ac-nc">'+nc+'</span>' : ''}
+        </div>`;
+      }).join('');
+    }
+    drop.style.display = 'block';
+  }
+  inp.setAttribute('autocomplete','off');
+  inp.removeAttribute('list');
+  inp.addEventListener('focus', () => _buildItems(inp.value));
+  inp.addEventListener('input', () => _buildItems(inp.value));
+  inp.addEventListener('blur', () => { setTimeout(() => { drop.style.display='none'; }, 180); });
+  drop.addEventListener('mousedown', e => {
+    const item = e.target.closest('.cli-ac-item');
+    if (!item) return;
+    e.preventDefault();
+    const val = item.dataset.val || '';
+    inp.value = val;
+    drop.style.display = 'none';
+    if (onSelect) onSelect(val);
+  });
+}
+// Edición inline de campos de contacto desde tab Contactos del cliente
+function _saveContactoField(idx, field, value) {
+  const list = loadContactos();
+  if (idx < 0 || idx >= list.length) return;
+  list[idx][field] = value.trim();
+  saveContactos(list);
+}
+// Rellena un <select id="cot-contacto"> con contactos del cliente seleccionado
+function _actualizarContactosByCli(clienteNJ, sel) {
+  if (!sel) return;
+  const todos = loadContactos();
+  const filtrados = clienteNJ
+    ? todos.filter(c => (c.cliente||'').toLowerCase() === (clienteNJ||'').toLowerCase())
+    : todos;
+  const prev = sel.value;
+  sel.innerHTML = '<option value="">— Sin contacto —</option>' +
+    filtrados.map(c => `<option value="${escapeHtml(c.nombre)}"${c.nombre===prev?' selected':''}>${escapeHtml(c.nombre)}${c.cargo?' ('+escapeHtml(c.cargo)+')':''}</option>`).join('');
+  if (filtrados.length === 1) sel.value = filtrados[0].nombre;
+}
+// ────────────────────────────────────────────────────────────────────
+
 function _clientes_applyFilters(){
   const q = clientesSearch.toLowerCase();
   const cf = clientesColFilters;
@@ -15100,6 +15337,35 @@ function renderClienteDetalle(){
       '<tbody>'+(allRows || '<tr><td colspan="6" style="text-align:center;padding:40px;color:var(--text-soft)">Sin documentos para este cliente</td></tr>')+'</tbody>'+
       '</table></div>';
   }
+  else if (tab === 'contactos') {
+    const _cts = loadContactos().filter(c => (c.cliente||'').toLowerCase() === (nombreCliente||'').toLowerCase());
+    if (!_cts.length) {
+      tabContent = `<div style="padding:50px 20px;text-align:center;color:var(--text-soft)">
+        <div style="font-size:36px;margin-bottom:12px">👤</div>
+        <h3 style="margin:0 0 8px">Sin contactos</h3>
+        <p style="margin:0;font-size:13px">Agregá personas de contacto desde la sección Contactos.</p>
+      </div>`;
+    } else {
+      const _ctInpStyle = 'width:100%;background:transparent;border:none;border-bottom:1px dashed transparent;padding:2px 4px;font-size:13px;color:var(--text);font-family:inherit;outline:none;border-radius:3px;transition:border-color .15s,background .15s';
+      const _ctInpFocusStyle = 'border-bottom-color:var(--primary);background:var(--primary-light)';
+      const allCtos = loadContactos();
+      const rows = _cts.map(ct => {
+        const realIdx = allCtos.findIndex(c => c.nombre === ct.nombre && (c.cliente||'') === (ct.cliente||''));
+        return `<tr>
+          <td><b>${escapeHtml(ct.nombre||'')}</b></td>
+          <td><input class="ct-inline-edit" data-ct-idx="${realIdx}" data-ct-field="cargo" value="${escapeHtml(ct.cargo||'')}" placeholder="Cargo…" style="${_ctInpStyle}" onfocus="this.style.cssText='${_ctInpStyle};${_ctInpFocusStyle}'" onblur="this.style.cssText='${_ctInpStyle}';_saveContactoField(+this.dataset.ctIdx, this.dataset.ctField, this.value)"></td>
+          <td><input class="ct-inline-edit" data-ct-idx="${realIdx}" data-ct-field="telefono" value="${escapeHtml(ct.telefono||'')}" placeholder="Teléfono…" style="${_ctInpStyle}" onfocus="this.style.cssText='${_ctInpStyle};${_ctInpFocusStyle}'" onblur="this.style.cssText='${_ctInpStyle}';_saveContactoField(+this.dataset.ctIdx, this.dataset.ctField, this.value)"></td>
+          <td><input class="ct-inline-edit" data-ct-idx="${realIdx}" data-ct-field="email" value="${escapeHtml(ct.email||'')}" placeholder="Email…" style="${_ctInpStyle}" onfocus="this.style.cssText='${_ctInpStyle};${_ctInpFocusStyle}'" onblur="this.style.cssText='${_ctInpStyle}';_saveContactoField(+this.dataset.ctIdx, this.dataset.ctField, this.value)"></td>
+          <td><input class="ct-inline-edit" data-ct-idx="${realIdx}" data-ct-field="observaciones" value="${escapeHtml(ct.observaciones||'')}" placeholder="Observaciones…" style="${_ctInpStyle}" onfocus="this.style.cssText='${_ctInpStyle};${_ctInpFocusStyle}'" onblur="this.style.cssText='${_ctInpStyle}';_saveContactoField(+this.dataset.ctIdx, this.dataset.ctField, this.value)"></td>
+        </tr>`;
+      }).join('');
+      tabContent = `<div class="data-table-wrap"><table class="data-table">
+        <thead><tr><th>Nombre</th><th>Cargo</th><th>Teléfono</th><th>Email</th><th>Observaciones</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table></div>
+      <div style="margin-top:8px;font-size:12px;color:var(--text-soft);padding-left:4px">Hacé clic en cualquier campo para editarlo. Se guarda solo al salir del campo.</div>`;
+    }
+  }
 
   return `<div style="padding:0">
     <div style="background:var(--bg);border-bottom:1px solid var(--border);padding:12px 24px;display:flex;align-items:center;justify-content:space-between">
@@ -15136,7 +15402,8 @@ function renderClienteDetalle(){
         <div style="display:flex;gap:24px;border-bottom:1px solid var(--border);margin-top:24px;margin-bottom:20px">
           <div class="cl-tab" data-cl-tab="info" style="padding:12px 0;cursor:pointer;font-weight:600;${tab==='info'?'color:var(--primary);border-bottom:2px solid var(--primary)':''}">Información</div>
           <div class="cl-tab" data-cl-tab="memoria" style="padding:12px 0;cursor:pointer;font-weight:600;${tab==='memoria'?'color:var(--primary);border-bottom:2px solid var(--primary)':''}">🧠 Memoria de productos ${memEntries.length>0 ? '<span style="background:var(--primary);color:white;padding:1px 8px;border-radius:10px;font-size:11px;margin-left:4px">'+memEntries.length+'</span>' : ''}</div>
-          <div class="cl-tab" data-cl-tab="historial" style="padding:12px 0;cursor:pointer;font-weight:600;${tab==='historial'?'color:var(--primary);border-bottom:2px solid var(--primary)':''}">Historial (${docs.cots.length+docs.peds.length+docs.nes.length+docs.facs.length})</div>
+          <div class="cl-tab" data-cl-tab="historial" style="padding:12px 0;cursor:pointer;font-weight:600;${tab==='historial'?'color:var(--primary);border-bottom:2px solid var(--primary)':'color:var(--text-soft)'}">Historial</div>
+          <div class="cl-tab" data-cl-tab="contactos" style="padding:12px 0;cursor:pointer;font-weight:600;${tab==='contactos'?'color:var(--primary);border-bottom:2px solid var(--primary)':''}">👤 Contactos</div>
         </div>
 
         ${tabContent}
@@ -16208,12 +16475,31 @@ function renderCotEditor(){
         <div class="cot-row">
           <label><span class="req-marker">!</span>Cliente:</label>
           <div class="cot-input-group">
-            <input class="cot-input editable" list="cot-cl-list" id="cot-cliente" type="text" value="${escapeHtml(clienteName)}" placeholder="Buscar cliente...">
-            <datalist id="cot-cl-list">${dl}</datalist>
+            <div class="cli-ac-wrap">
+            <input class="cot-input editable" id="cot-cliente" type="text" value="${escapeHtml(clienteName)}" placeholder="Buscar cliente...">
+            <div class="cli-ac-dropdown" id="cot-cli-drop"></div>
+            </div>
             <button class="cot-input-icon" id="cot-cli-nuevo" title="Nuevo cliente">＋</button>
             <button class="cot-input-icon" id="cot-cli-card-toggle" title="Ver / editar datos del cliente">📇</button>
           </div>
         </div>
+        ${(()=>{
+          // Row de persona de contacto
+          const _allCts = loadContactos();
+          const _ctsByCli = clienteName
+            ? _allCts.filter(c=>(c.cliente||'').toLowerCase()===(clienteName||'').toLowerCase())
+            : _allCts;
+          const _savedCt = b.contacto || '';
+          return `<div class="cot-row">
+            <label>Contacto:</label>
+            <div class="cot-input-group">
+              <select class="cot-input editable" id="cot-contacto" style="flex:1">
+                <option value="">— Sin contacto —</option>
+                ${_ctsByCli.map(c=>`<option value="${escapeHtml(c.nombre)}"${c.nombre===_savedCt?' selected':''}>${escapeHtml(c.nombre)}${c.cargo?' ('+escapeHtml(c.cargo)+')':''}</option>`).join('')}
+              </select>
+            </div>
+          </div>`;
+        })()}
         ${(()=>{
           const _cliObj = getClienteObj(clienteName);
           const _cliOpen = state.cotClienteCardOpen;
@@ -16860,12 +17146,32 @@ document.querySelectorAll('[data-cot-tab]').forEach(t => t.addEventListener('cli
       });
     });
   })();
-  document.getElementById('cot-cliente')?.addEventListener('change', e => { cotizacionBorrador.cliente = e.target.value; saveBorrador(cotizacionBorrador); });
-  document.getElementById('cot-cliente')?.addEventListener('input', e => {
-    cotizacionBorrador.cliente = e.target.value;
-    saveBorrador(cotizacionBorrador);
-    if (state.cotClienteCardOpen) renderMainKeepScroll();
-  });
+  // Autocomplete STEL-style para cliente
+  const _cotCliInp = document.getElementById('cot-cliente');
+  const _cotCliDrop = document.getElementById('cot-cli-drop');
+  if (_cotCliInp && _cotCliDrop) {
+    _wireClienteAutocomplete(_cotCliInp, _cotCliDrop, val => {
+      cotizacionBorrador.cliente = val;
+      saveBorrador(cotizacionBorrador);
+      // Update contact selector
+      const _cs = document.getElementById('cot-contacto');
+      if (_cs) _actualizarContactosByCli(val, _cs);
+      if (state.cotClienteCardOpen) renderMainKeepScroll();
+    });
+    _cotCliInp.addEventListener('input', e => {
+      cotizacionBorrador.cliente = e.target.value;
+      saveBorrador(cotizacionBorrador);
+      if (state.cotClienteCardOpen) renderMainKeepScroll();
+    });
+  }
+  // Selector de persona de contacto
+  const _cotCtSel = document.getElementById('cot-contacto');
+  if (_cotCtSel) {
+    _cotCtSel.addEventListener('change', e => {
+      cotizacionBorrador.contacto = e.target.value;
+      saveBorrador(cotizacionBorrador);
+    });
+  }
   // Client card toggle
   document.querySelectorAll('[data-pipeline-nav]').forEach(el => {
     el.addEventListener('click', () => {
@@ -28860,9 +29166,72 @@ function renderTrazabilidad(){
       +'</div>';
   }).join('');
 
+  const activeTab = state.trazTab || 'users';
+  const tabStyle = (active) => `padding:8px 18px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all .15s;` + (active ? 'background:var(--primary);color:#fff;' : 'background:var(--card);color:var(--text-muted);');
+
+  const tabBar = '<div style="display:flex;gap:8px;margin-bottom:20px">'
+    +'<button id="traz-tab-users" style="'+tabStyle(activeTab==='users')+'">👥 Por usuario</button>'
+    +'<button id="traz-tab-activity" style="'+tabStyle(activeTab==='activity')+'">📊 Actividad en vivo</button>'
+    +'</div>';
+
+  // ── TAB: ACTIVIDAD EN VIVO (desde erp_activity_log en Supabase) ──
+  if (activeTab === 'activity'){
+    const data = state._actLogData || [];
+    const loading = state._actLogLoading;
+    let content;
+    if (loading){
+      content = '<div style="padding:40px;text-align:center;color:var(--text-muted)">⏳ Cargando actividad...</div>';
+    } else if (data.length === 0){
+      content = '<div style="padding:40px;text-align:center;color:var(--text-muted)">Sin actividad registrada. Los eventos aparecen aquí automáticamente.</div>';
+    } else {
+      const typeColor = { crear:'rgba(249,115,22,.2)', editar:'rgba(14,165,233,.2)', borrar:'rgba(239,68,68,.18)', navegar:'rgba(99,102,241,.15)', ia_personal:'rgba(124,58,237,.25)', ia_query:'rgba(124,58,237,.15)', sesion:'rgba(34,197,94,.22)', exportar:'rgba(168,85,247,.18)', consultar:'rgba(100,100,100,.12)' };
+      const rows = data.map(function(e){
+        const ts = new Date(e.created_at).toLocaleString('es-AR',{hour:'2-digit',minute:'2-digit',day:'2-digit',month:'2-digit'});
+        const avatar = (TEAM_LABELS[e.user_id]||e.user_id||'?').charAt(0).toUpperCase();
+        const color = typeColor[e.action_type] || 'rgba(100,100,100,.12)';
+        return '<tr style="border-bottom:1px solid var(--border)">'
+          +'<td style="padding:8px 14px;font-size:11px;color:var(--text-muted);white-space:nowrap">'+escapeHtml(ts)+'</td>'
+          +'<td style="padding:8px 10px"><span style="display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:var(--primary);color:#fff;font-weight:700;font-size:12px">'+escapeHtml(avatar)+'</span></td>'
+          +'<td style="padding:8px 10px"><span style="display:inline-block;padding:2px 9px;border-radius:6px;font-size:11px;font-weight:700;background:'+color+'">'+escapeHtml(e.action_type||'')+'</span></td>'
+          +'<td style="padding:8px 10px;font-size:11px;color:var(--text-muted)">'+escapeHtml(e.entity||'')+'</td>'
+          +'<td style="padding:8px 14px;font-size:13px;max-width:380px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+escapeHtml(e.description||'')+'</td>'
+          +'</tr>';
+      }).join('');
+      content = '<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:13px">'
+        +'<thead><tr style="background:var(--bg2,#f3f4f6);font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted)">'
+        +'<th style="padding:8px 14px;text-align:left">Hora</th>'
+        +'<th style="padding:8px 10px;text-align:left">Usuario</th>'
+        +'<th style="padding:8px 10px;text-align:left">Tipo</th>'
+        +'<th style="padding:8px 10px;text-align:left">Entidad</th>'
+        +'<th style="padding:8px 14px;text-align:left">Descripción</th>'
+        +'</tr></thead>'
+        +'<tbody>'+rows+'</tbody></table></div>';
+    }
+
+    const filterBar = '<div style="display:flex;gap:8px;margin-bottom:12px;align-items:center">'
+      +'<select id="traz-act-user" style="padding:6px 10px;border:1px solid var(--border);border-radius:7px;background:var(--card);color:var(--text);font-size:13px">'
+      +'<option value="">Todos los usuarios</option>'
+      +TEAM_USERS.map(u=>`<option value="${u}" ${state._actLogUser===u?'selected':''}>${TEAM_LABELS[u]||u}</option>`).join('')
+      +'</select>'
+      +'<select id="traz-act-type" style="padding:6px 10px;border:1px solid var(--border);border-radius:7px;background:var(--card);color:var(--text);font-size:13px">'
+      +'<option value="">Todos los tipos</option>'
+      +['crear','editar','borrar','navegar','ia_personal','sesion','exportar'].map(t=>`<option value="${t}" ${state._actLogType===t?'selected':''}>${t}</option>`).join('')
+      +'</select>'
+      +'<button id="traz-act-refresh" style="padding:6px 14px;border:none;border-radius:7px;background:var(--primary);color:#fff;font-size:13px;font-weight:600;cursor:pointer">↻ Actualizar</button>'
+      +'</div>';
+
+    return '<div style="padding:24px 28px;max-width:1000px">'
+      +'<h2 style="margin:0 0 16px;font-size:20px;font-weight:700">Trazabilidad</h2>'
+      + tabBar + filterBar
+      +'<div style="background:var(--card);border-radius:10px;border:1px solid var(--border);overflow:hidden">'+content+'</div>'
+      +'</div>';
+  }
+
+  // ── TAB: POR USUARIO (vista original) ──
   return '<div style="padding:24px 28px;max-width:700px">'
-    +'<div style="display:flex;align-items:center;gap:16px;margin-bottom:20px">'
-    +'<h2 style="margin:0;font-size:20px;font-weight:700">Trazabilidad</h2>'
+    +'<h2 style="margin:0 0 16px;font-size:20px;font-weight:700">Trazabilidad</h2>'
+    + tabBar
+    +'<div style="display:flex;align-items:center;gap:16px;margin-bottom:16px">'
     +'<span style="color:var(--text-muted);font-size:13px">Actividad del equipo</span>'
     +'<div style="margin-left:auto">'
     +'<button id="traz-clear-log" style="padding:5px 12px;border:1px solid var(--border);border-radius:6px;background:var(--card);color:var(--text-muted);font-size:12px;cursor:pointer">Borrar todo el log</button>'
@@ -28870,6 +29239,22 @@ function renderTrazabilidad(){
     +'<div style="background:var(--card);border-radius:10px;border:1px solid var(--border);overflow:hidden">'
     +userCards
     +'</div></div>';
+}
+
+// Carga actividad desde erp_activity_log en Supabase
+async function _fetchActivityLog(userFilter, typeFilter){
+  state._actLogLoading = true;
+  renderMain();
+  try{
+    let q = `erp_activity_log?order=created_at.desc&limit=100`;
+    if(userFilter) q += `&user_id=eq.${encodeURIComponent(userFilter)}`;
+    if(typeFilter) q += `&action_type=eq.${encodeURIComponent(typeFilter)}`;
+    const r = await fetch(SUPA_URL + '/rest/v1/' + q, { headers: _supaH });
+    const data = r.ok ? await r.json() : [];
+    state._actLogData = Array.isArray(data) ? data : [];
+  } catch(e){ state._actLogData = []; }
+  state._actLogLoading = false;
+  renderMain();
 }
 
 function _trazActionColor(action){
@@ -28884,15 +29269,28 @@ function _trazActionColor(action){
 }
 
 function wireTrazabilidad(){
+  // Tabs
+  const tabUsers = document.getElementById('traz-tab-users');
+  const tabAct   = document.getElementById('traz-tab-activity');
+  if(tabUsers) tabUsers.addEventListener('click', ()=>{ state.trazTab='users'; state.trazSelectedUser=null; renderMain(); });
+  if(tabAct)   tabAct.addEventListener('click', ()=>{
+    state.trazTab='activity';
+    state.trazSelectedUser=null;
+    if(!state._actLogData) _fetchActivityLog(state._actLogUser||'', state._actLogType||'');
+    else renderMain();
+  });
+
   // Back button (detail view)
   var backBtn = document.getElementById('traz-back-btn');
   if(backBtn) backBtn.addEventListener('click', function(){ state.trazSelectedUser=null; renderMain(); });
+
   // User row click → detail
   document.querySelectorAll('.traz-user-row').forEach(function(row){
     row.addEventListener('mouseenter', function(){ row.style.background='var(--bg2,#f3f4f6)'; });
     row.addEventListener('mouseleave', function(){ row.style.background=''; });
     row.addEventListener('click', function(){ state.trazSelectedUser = row.dataset.trazUser; renderMain(); });
   });
+
   // Clear log
   var fb = document.getElementById('traz-clear-log');
   if(fb) fb.addEventListener('click', async function(){
@@ -28901,6 +29299,17 @@ function wireTrazabilidad(){
       state.trazSelectedUser = null;
       renderMain();
     }
+  });
+
+  // Filtros tab actividad
+  const selUser = document.getElementById('traz-act-user');
+  const selType = document.getElementById('traz-act-type');
+  const btnRef  = document.getElementById('traz-act-refresh');
+  if(selUser) selUser.addEventListener('change', e=>{ state._actLogUser = e.target.value; });
+  if(selType) selType.addEventListener('change', e=>{ state._actLogType = e.target.value; });
+  if(btnRef)  btnRef.addEventListener('click', ()=>{
+    state._actLogData = null;
+    _fetchActivityLog(state._actLogUser||'', state._actLogType||'');
   });
 }
 
@@ -31387,7 +31796,16 @@ function renderChat(){
   const selfHist = _chatLoadAIResponses(me, '__SELF_FEED__');
   const lastSelf = selfHist[selfHist.length - 1];
   const learnedCount = _cloneLearnedGet(me).trim().split('\n').filter(l=>l.trim()).length;
-  let convList = '<div class="chat-conv-item" data-chat-open="__SELF_FEED__" style="display:flex;gap:10px;padding:10px 14px;cursor:pointer;border-bottom:2px solid ' + myColor + '30;background:' + (selfActive ? myColor + '12' : 'linear-gradient(90deg,' + myColor + '08,transparent)') + '">'
+  const _pActive = state.chatOpenWith === '__PERSONAL__';
+  const _pLastMsg = (_personalChatHistory && _personalChatHistory.length) ? _personalChatHistory[_personalChatHistory.length-1] : null;
+  let convList = '<div class="chat-conv-item" data-chat-open="__PERSONAL__" style="display:flex;gap:10px;padding:10px 14px;cursor:pointer;border-bottom:2px solid var(--border);background:' + (_pActive ? 'var(--primary-light)' : 'transparent') + '">'
+    + '<div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#0ea5e9,#6366f1);color:white;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">🧠</div>'
+    + '<div style="flex:1;min-width:0">'
+      + '<div style="font-weight:700;font-size:13px;color:#0ea5e9">Mi Asistente Personal</div>'
+      + '<div style="font-size:11px;color:var(--text-soft);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + (_pLastMsg ? escapeHtml((_pLastMsg.content||'').slice(0,45)) : 'IA con memoria · solo tuya') + '</div>'
+    + '</div>'
+  + '</div>'
+  + '<div class="chat-conv-item" data-chat-open="__SELF_FEED__" style="display:flex;gap:10px;padding:10px 14px;cursor:pointer;border-bottom:2px solid ' + myColor + '30;background:' + (selfActive ? myColor + '12' : 'linear-gradient(90deg,' + myColor + '08,transparent)') + '">'
     + '<div style="position:relative;flex-shrink:0">'
       + '<div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,' + myColor + ',' + myColor + 'cc);color:white;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:18px">🤖</div>'
       + (learnedCount > 0 ? '<div style="position:absolute;bottom:-1px;right:-1px;width:14px;height:14px;border-radius:50%;background:' + myColor + ';border:2px solid var(--surface);display:flex;align-items:center;justify-content:center;font-size:7px;color:white;font-weight:700">' + learnedCount + '</div>' : '')
@@ -31495,6 +31913,31 @@ function renderChat(){
       + '<div style="display:flex;gap:8px;padding:12px;border-top:1px solid var(--border);background:var(--surface)">'
           + '<input id="sf-chat-input" type="text" placeholder="Hablá con tu clon..." style="flex:1;padding:9px 14px;border:1px solid var(--border);border-radius:20px;background:var(--bg);color:var(--text);font-size:13px;outline:none">'
           + '<button id="sf-send-btn" style="background:' + sfColor + ';color:white;border:none;border-radius:50%;width:38px;height:38px;cursor:pointer;font-size:16px;flex-shrink:0">›</button>'
+      + '</div>'
+    + '</div>';
+  } else if (state.chatOpenWith === '__PERSONAL__') {
+    const _ph = _personalChatHistory || [];
+    const _bubblesHtml = _personalChatLoading
+      ? '<div style="text-align:center;color:var(--text-soft);padding:40px;font-size:13px">⏳ Cargando historial…</div>'
+      : _ph.length === 0
+        ? '<div style="text-align:center;color:var(--text-soft);padding:40px;font-size:13px">🧠 Empezá tu primera conversación.<br><br>Tengo memoria de todo lo que hablemos.<br>Puedo ayudarte con el ERP, recordar lo que hiciste y darte contexto.</div>'
+        : _ph.map(m => {
+            const isU = m.role === 'user';
+            return '<div style="display:flex;justify-content:' + (isU?'flex-end':'flex-start') + ';margin-bottom:10px">'
+              + '<div style="max-width:75%;background:' + (isU?'var(--primary)':'var(--surface)') + ';color:' + (isU?'white':'var(--text)') + ';padding:10px 14px;border-radius:' + (isU?'18px 18px 4px 18px':'18px 18px 18px 4px') + ';font-size:13px;line-height:1.5;border:' + (isU?'none':'1px solid var(--border)') + ';white-space:pre-wrap;word-break:break-word">'
+              + escapeHtml(m.content||'')
+              + '</div></div>';
+          }).join('');
+    msgsPanel = '<div style="display:flex;flex-direction:column;height:100%">'
+      + '<div style="padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;flex-shrink:0">'
+        + '<div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#0ea5e9,#6366f1);color:white;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">🧠</div>'
+        + '<div><div style="font-weight:700;font-size:14px;color:var(--text)">Mi Asistente Personal</div>'
+        + '<div style="font-size:11px;color:var(--text-soft)">Memoria persistente · solo para ' + escapeHtml(me) + '</div></div>'
+      + '</div>'
+      + '<div id="personal-msgs" style="flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column">' + _bubblesHtml + '</div>'
+      + '<div style="padding:10px 14px;border-top:1px solid var(--border);display:flex;gap:8px;flex-shrink:0;align-items:flex-end">'
+        + '<textarea id="personal-chat-input" rows="1" placeholder="Escribí tu mensaje… (Enter para enviar)" style="flex:1;resize:none;padding:8px 12px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:13px;font-family:inherit;outline:none;min-height:38px;max-height:120px"></textarea>'
+        + '<button id="personal-send-btn" style="padding:8px 18px;background:var(--primary);color:white;border:none;border-radius:8px;cursor:pointer;font-size:13px;height:38px;flex-shrink:0">Enviar</button>'
       + '</div>'
     + '</div>';
   } else if (state.chatOpenWith){
@@ -31683,6 +32126,74 @@ function wireChat(){
     return; // no seguir con el wiring normal
   }
 
+  // ── Asistente personal ────────────────────────────────────────────
+  if (state.chatOpenWith === '__PERSONAL__') {
+    // Cargar historial si no está cargado todavía
+    if (_personalChatHistory === null && !_personalChatLoading) {
+      _personalChatLoading = true;
+      const _pWorkerUrl = (loadAiConfig().workerUrl || AI_WORKER_URL || '').trim();
+      fetch(_pWorkerUrl + '/personal/history?user_id=' + encodeURIComponent(me), {
+        headers: { 'X-Worker-Token': AI_WORKER_TOKEN },
+      })
+      .then(r => r.json())
+      .then(d => {
+        _personalChatHistory = Array.isArray(d.history) ? d.history : [];
+        _personalChatLoading = false;
+        renderMain();
+        setTimeout(() => { const m = document.getElementById('personal-msgs'); if (m) m.scrollTop = m.scrollHeight; }, 80);
+      })
+      .catch(() => { _personalChatHistory = []; _personalChatLoading = false; renderMain(); });
+    }
+
+    const pInput = document.getElementById('personal-chat-input');
+    const pSend  = document.getElementById('personal-send-btn');
+
+    const sendPersonal = async () => {
+      const txt = (pInput?.value || '').trim();
+      if (!txt) return;
+      if (_personalChatHistory === null) _personalChatHistory = [];
+      _personalChatHistory.push({ role: 'user', content: txt });
+      if (pInput) pInput.value = '';
+      if (pSend) { pSend.disabled = true; pSend.textContent = '⏳'; }
+      // Log la consulta al asistente personal
+      try{ logActivity(me, 'Consulta asistente personal', txt.slice(0,200), { action_type:'ia_personal', entity:'asistente', section: state.section }); }catch(_){}
+      renderMain();
+      setTimeout(() => { const m = document.getElementById('personal-msgs'); if (m) m.scrollTop = m.scrollHeight; }, 50);
+      try {
+        const _pUrl = (loadAiConfig().workerUrl || AI_WORKER_URL || '').trim();
+        const r = await fetch(_pUrl + '/personal', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'X-Worker-Token': AI_WORKER_TOKEN },
+          body: JSON.stringify({
+            user_id: me,
+            user_name: me,
+            user_role: state.role || '',
+            section: state.section || '',
+            message: txt,
+          }),
+        });
+        const d = await r.json();
+        _personalChatHistory.push({ role: 'assistant', content: d.content || 'Sin respuesta.' });
+      } catch(e) {
+        _personalChatHistory.push({ role: 'assistant', content: '❌ Error al conectar: ' + e.message });
+      }
+      renderMain();
+      setTimeout(() => { const m = document.getElementById('personal-msgs'); if (m) m.scrollTop = m.scrollHeight; }, 80);
+    };
+
+    if (pSend) {
+      pSend.addEventListener('mousedown', e => e.preventDefault());
+      pSend.addEventListener('click', sendPersonal);
+    }
+    if (pInput) {
+      pInput.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendPersonal(); } });
+      pInput.focus();
+    }
+    setTimeout(() => { const m = document.getElementById('personal-msgs'); if (m) m.scrollTop = m.scrollHeight; }, 50);
+    return;
+  }
+  // ─────────────────────────────────────────────────────────────────
+
   const inp = document.getElementById('chat-input');
   const btn = document.getElementById('chat-send');
   const send = () => {
@@ -31800,16 +32311,62 @@ async function _trazUploadUser(user){
   }catch(e){ console.warn('[Traz] Upload error:', e.message); }
 }
 
-function logActivity(user, action, detail){
+// ─── Clasificador de acciones para erp_activity_log ─────────────────────────
+function _classifyAction(action, detail){
+  const a = (action||'').toLowerCase();
+  const d = (detail||'').toLowerCase();
+  let action_type = 'consultar';
+  let entity = 'general';
+  if(a.includes('creó') || a.includes('creo') || a.includes('nuevo') || a.includes('agregó')) action_type = 'crear';
+  else if(a.includes('editó') || a.includes('edito') || a.includes('modificó') || a.includes('actualizó')) action_type = 'editar';
+  else if(a.includes('eliminó') || a.includes('elimino') || a.includes('borró') || a.includes('borro')) action_type = 'borrar';
+  else if(a.includes('navegó') || a.includes('navego') || a.includes('sección')) action_type = 'navegar';
+  else if(a.includes('imprimió') || a.includes('exportó')) action_type = 'exportar';
+  else if(a.includes('inicio de sesión') || a.includes('accedió')) action_type = 'sesion';
+  if(a.includes('cotización') || a.includes('cotizacion') || d.includes('cot-')) entity = 'cotizacion';
+  else if(a.includes('pedido') || d.includes('pc0') || d.includes('pv0')) entity = 'pedido';
+  else if(a.includes('nota de entrega') || d.includes('ne0')) entity = 'nota_entrega';
+  else if(a.includes('product')) entity = 'producto';
+  else if(a.includes('cliente')) entity = 'cliente';
+  else if(a.includes('email') || a.includes('mail')) entity = 'email';
+  else if(a.includes('whatsapp') || a.includes('wa')) entity = 'whatsapp';
+  else if(a.includes('sección')) entity = 'seccion';
+  else if(a.includes('sesión') || a.includes('sesion')) entity = 'sesion';
+  return { action_type, entity };
+}
+
+// Fire-and-forget: envía una entrada a erp_activity_log en Supabase
+function _actLogToSupabase(user, action, detail, extra_metadata){
+  if(!user || !SUPA_URL) return;
+  try{
+    const { action_type, entity } = _classifyAction(action, detail);
+    const body = {
+      user_id: user,
+      action_type,
+      entity,
+      description: (action + (detail ? ' — ' + detail : '')).slice(0, 500),
+      metadata: extra_metadata || null,
+    };
+    fetch(SUPA_URL + '/rest/v1/erp_activity_log', {
+      method: 'POST',
+      headers: { ..._supaH, 'Prefer': 'return=minimal' },
+      body: JSON.stringify(body),
+    }).catch(()=>{});   // silencioso
+  }catch(e){}
+}
+
+function logActivity(user, action, detail, metadata){
   if(!user) return;
   try{
     var log = _trazLoad();
     log.push({ ts: new Date().toISOString(), user: user, action: action, detail: detail||'' });
     if(log.length > 2000) log = log.slice(log.length - 2000);
     _trazSave(log);
-    // Subir el log de este usuario a Supabase con debounce de 4s
+    // Subir el log de este usuario a Supabase con debounce de 4s (sistema viejo)
     clearTimeout(_trazSupaTimers[user]);
     _trazSupaTimers[user] = setTimeout(() => { _trazUploadUser(user); }, 4000);
+    // Nuevo: log estructurado en erp_activity_log (fire-and-forget)
+    _actLogToSupabase(user, action, detail, metadata||null);
   }catch(e){}
 }
 
@@ -34718,6 +35275,8 @@ let _waStatusFilter= 'sin_responder';
 let _waSearch      = '';
 let _waServerUrl   = '';     // Railway URL, loaded from erp_wa_config
 let _waSecret      = '';
+let _waPingInterval= null;   // keepalive interval
+let _waQRTimeout   = null;   // auto-retry timer
 
 // ─── Helpers ────────────────────────────────────────────────────
 
@@ -34838,11 +35397,51 @@ function _waConnectWS() {
     }
   };
 
+  _waWS.onopen = () => {
+    console.log('WA WebSocket conectado');
+    // Keepalive cada 25s para evitar que Railway cierre la conexión idle
+    clearInterval(_waPingInterval);
+    _waPingInterval = setInterval(() => {
+      if (_waWS && _waWS.readyState === WebSocket.OPEN) {
+        try { _waWS.send(JSON.stringify({ type: 'ping' })); } catch(e) {}
+      }
+    }, 25000);
+    // Si no llega QR en 70s, reconectar (ciclo de QR es ~65s)
+    clearTimeout(_waQRTimeout);
+    _waQRTimeout = setTimeout(() => {
+      if (!_waQR && !_waConnected) {
+        console.log('WA: sin QR en 70s, reconectando...');
+        _waForceReconnect();
+      }
+    }, 70000);
+  };
+
   _waWS.onclose = () => {
+    clearInterval(_waPingInterval);
+    clearTimeout(_waQRTimeout);
     _waConnected = false;
     setTimeout(_waConnectWS, 5000);
   };
   _waWS.onerror = () => _waWS.close();
+}
+
+function _waForceReconnect() {
+  clearInterval(_waPingInterval);
+  clearTimeout(_waQRTimeout);
+  if (_waWS) { try { _waWS.close(); } catch(e) {} }
+  _waWS = null;
+  _waQR = null;
+  // Actualizar UI
+  const img = document.getElementById('wa-qr-img');
+  if (img) { img.src = ''; img.style.display = 'none'; }
+  const loading = document.getElementById('wa-qr-loading');
+  if (loading) { loading.textContent = 'Esperando QR del servidor…'; loading.style.display = ''; }
+  const btn = document.getElementById('wa-qr-retry-btn');
+  if (btn) btn.disabled = true;
+  setTimeout(() => {
+    _waConnectWS();
+    setTimeout(() => { const b = document.getElementById('wa-qr-retry-btn'); if(b) b.disabled = false; }, 5000);
+  }, 1000);
 }
 
 function _waRefreshThreadRow(phone) {
@@ -34954,8 +35553,11 @@ function renderWAQR() {
       <h3 style="margin:0;color:#111">Escanear QR con WhatsApp</h3>
       <p style="color:#666;margin:0;font-size:13px;text-align:center">WhatsApp → Dispositivos vinculados → Vincular dispositivo</p>
       <img id="wa-qr-img" src="" style="width:240px;height:240px;display:${_waQR ? '' : 'none'}" />
-      <div id="wa-qr-loading" style="display:${_waQR ? 'none' : ''};color:#666;font-size:13px">Generando QR…</div>
-      <button onclick="document.getElementById('wa-qr-wrap').style.display='none'" style="padding:6px 16px;border:1px solid #ddd;border-radius:6px;cursor:pointer;font-size:13px">Cerrar</button>
+      <div id="wa-qr-loading" style="display:${_waQR ? 'none' : ''};color:#666;font-size:13px">Esperando QR del servidor… (puede tardar hasta 60 seg)</div>
+      <div style="display:flex;gap:8px">
+        <button id="wa-qr-retry-btn" onclick="_waForceReconnect()" style="padding:6px 16px;background:#25d366;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:13px">🔄 Reintentar</button>
+        <button onclick="document.getElementById('wa-qr-wrap').style.display='none'" style="padding:6px 16px;border:1px solid #ddd;border-radius:6px;cursor:pointer;font-size:13px;background:#fff">Cerrar</button>
+      </div>
     </div>
   </div>`;
 }
