@@ -2258,7 +2258,7 @@ body[data-section-theme=""] .section-color-banner {
   <div class="topnav-item" data-section="compras" style="">Compras</div>
   <div class="topnav-item" data-section="importacion">Importación</div>
   <div class="topnav-item" data-section="micotizacion" id="topnav-micot" style="display:none">🛒 Mi Cotización <span id="micot-badge" style="display:none;background:var(--primary);color:#fff;border-radius:10px;font-size:10px;font-weight:700;padding:1px 6px;margin-left:3px">0</span></div>
-  <div class="topnav-item" data-section="emails" style="">✉ Emails <span id="emails-unread-badge" style="display: inline-block; background: var(--danger); color: rgb(255, 255, 255); border-radius: 10px; font-size: 10px; font-weight: 700; padding: 1px 6px; margin-left: 3px; vertical-align: middle;">194</span></div>
+  <div class="topnav-item" data-section="emails" style="">✉ Emails <span id="emails-unread-badge" style="display: inline-block; background: var(--danger); color: rgb(255, 255, 255); border-radius: 10px; font-size: 10px; font-weight: 700; padding: 1px 6px; margin-left: 3px; vertical-align: middle;">167</span></div>
   <div class="topnav-item" data-section="agenda" style="">Agenda</div>
   <div class="topnav-item" data-section="informes" style="">Informes</div>
   <div class="topnav-item" data-section="finanzas" style="">Finanzas</div>
@@ -2325,7 +2325,7 @@ body[data-section-theme=""] .section-color-banner {
   </div>
   <div class="ln-nav-body" id="ln-nav-body">
     <div class="ln-item active" data-lnav-section="inicio"><span class="ln-ico">🏠</span>Inicio</div><div class="ln-sub-item active" data-lnav-sub="inicio">Inicio</div><div class="ln-sub-item" data-lnav-sub="dashboard">Dashboard</div><div class="ln-sub-item" data-lnav-sub="dashboard-ejecutivo">Dashboard ejecutivo</div>
-    <div class="ln-item" data-lnav-section="emails"><span class="ln-ico">✉️</span>Emails <span id="emails-unread-lbadge" style="display: inline-block; background: var(--danger); color: rgb(255, 255, 255); border-radius: 8px; font-size: 10px; font-weight: 700; padding: 1px 5px; margin-left: 3px;">194</span></div>
+    <div class="ln-item" data-lnav-section="emails"><span class="ln-ico">✉️</span>Emails <span id="emails-unread-lbadge" style="display: inline-block; background: var(--danger); color: rgb(255, 255, 255); border-radius: 8px; font-size: 10px; font-weight: 700; padding: 1px 5px; margin-left: 3px;">167</span></div>
 
     <div class="ln-group-label">CATÁLOGO</div>
     <div class="ln-item" data-lnav-section="catalogo"><span class="ln-ico">📋</span>Catálogo</div>
@@ -18191,7 +18191,7 @@ function renderCotEditor(){
       <td style="width:140px;vertical-align:top"><input type="text" value="${escapeHtml(it.sku||'')}" data-cot-sku="${idx}" style="font-size:10px;padding:3px 5px"></td>
       <td style="width:260px;vertical-align:top"><textarea data-cot-nombre="${idx}" rows="1" style="resize:vertical;min-height:26px;max-height:120px;width:100%;padding:4px 6px;border:1px solid var(--border);border-radius:4px;background:var(--bg);color:var(--text);font-size:12px;font-family:inherit;box-sizing:border-box;overflow-y:auto;display:block">${escapeHtml(it.nombre||'')} </textarea>${_kitCompsHtml}</td>
       <td style="min-width:180px;vertical-align:top"><textarea data-cot-desc="${idx}" rows="1" style="resize:vertical;min-height:26px;max-height:160px;width:100%;padding:4px 6px;border:1px solid var(--border);border-radius:4px;background:var(--bg);color:var(--text);font-size:12px;font-family:inherit;box-sizing:border-box;overflow-y:auto;display:block">${escapeHtml(_buildEditorDesc(it))}</textarea></td>
-      <td class="num-cell" style="width:120px;vertical-align:top"><input type="number" step="0.01" value="${it.price!=null?it.price.toFixed(2):'0.00'}" data-cot-price="${idx}"></td>
+      <td class="num-cell" style="width:120px;vertical-align:top">${it._priceWarn?`<div style="font-size:10px;background:#fef3c7;color:#92400e;border:1px solid #fbbf24;border-radius:4px;padding:2px 5px;margin-bottom:3px;white-space:nowrap">⚠️ histórico: USD ${fmtNum(it._priceWarn)}</div>`:''}<input type="number" step="0.01" value="${it.price!=null?it.price.toFixed(2):'0.00'}" data-cot-price="${idx}"></td>
       <td class="uds-cell" style="width:70px;vertical-align:top"><input type="number" min="1" value="${it.qty}" data-cot-qty="${idx}"></td>
       <td class="num-cell" style="width:70px;vertical-align:top"><input type="number" step="0.01" value="${(it.dto||0).toFixed(2)}" data-cot-dto="${idx}"></td>
       <td class="num-cell" style="width:120px;vertical-align:top"><input type="text" value="${fmtNum(subtotal)}" readonly></td>
@@ -18729,16 +18729,16 @@ document.querySelectorAll('[data-cot-tab]').forEach(t => t.addEventListener('cli
   document.querySelectorAll('[data-cot-price]').forEach(inp => inp.addEventListener('change', e => {
     const idx = +e.target.dataset.cotPrice; const v = parseFloat(e.target.value);
     cotizacionBorrador.items[idx].price = isNaN(v) ? null : v;
-    // Avisar si el precio difiere del histórico para este cliente
+    // Mostrar aviso inline si el precio difiere del histórico para este cliente
     try{
       const _itSku = cotizacionBorrador.items[idx].sku;
       const _cli = cotizacionBorrador.cliente || '';
       if(_itSku && _cli && !isNaN(v) && v > 0){
         const _hp = getClientePriceForSku(_cli, _itSku);
         if(_hp && _hp.precio > 0 && Math.abs(_hp.precio - v) > 0.001){
-          showToast('⚠️ Precio distinto al histórico',
-            `${_itSku}: última vez USD ${fmtNum(_hp.precio)} · ahora USD ${fmtNum(v)}`,
-            'warning', 5000);
+          cotizacionBorrador.items[idx]._priceWarn = _hp.precio;
+        } else {
+          delete cotizacionBorrador.items[idx]._priceWarn;
         }
       }
     }catch(_){}
@@ -18984,14 +18984,25 @@ document.querySelectorAll('[data-cot-tab]').forEach(t => t.addEventListener('cli
   if (_cotCliInp && _cotCliDrop) {
     _wireClienteAutocomplete(_cotCliInp, _cotCliDrop, val => {
       cotizacionBorrador.cliente = val;
+      // Recalcular avisos de precio histórico para todos los ítems con el nuevo cliente
+      (cotizacionBorrador.items||[]).forEach(it => {
+        delete it._priceWarn;
+        try {
+          if (it.sku && it.price > 0 && val) {
+            const _hp = getClientePriceForSku(val, it.sku);
+            if (_hp && _hp.precio > 0 && Math.abs(_hp.precio - it.price) > 0.001)
+              it._priceWarn = _hp.precio;
+          }
+        } catch(_) {}
+      });
       saveBorrador(cotizacionBorrador);
-      // Update contact selector
       const _cs = document.getElementById('cot-contacto');
       if (_cs) _actualizarContactosByCli(val, _cs);
-      if (state.cotClienteCardOpen) renderMainKeepScroll();
+      renderMainKeepScroll();
     });
     _cotCliInp.addEventListener('input', e => {
       cotizacionBorrador.cliente = e.target.value;
+      (cotizacionBorrador.items||[]).forEach(it => delete it._priceWarn);
       saveBorrador(cotizacionBorrador);
       if (state.cotClienteCardOpen) renderMainKeepScroll();
     });
@@ -33838,7 +33849,7 @@ function renderChat(){
             const isU = m.role === 'user';
             return '<div style="display:flex;justify-content:' + (isU?'flex-end':'flex-start') + ';margin-bottom:10px">'
               + '<div style="max-width:75%;background:' + (isU?'var(--primary)':'var(--surface)') + ';color:' + (isU?'white':'var(--text)') + ';padding:10px 14px;border-radius:' + (isU?'18px 18px 4px 18px':'18px 18px 18px 4px') + ';font-size:13px;line-height:1.5;border:' + (isU?'none':'1px solid var(--border)') + ';white-space:pre-wrap;word-break:break-word">'
-              + (isU ? escapeHtml(m.content||'') : _linkifyERPDocs(escapeHtml(m.content||'')))
+              + (isU ? escapeHtml(m.content||'') : _personalChatRenderMsg(m.content||''))
               + '</div></div>';
           }).join('');
     msgsPanel = '<div style="display:flex;flex-direction:column;height:100%">'
@@ -34276,7 +34287,19 @@ Clientes: Trafigura, Mirgor, Unilever, YPF, Atlas Copco, SMC, Whirlpool, WEG, Ma
 Equipo: Juan (dueño, compras/importación), Facundo y Norberto (ventas), Jano (IT + automatizaciones), Brian (depósito), Admin (sistema).
 Flujo: cotización → pedido de venta → nota de entrega (remito). Moneda principal: USD.
 Rol de ${label2}: ${rolDesc2}.
-Tu tarea: ayudar a ${label2} con su trabajo diario. Sé conciso, directo y útil. Citá referencias exactas (COT-xxx, PED-xxx, NE-xxx).`;
+Tu tarea: ayudar a ${label2} con su trabajo diario. Sé conciso, directo y útil. Citá referencias exactas (COT-xxx, PED-xxx, NE-xxx).
+
+ACCIONES QUE PODÉS EJECUTAR DIRECTAMENTE — Usá estos marcadores en tu respuesta y el sistema los ejecutará automáticamente:
+
+▸ CREAR ETIQUETA DE EMAIL: [→LABEL:NombreEtiqueta|#hexcolor|campo=valor,campo2=valor2|AND_OR]
+  Campos: from=remitente, to=destinatario, subject=asunto, body=cuerpo, attachment= (sin valor = tiene adjunto), any=cualquier campo
+  Operador: AND (todas las reglas) | OR (cualquiera)
+  Jerarquía: usá "/" en el nombre para subcategorías estilo Gmail (ej: "OC/Con Adjunto")
+  Colores: #ef4444 rojo · #f59e0b naranja · #22c55e verde · #3b82f6 azul · #8b5cf6 violeta · #ec4899 rosa · #14b8a6 teal · #6b7280 gris
+  Etiquetas existentes: ${JSON.stringify((typeof _labelsLoad==='function'?_labelsLoad():[]).map(l=>({name:l.name,rules:(l.rules||[]).length})))}
+  IMPORTANTE: NUNCA digas que no podés crear etiquetas. Siempre usá el marcador directamente.
+  Ejemplo — "etiqueta para órdenes de compra con adjunto":
+  Claro, la creo ahora: [→LABEL:OC/Con Adjunto|#f59e0b|subject=orden de compra,attachment=|AND]`;
 
         const messagesForWorker2 = [
           ...(_personalChatHistory || [])
@@ -35857,7 +35880,7 @@ let emailsLabelFilter = null;
 let emailsSearch = '';
 let emailsPage = 1;
 let emailsOpenId = null;
-let emailsStatusFilter = 'sin_asignar';
+let emailsStatusFilter = 'todos';
 let emailsViewLimit = 50;
 let _emailsOpenData = null;
 let _emailsThreadData = null;
@@ -35869,7 +35892,7 @@ function _emailsNavReset() {
   _emailsOpenData = null;
   _emailsThreadMsgCache = {};
   emailsFilter = 'todos';
-  emailsStatusFilter = 'sin_asignar';
+  emailsStatusFilter = 'todos';
   emailsViewLimit = 50;
 }
 
@@ -36209,7 +36232,7 @@ function _emailsUpdateBadge(emails) {
     const key = e.thread_id || e.id;
     if (!threadMap[key] || new Date(e.date) > new Date(threadMap[key].date)) threadMap[key] = e;
   });
-  const count = Object.values(threadMap).filter(e => !e.assignee && e.status === 'sin_responder').length;
+  const count = Object.values(threadMap).filter(e => !e.is_read).length;
   ['emails-unread-badge', 'emails-unread-lbadge'].forEach(id => {
     const badge = document.getElementById(id);
     if (!badge) return;
@@ -36223,22 +36246,8 @@ function _emailsUpdateBadge(emails) {
 }
 
 async function _emailsFetchBadge() {
-  // Lightweight fetch — only needs is_read + status to compute the badge count
-  // Called at startup and on user-switch so the badge is always visible
-  try {
-    const params = new URLSearchParams({ select: 'id,is_read,status', order: 'date.desc', limit: '200' });
-    const r = await fetch(SUPA_URL + '/rest/v1/erp_emails?' + params, { headers: _supaH });
-    if (!r.ok) return;
-    const data = await r.json();
-    _emailsUpdateBadge(data);
-    // If we already have a full cache loaded, keep it in sync
-    if (_emailsCache) {
-      data.forEach(d => {
-        const hit = _emailsCache.find(e => e.id === d.id);
-        if (hit) { hit.is_read = d.is_read; hit.status = d.status; }
-      });
-    }
-  } catch(e) {}
+  // Usa la misma query que _emailsLoadList para garantizar coherencia del badge
+  try { await _emailsLoadList(true); } catch(e) {}
 }
 
 function renderEmailsSkeleton() {
@@ -36678,11 +36687,12 @@ function renderEmailsLista() {
   const _allOutbound = all.filter(e => e.direction === 'outbound');
   const _allInboundThreads = _emailsGroupThreads(_allInbound);
   const _sCounts = {
+    todos:         _allInboundThreads.length,
     sin_leer:      _allInboundThreads.filter(t => !t.latest.is_read).length,
+    leidos:        _allInboundThreads.filter(t => !!t.latest.is_read).length,
     sin_asignar:   _allInboundThreads.filter(t => !t.latest.assignee && t.latest.status === 'sin_responder').length,
     en_proceso:    _allInboundThreads.filter(t => t.latest.status === 'en_proceso').length,
     resuelto:      _allInboundThreads.filter(t => t.latest.status === 'resuelto').length,
-    todos:         _allInboundThreads.length,
     enviados:      _emailsGroupThreads(_allOutbound).length
   };
 
@@ -36692,6 +36702,8 @@ function renderEmailsLista() {
     filtered = all.filter(e => e.direction === 'outbound');
   } else if (emailsStatusFilter === 'sin_leer') {
     filtered = all.filter(e => e.direction !== 'outbound' && !e.is_read);
+  } else if (emailsStatusFilter === 'leidos') {
+    filtered = all.filter(e => e.direction !== 'outbound' && !!e.is_read);
   } else if (emailsStatusFilter === 'sin_asignar') {
     filtered = all.filter(e => e.direction !== 'outbound' && !e.assignee && e.status === 'sin_responder');
   } else {
@@ -36724,7 +36736,7 @@ function renderEmailsLista() {
     return `<div class="emails-status-filter" data-estatus="${escapeHtml(status)}" style="display:flex;align-items:center;gap:8px;padding:8px 14px;cursor:pointer;font-size:13px;font-weight:${isA?'700':'500'};color:${isA?'var(--primary)':'var(--text)'};background:${isA?'rgba(45,108,223,.08)':'transparent'};border-left:3px solid ${isA?'var(--primary)':'transparent'};transition:all .1s">
       ${dotColor?`<span style="width:8px;height:8px;border-radius:50%;background:${dotColor};flex-shrink:0"></span>`:`<span style="width:8px;height:8px;flex-shrink:0"></span>`}
       <span style="flex:1">${escapeHtml(label)}</span>
-      <span style="font-size:10px;font-weight:700;min-width:20px;text-align:center;padding:1px 5px;border-radius:8px;background:${isA?'var(--primary)':'var(--border)'};color:${isA?'#fff':'var(--text-muted)'}">${count}</span>
+      ${count != null ? `<span style="font-size:10px;font-weight:700;min-width:20px;text-align:center;padding:1px 5px;border-radius:8px;background:${isA?'var(--primary)':'var(--border)'};color:${isA?'#fff':'var(--text-muted)'}">${count}</span>` : ''}
     </div>`;
   }
 
@@ -36765,21 +36777,13 @@ function renderEmailsLista() {
 
   const sidebar = `<div style="width:196px;flex-shrink:0;border-right:1px solid var(--border);overflow-y:auto;display:flex;flex-direction:column;background:var(--surface)">
     <div style="padding:14px 14px 4px;font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px">Bandeja</div>
+    ${_sfItem('todos','Todos',null,null)}
     ${_sfItem('sin_leer','Sin leer',_sCounts.sin_leer,'#2d6cdf')}
-    ${_sfItem('sin_asignar','Sin asignar',_sCounts.sin_asignar,'#ef4444')}
-    <div style="padding:10px 14px 4px;font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;border-top:1px solid var(--border);margin-top:6px">Estado</div>
-    ${_sfItem('en_proceso','En proceso',_sCounts.en_proceso,'#f59e0b')}
-    ${_sfItem('resuelto','Resueltos',_sCounts.resuelto,'#22c55e')}
-    ${_sfItem('todos','Todos',_sCounts.todos,null)}
-    ${_sfItem('enviados','Enviados',_sCounts.enviados,'#7c3aed')}
+    ${_sfItem('leidos','Leídos',_sCounts.leidos,'#22c55e')}
     <div style="padding:10px 14px 4px;font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;border-top:1px solid var(--border);margin-top:6px">Equipo</div>
     ${assigneeRows}
     ${labelsSection}
     <div style="flex:1"></div>
-    <div style="padding:10px 12px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:6px">
-      <button onclick="navigateTo('emails','reglas')" style="width:100%;padding:7px;background:transparent;color:var(--text-muted);border:1px solid var(--border);border-radius:7px;font-size:11px;font-weight:600;cursor:pointer;text-align:left">⚡ Reglas automáticas</button>
-      <button onclick="_aiEmailsTogglePanel()" style="width:100%;padding:8px;background:linear-gradient(135deg,#2d6cdf,#7c3aed);color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer">🤖 Asistente IA</button>
-    </div>
   </div>`;
 
   // ── THREAD ROWS ───────────────────────────────────────────────────────────
@@ -37401,8 +37405,9 @@ let _waCache          = null;   // all messages from Supabase
 let _waOpenPhone      = null;   // currently open thread phone
 let _waStatusFilter   = 'sin_responder';
 let _waSearch         = '';
-let _wappflyToken     = '';     // Wappfly API token
-let _wappflyConnected = false;  // Wappfly connection state
+let _waLocalUrl       = 'http://localhost:3000';  // servidor Baileys local
+let _waQrCode         = null;                     // QR data URL cuando WA no conectado
+let _wappflyConnected = false;  // WhatsApp connection state
 let _wappflyPollTimer = null;   // polling interval handle
 let _wappflySeenIds   = new Set(); // dedup polled message IDs
 
@@ -37474,34 +37479,67 @@ async function _waPatchPhone(phone, data) {
   }
 }
 
-// ─── Wappfly — Poll + Send ───────────────────────────────────────
+// ─── WhatsApp Local — Poll + Send ───────────────────────────────
+
+function _waUpdateConnUI() {
+  const dot = document.getElementById('wa-conn-dot');
+  const lbl = document.getElementById('wa-conn-label');
+  if (dot) dot.style.background = _wappflyConnected ? '#25d366' : '#ef4444';
+  if (lbl) lbl.textContent = _wappflyConnected ? 'Conectado' : 'Conectando…';
+}
 
 async function _wappflyPoll() {
-  if (!_wappflyToken) return;
   try {
-    const r = await fetch('https://wappfly.com/api/messages/recent?limit=50', {
-      headers: { 'X-API-Token': _wappflyToken }
-    });
+    // 1) Chequear estado + QR
+    const sr = await fetch(_waLocalUrl + '/status', { signal: AbortSignal.timeout(5000) });
+    if (!sr.ok) { _wappflyConnected = false; _waQrCode = null; _waUpdateConnUI(); return; }
+    const status = await sr.json();
+    _waQrCode = status.qr || null;
+
+    if (!status.connected) {
+      if (_wappflyConnected) {
+        _wappflyConnected = false;
+        _waUpdateConnUI();
+        if (state.section === 'whatsapp') { const mc = document.getElementById('main-content'); if (mc) mc.innerHTML = renderWhatsapp(); }
+      } else if (state.section === 'whatsapp' && _waQrCode) {
+        // Actualizar QR si cambió
+        const mc = document.getElementById('main-content'); if (mc) mc.innerHTML = renderWhatsapp();
+      }
+      return;
+    }
+
+    // 2) Conectado
+    if (!_wappflyConnected) {
+      _wappflyConnected = true;
+      _waQrCode = null;
+      _waUpdateConnUI();
+      if (state.section === 'whatsapp') { const mc = document.getElementById('main-content'); if (mc) mc.innerHTML = renderWhatsapp(); }
+    }
+
+    // 3) Mensajes nuevos
+    const r = await fetch(_waLocalUrl + '/messages/recent?limit=50', { signal: AbortSignal.timeout(10000) });
     if (!r.ok) return;
     const msgs = await r.json();
     if (!Array.isArray(msgs) || msgs.length === 0) return;
+
     const newMsgs = msgs.filter(m => {
-      const id = m.key?.id;
-      if (!id || _wappflySeenIds.has(id)) return false;
-      _wappflySeenIds.add(id);
+      if (!m.id || _wappflySeenIds.has(m.id)) return false;
+      _wappflySeenIds.add(m.id);
       return true;
     });
     if (newMsgs.length === 0) return;
-    const rows = newMsgs.filter(m => !m.fromMe).map(m => {
-      const jid = m.key?.remoteJid || '';
-      const phone = jid.replace('@s.whatsapp.net','').replace('@c.us','');
-      return {
-        id: m.key?.id, phone, contact_name: m.pushName || phone,
-        body: m.messageBody || '', direction: 'inbound',
-        timestamp: m.messageTimestamp ? new Date(m.messageTimestamp * 1000).toISOString() : new Date().toISOString(),
-        is_read: false, status: 'sin_responder'
-      };
-    });
+
+    const rows = newMsgs.filter(m => m.direction === 'inbound').map(m => ({
+      id:           m.id,
+      phone:        m.phone,
+      contact_name: m.contact_name || m.phone,
+      body:         m.body || '',
+      direction:    'inbound',
+      timestamp:    m.timestamp || new Date().toISOString(),
+      is_read:      false,
+      status:       'sin_responder',
+    }));
+
     if (rows.length > 0) {
       await _sb.from('erp_whatsapp_messages').upsert(rows, { onConflict: 'id' });
       await _waLoadMessages(true);
@@ -37512,17 +37550,14 @@ async function _wappflyPoll() {
         if (cb) cb.scrollTop = cb.scrollHeight;
       }
     }
-    _wappflyConnected = true;
-    const dot = document.getElementById('wa-conn-dot');
-    const lbl = document.getElementById('wa-conn-label');
-    if (dot) dot.style.background = '#25d366';
-    if (lbl) lbl.textContent = 'Conectado';
-  } catch(e) { console.warn('Wappfly poll error:', e.message); }
+  } catch(e) {
+    _wappflyConnected = false; _waQrCode = null; _waUpdateConnUI();
+    console.warn('WA poll error:', e.message);
+  }
 }
 
 function _wappflyStartPolling() {
   _wappflyStopPolling();
-  if (!_wappflyToken) return;
   _wappflyPoll();
   _wappflyPollTimer = setInterval(_wappflyPoll, 30000);
 }
@@ -37552,15 +37587,18 @@ function _waRefreshThreadRow(phone) {
 // ─── Send ────────────────────────────────────────────────────────
 
 async function _waSend(phone, text) {
-  if (!_wappflyToken) { alert('Configurá el token de Wappfly primero'); return; }
   const to = phone.includes('@') ? phone : phone + '@s.whatsapp.net';
-  const r = await fetch('https://wappfly.com/api/messages/send', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'X-API-Token': _wappflyToken },
-    body: JSON.stringify({ to, text }),
-  });
-  if (!r.ok) { const e = await r.json().catch(()=>({})); alert('Error al enviar: ' + (e?.error || r.status)); return; }
-  // Guardar outbound en Supabase
+  try {
+    const r = await fetch(_waLocalUrl + '/messages/send', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ to, text }),
+    });
+    if (!r.ok) { const e = await r.json().catch(()=>({})); alert('Error al enviar: ' + (e?.error || r.status)); return; }
+  } catch(e) {
+    alert('Error: el servidor WhatsApp no está disponible.\n¿Está corriendo iniciar-whatsapp.bat?');
+    return;
+  }
   await _sb.from('erp_whatsapp_messages').insert({
     id: 'out-' + Date.now(), phone, body: text, direction: 'outbound',
     timestamp: new Date().toISOString(), is_read: true, status: 'enviado'
@@ -37602,48 +37640,41 @@ function _waRenderBubble(m) {
 // ─── Main render entry ───────────────────────────────────────────
 
 function renderWhatsapp() {
-  if (!_wappflyToken) return renderWASetup();
   const sub = state.subsection || 'inbox';
   if (sub === 'config') return renderWAConfig();
+  if (!_wappflyConnected) return renderWASetup();
   return renderWAInbox();
 }
 
-// ─── Setup (first time) ──────────────────────────────────────────
+// ─── Setup / QR ─────────────────────────────────────────────────
 
 function renderWASetup() {
+  if (_waQrCode) {
+    return `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:16px;padding:40px">
+      <div style="font-size:32px">📱</div>
+      <h2 style="margin:0">Escaneá el QR con WhatsApp</h2>
+      <p style="color:var(--muted);text-align:center;max-width:380px;margin:0">Abrí WhatsApp → <strong>Dispositivos vinculados</strong> → Vincular dispositivo</p>
+      <img src="${_waQrCode}" style="width:220px;height:220px;border-radius:12px;border:2px solid var(--border)" />
+      <p style="font-size:12px;color:var(--muted)">El QR se actualiza automáticamente. Esperá si expiró.</p>
+    </div>`;
+  }
   return `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:16px;padding:40px">
     <div style="font-size:48px">💬</div>
-    <h2 style="margin:0">Configurar WhatsApp</h2>
-    <p style="color:var(--muted);text-align:center;max-width:420px">Conectate con <strong>Wappfly</strong>: registrate, escaneá el QR en su plataforma y pegá tu API Token acá.</p>
-    <div style="background:var(--surface);border-radius:8px;padding:24px;width:100%;max-width:440px;display:flex;flex-direction:column;gap:12px">
-      <label style="font-size:13px;font-weight:600">API Token de Wappfly</label>
-      <input id="wa-setup-token" placeholder="Pegá tu token de wappfly.com" style="padding:8px 12px;border:1px solid var(--border);border-radius:6px;font-size:13px;background:var(--bg);color:var(--text)" />
-      <div style="font-size:12px;color:var(--muted);line-height:1.8">
-        1. Registrate en <a href="https://wappfly.com" target="_blank" style="color:#25d366">wappfly.com</a><br>
-        2. Escaneá el QR con WhatsApp → Dispositivos vinculados<br>
-        3. Copiá tu API Token desde el dashboard y pegalo arriba
-      </div>
-      <button onclick="_waSaveConfig()" style="padding:10px;background:#25d366;color:#fff;border:none;border-radius:6px;font-size:14px;font-weight:600;cursor:pointer">Guardar y conectar</button>
+    <h2 style="margin:0">Iniciar servidor WhatsApp</h2>
+    <div style="background:var(--surface);border-radius:8px;padding:24px;width:100%;max-width:440px">
+      <p style="margin:0;font-size:14px;color:var(--muted);line-height:1.9">
+        El servidor local de WhatsApp no está corriendo.<br><br>
+        <strong>1️⃣</strong> Si es la primera vez: instalá <a href="https://nodejs.org" target="_blank" style="color:#25d366">Node.js LTS</a><br>
+        <strong>2️⃣</strong> Hacé doble clic en <strong>iniciar-whatsapp.bat</strong><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;(está en la misma carpeta que el ERP)<br>
+        <strong>3️⃣</strong> Esperá el QR acá para escanearlo con WhatsApp
+      </p>
     </div>
+    <p style="font-size:12px;color:var(--muted)">Revisando conexión automáticamente cada 30 s…</p>
   </div>`;
 }
 
-async function _waSaveConfig() {
-  const tokenInput = document.getElementById('wa-setup-token');
-  const token = tokenInput?.value?.trim();
-  if (!token) { if (tokenInput) tokenInput.style.border = '2px solid red'; alert('Ingresá el API Token de Wappfly'); return; }
-  try {
-    await _sb.from('erp_wa_config').upsert({ id: 1, server_url: 'wappfly', ws_secret: token });
-  } catch(e) { console.warn('WA config save error (non-fatal):', e); }
-  localStorage.setItem('erp_wappfly_token', token);
-  _wappflyToken = token;
-  _wappflyStartPolling();
-  navigateTo('whatsapp', 'inbox');
-}
-
-// ─── QR overlay ──────────────────────────────────────────────────
-
-function renderWAQR() { return ''; /* QR handled on wappfly.com — no overlay needed */ }
+function renderWAQR() { return ''; }
 
 // ─── Inbox ───────────────────────────────────────────────────────
 
@@ -37745,7 +37776,7 @@ function renderWAInbox() {
   return `<div style="display:flex;flex-direction:column;height:100%;overflow:hidden">
     <div style="padding:8px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted)">
       ${connDot}${connLabel}
-      <span style="color:var(--muted);font-size:11px">· vía Wappfly</span>
+      <span style="color:var(--muted);font-size:11px">· vía Servidor Local</span>
     </div>
     <div style="display:flex;flex:1;overflow:hidden">
       ${sidebar}${threadList}${chatPanel}
@@ -37754,70 +37785,67 @@ function renderWAInbox() {
   </div>`;
 }
 
-// ─── Config ──────────────────────────────────────────────────────
+// ─── Config (solo admin) ─────────────────────────────────────────
 
 function renderWAConfig() {
+  const isAdmin = window._currentUser?.rol === 'admin';
   return `<div style="padding:32px;max-width:500px">
     <h2 style="margin:0 0 24px">WhatsApp — Configuración</h2>
-    <div style="display:flex;flex-direction:column;gap:12px">
-      <label style="font-size:13px;font-weight:600">API Token de Wappfly</label>
-      <input id="wa-cfg-token" value="${_wappflyToken}" placeholder="Tu token de wappfly.com" style="padding:8px 12px;border:1px solid var(--border);border-radius:6px;font-size:13px;background:var(--bg);color:var(--text)" />
-      <div style="display:flex;gap:8px;margin-top:8px">
-        <button onclick="_waUpdateConfig()" style="padding:10px 20px;background:#25d366;color:#fff;border:none;border-radius:6px;font-size:14px;font-weight:600;cursor:pointer">Guardar</button>
-        <button onclick="navigateTo('whatsapp','inbox')" style="padding:10px 20px;background:var(--surface);border:1px solid var(--border);border-radius:6px;font-size:14px;cursor:pointer">Cancelar</button>
-      </div>
+    <div style="background:var(--surface);border-radius:8px;padding:16px;margin-bottom:16px">
+      <p style="margin:0;font-size:13px">Estado: ${_wappflyConnected ? '✅ Conectado' : '❌ Desconectado'}</p>
+      <p style="margin:4px 0 0;font-size:12px;color:var(--muted)">Servidor: <code>${_waLocalUrl}</code></p>
     </div>
-    <div style="margin-top:32px;padding:16px;background:var(--surface);border-radius:8px">
-      <h3 style="margin:0 0 8px;font-size:14px">Cómo conectar con Wappfly</h3>
-      <ol style="margin:0;padding-left:20px;font-size:13px;color:var(--muted);line-height:1.8">
-        <li>Registrate en <a href="https://wappfly.com" target="_blank" style="color:#25d366">wappfly.com</a></li>
-        <li>Escaneá el QR con WhatsApp → Dispositivos vinculados → Vincular dispositivo</li>
-        <li>Copiá tu API Token desde el dashboard de Wappfly</li>
-        <li>Pegá el token arriba y guardá</li>
-      </ol>
-    </div>
+    ${isAdmin ? `<div style="background:var(--surface);border-radius:8px;padding:16px;margin-bottom:16px">
+      <h3 style="margin:0 0 10px;font-size:14px">URL del servidor (solo admin)</h3>
+      <p style="margin:0 0 8px;font-size:12px;color:var(--muted)">
+        Ingresá la IP/URL de la PC donde corre <strong>iniciar-whatsapp.bat</strong>.<br>
+        Si corre en esta PC: <code>http://localhost:3000</code><br>
+        Si corre en otra PC de la red: <code>http://192.168.1.X:3000</code>
+      </p>
+      <input id="wa-cfg-url" value="${_waLocalUrl}" style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:6px;font-size:13px;background:var(--bg);color:var(--text);box-sizing:border-box;margin-bottom:8px" />
+      <button onclick="_waUpdateConfig()" style="padding:8px 20px;background:#25d366;color:#fff;border:none;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer">Guardar para todos los usuarios</button>
+    </div>` : ''}
+    <button onclick="navigateTo('whatsapp','inbox')" style="padding:10px 20px;background:var(--surface);border:1px solid var(--border);border-radius:6px;font-size:14px;cursor:pointer">← Volver</button>
   </div>`;
 }
 
 async function _waUpdateConfig() {
-  const token = document.getElementById('wa-cfg-token')?.value?.trim();
-  if (!token) { alert('Ingresá el token'); return; }
-  await _sb.from('erp_wa_config').upsert({ id: 1, server_url: 'wappfly', ws_secret: token });
-  localStorage.setItem('erp_wappfly_token', token);
-  _wappflyToken = token;
-  _wappflyStartPolling();
-  navigateTo('whatsapp','inbox');
+  const url = document.getElementById('wa-cfg-url')?.value?.trim();
+  if (!url || !url.startsWith('http')) { alert('URL inválida — debe empezar con http://'); return; }
+  try {
+    await _sb.from('erp_wa_config').upsert({ id: 1, server_url: url });
+    _waLocalUrl = url;
+    alert('URL guardada. Todos los usuarios usarán ' + url);
+  } catch(e) { alert('Error al guardar: ' + e.message); }
+  navigateTo('whatsapp', 'inbox');
 }
 
 // ─── Wire ────────────────────────────────────────────────────────
 
 async function wireWhatsapp() {
-  // Load token: localStorage first, then Supabase
-  if (!_wappflyToken) {
-    _wappflyToken = localStorage.getItem('erp_wappfly_token') || '';
-  }
-  if (!_wappflyToken) {
-    try {
-      const { data } = await _sb.from('erp_wa_config').select('*').eq('id', 1).single();
-      if (data?.ws_secret && data.server_url === 'wappfly') {
-        _wappflyToken = data.ws_secret;
-        localStorage.setItem('erp_wappfly_token', _wappflyToken);
-      }
-    } catch(e) {}
-  }
+  // Cargar URL del servidor desde Supabase (configurada por admin, compartida para todos)
+  try {
+    const { data } = await _sb.from('erp_wa_config').select('server_url').eq('id', 1).single();
+    if (data?.server_url && data.server_url.startsWith('http')) {
+      _waLocalUrl = data.server_url;
+    }
+  } catch(e) {}
 
-  // Pre-populate seen IDs to avoid inserting existing messages on first poll
-  if (_wappflyToken && _wappflySeenIds.size === 0) {
+  // Pre-cargar IDs conocidos para no duplicar mensajes en el primer poll
+  if (_wappflySeenIds.size === 0) {
     try {
       const { data: existing } = await _sb.from('erp_whatsapp_messages').select('id');
       if (Array.isArray(existing)) existing.forEach(r => r.id && _wappflySeenIds.add(r.id));
     } catch(e) {}
   }
 
-  // Start polling
-  if (_wappflyToken) _wappflyStartPolling();
+  // Verificar estado inicial
+  try {
+    const r = await fetch(_waLocalUrl + '/status', { signal: AbortSignal.timeout(3000) });
+    if (r.ok) { const s = await r.json(); _wappflyConnected = s.connected; _waQrCode = s.qr || null; }
+  } catch(e) { _wappflyConnected = false; _waQrCode = null; }
 
-  // Load messages and render
+  _wappflyStartPolling();
   await _waLoadMessages();
   const mc = document.getElementById('main-content');
   if (mc && state.section === 'whatsapp') {
@@ -37858,10 +37886,13 @@ function _labelMatchesEmail(email, rules, operator) {
   if (!rules || rules.length === 0) return false;
   const op = (operator || 'OR').toUpperCase();
   const check = rule => {
+    // Campo especial: adjunto (no necesita valor de texto)
+    if (rule.field === 'attachment') return !!email.has_attachments;
     const val = (rule.value || '').toLowerCase();
     if (!val) return false;
     const haystack = (
       rule.field === 'from'    ? (_b64d(email.from_email) || '') + ' ' + (_b64d(email.from_name) || '') :
+      rule.field === 'to'      ? (email.to_email || '') :
       rule.field === 'subject' ? (_b64d(email.subject) || '') :
       rule.field === 'body'    ? (email.body_text || '') + ' ' + (_b64d(email.snippet) || '') :
       /* any */ (_b64d(email.from_email) || '') + ' ' + (_b64d(email.from_name) || '') + ' ' + (_b64d(email.subject) || '') + ' ' + (_b64d(email.snippet) || '')
@@ -38017,12 +38048,18 @@ function _labelsShowModal(lbl, editIdx) {
 }
 
 function _labelsRuleRowHtml(r) {
-  const fields = [['from','Remitente (De)'],['subject','Asunto'],['body','Cuerpo / preview'],['any','Cualquier campo']];
-  const opts = fields.map(([v,t]) => `<option value="${v}" ${(r?.field||'any')===v?'selected':''}>${t}</option>`).join('');
+  const fields = [
+    ['from','Remitente (De)'],['to','Destinatario (Para)'],
+    ['subject','Asunto'],['body','Cuerpo / preview'],
+    ['attachment','Tiene adjunto 📎'],['any','Cualquier campo']
+  ];
+  const fv = r?.field || 'any';
+  const isAtt = fv === 'attachment';
+  const opts = fields.map(([v,t]) => `<option value="${v}" ${fv===v?'selected':''}>${t}</option>`).join('');
   return `<div class="lbl-rule-row" style="display:flex;align-items:center;gap:6px;margin-bottom:6px">
-    <select class="lbl-rule-field" style="padding:5px 8px;border:1px solid var(--border);border-radius:6px;font-size:12px;background:var(--bg);color:var(--text)">${opts}</select>
-    <span style="font-size:12px;color:var(--text-muted);white-space:nowrap">contiene</span>
-    <input class="lbl-rule-val" type="text" value="${escapeHtml(r?.value||'')}" placeholder="Ej: orden de compra" style="flex:1;padding:5px 8px;border:1px solid var(--border);border-radius:6px;font-size:12px;background:var(--bg);color:var(--text)">
+    <select class="lbl-rule-field" onchange="var s=this;var row=s.closest('.lbl-rule-row');row.querySelector('.lbl-rule-contains').style.display=s.value==='attachment'?'none':'';row.querySelector('.lbl-rule-val').style.display=s.value==='attachment'?'none':'';" style="padding:5px 8px;border:1px solid var(--border);border-radius:6px;font-size:12px;background:var(--bg);color:var(--text)">${opts}</select>
+    <span class="lbl-rule-contains" style="font-size:12px;color:var(--text-muted);white-space:nowrap;${isAtt?'display:none':''}">contiene</span>
+    <input class="lbl-rule-val" type="text" value="${escapeHtml(!isAtt?(r?.value||''):'')}" placeholder="Ej: orden de compra" style="flex:1;padding:5px 8px;border:1px solid var(--border);border-radius:6px;font-size:12px;background:var(--bg);color:var(--text);${isAtt?'display:none':''}">
     <button onclick="this.closest('.lbl-rule-row').remove()" style="padding:4px 8px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:#ef4444;cursor:pointer;font-size:12px;flex-shrink:0">✕</button>
   </div>`;
 }
@@ -38043,6 +38080,7 @@ function _labelsSaveModal(editIdx) {
   const rules = [];
   document.querySelectorAll('#lbl-rules-list .lbl-rule-row').forEach(row => {
     const field = row.querySelector('.lbl-rule-field')?.value || 'any';
+    if (field === 'attachment') { rules.push({ field, op: 'is', value: '' }); return; }
     const value = row.querySelector('.lbl-rule-val')?.value?.trim() || '';
     if (value) rules.push({ field, op: 'contains', value });
   });
@@ -38166,8 +38204,56 @@ Separalos con línea en blanco. Ponés 1 línea de resumen al inicio (ej: "Encon
 Emojis de contexto: 🔴 urgente · 🟡 pendiente · 🟢 informativo · 💰 pago/factura · 📦 pedido/OC · ❓ consulta
 Si hay montos, Nros de factura/OC o fechas límite, mencionálos siempre.
 Mostrá TODOS los emails relevantes, no solo uno. Si son muchos, agrupalos por empresa.
-No uses JSON ni formato técnico.
+No uses JSON ni formato técnico en respuestas normales.
 IMPORTANTE: En la primera línea de cada card (la línea del bold con empresa y nombre), incluí el marcador [→OPEN:UUID] al final de esa misma línea, usando el ID exacto del email del contexto. Ejemplo: **[MIRGOR] Celina Manso** — RE: Reclamo de pago [→OPEN:abc-123-uuid]. El marcador va siempre en la misma línea del título, nunca solo ni al final de todo. No omitir nunca.
+
+═══ GESTIÓN DE ETIQUETAS (EXPERTO GMAIL) ═══
+Sos experto en el ecosistema Gmail. Entendés cómo funciona el sistema de etiquetas y filtros de Gmail y lo aplicás a esta bandeja.
+
+SISTEMA DE ETIQUETAS:
+• Las etiquetas tienen nombre (pueden usar "/" para subcategorías: "OC/Con adjunto", "Clientes/Urgente")
+• Cada etiqueta tiene reglas automáticas con lógica AND u OR
+• Las reglas se aplican en tiempo real a todos los emails de la bandeja
+• Las reglas disponibles son:
+  - from = el remitente (email o nombre) contiene el valor
+  - to = el destinatario contiene el valor
+  - subject = el asunto contiene el valor
+  - body = el cuerpo/preview contiene el valor
+  - attachment = el email tiene adjunto (no necesita valor)
+  - any = cualquier campo contiene el valor
+
+CUÁNDO CREAR ETIQUETAS:
+• Si el usuario pide una etiqueta específica → creala con las reglas óptimas
+• Si describís una categoría de emails → sugerí el nombre, color y reglas perfectas
+• Pensá como Gmail: ¿qué criterios identifican esos emails de manera única?
+• Usá AND cuando los criterios deben cumplirse todos (ej: tiene adjunto Y asunto contiene "OC")
+• Usá OR cuando cualquiera alcanza (ej: remitente es Mirgor O Mabe)
+
+FORMATO DEL MARCADOR DE CREACIÓN:
+Al final de tu mensaje, cuando vayas a crear una etiqueta, incluí:
+[→LABEL:NombreEtiqueta|#hexcolor|campo1=valor1,campo2=valor2|AND_OR]
+
+Ejemplos reales:
+[→LABEL:OC/Con Adjunto|#f59e0b|subject=orden de compra,attachment=|AND]
+[→LABEL:Clientes/Mirgor|#2d6cdf|from=mirgor|OR]
+[→LABEL:Pagos/Urgente|#ef4444|subject=factura,subject=vencimiento|OR]
+[→LABEL:Cotizaciones|#8b5cf6|subject=cotizacion,subject=cotización,subject=presupuesto|OR]
+[→LABEL:Proveedores|#6b7280|from=proveedor|OR]
+
+Si no hay reglas especiales, omitir el campo de reglas:
+[→LABEL:General|#14b8a6||]
+
+PALETA DE COLORES:
+🔴 Urgente/Reclamo → #ef4444
+🟠 OC/Pedido → #f59e0b
+🔵 Cotización/Cliente → #2d6cdf
+🟢 Pagos/Factura OK → #22c55e
+🟣 Seguimiento → #8b5cf6
+⚫ Proveedor → #6b7280
+🩵 Informativo → #14b8a6
+🟤 Interno → #92400e
+
+ETIQUETAS YA EXISTENTES: ${JSON.stringify(_labelsLoad().map(l=>({name:l.name,rules:(l.rules||[]).length})))}
 
 ═══ EMAILS EN BANDEJA ═══
 
@@ -38276,38 +38362,105 @@ function _aiEmailsFormatMd(text) {
   let listOpen = null;
   const closeList = () => { if (listOpen) { out.push(`</${listOpen}>`); listOpen = null; } };
   const btnHtml = (eid) => `<button onclick="_aiEmailsOpenEmail('${eid}')" style="padding:4px 11px;font-size:11px;font-weight:600;border:1px solid var(--primary);color:var(--primary);background:rgba(45,108,223,.08);border-radius:6px;cursor:pointer;display:inline-flex;align-items:center;gap:4px;margin-top:5px">✉️ Abrir email</button>`;
+  const labelBtnHtml = (name, color, rulesStr, op) => {
+    const sn = name.replace(/'/g,"\\'"); const sc = color; const sr = (rulesStr||'').replace(/'/g,"\\'"); const so = op||'OR';
+    return `<button onclick="_aiEmailsCreateLabel('${sn}','${sc}','${sr}','${so}')" style="padding:4px 11px;font-size:11px;font-weight:600;border:1px solid ${color};color:${color};background:${color}18;border-radius:6px;cursor:pointer;display:inline-flex;align-items:center;gap:5px;margin-top:5px"><span style="width:8px;height:8px;border-radius:50%;background:${color};display:inline-block"></span>Crear etiqueta "${name}"</button>`;
+  };
   for (const line of lines) {
     // [→OPEN:uuid] puede aparecer inline en cualquier línea — siempre genera botón debajo
     const openM = line.match(/\[→OPEN:([^\]]+)\]/);
-    const cleanLine = openM ? line.replace(/\[→OPEN:[^\]]+\]/g, '').trimEnd() : line;
+    // [→LABEL:nombre|#color|reglas|OP] genera botón de creación de etiqueta
+    // Formato reglas: campo1=valor1,campo2=valor2  (attachment no lleva valor)
+    const labelM = line.match(/\[→LABEL:([^|]+)\|([^|]+)(?:\|([^|]*))?(?:\|(AND|OR))?\]/);
+    let cleanLine = line;
+    if (openM) cleanLine = cleanLine.replace(/\[→OPEN:[^\]]+\]/g, '').trimEnd();
+    if (labelM) cleanLine = cleanLine.replace(/\[→LABEL:[^\]]+\]/g, '').trimEnd();
     const eid = openM ? openM[1].trim() : null;
+    const lblName = labelM ? labelM[1].trim() : null;
+    const lblColor = labelM ? labelM[2].trim() : null;
+    const lblRulesStr = labelM ? (labelM[3]||'').trim() : '';
+    const lblOp = labelM ? (labelM[4]||'AND') : 'AND';
 
     const olM = cleanLine.match(/^(\d+)\.\s+([\s\S]+)/);
     const ulM = cleanLine.match(/^[-•·]\s+([\s\S]+)/);
     const indM = cleanLine.match(/^\s{2,}[-•·]\s+([\s\S]+)/);
     if (olM) {
       if (listOpen !== 'ol') { closeList(); out.push('<ol style="margin:8px 0 8px 0;padding-left:18px;display:flex;flex-direction:column;gap:4px">'); listOpen = 'ol'; }
-      out.push(`<li style="line-height:1.55">${olM[2]}${eid ? '<br>'+btnHtml(eid) : ''}</li>`);
+      const _extras1 = (eid ? '<br>'+btnHtml(eid) : '') + (lblName ? '<br>'+labelBtnHtml(lblName, lblColor, lblRulesStr, lblOp) : '');
+      out.push(`<li style="line-height:1.55">${olM[2]}${_extras1}</li>`);
     } else if (ulM) {
       if (listOpen !== 'ul') { closeList(); out.push('<ul style="margin:6px 0 6px 0;padding-left:16px;display:flex;flex-direction:column;gap:3px">'); listOpen = 'ul'; }
-      out.push(`<li style="line-height:1.5">${ulM[1]}${eid ? '<br>'+btnHtml(eid) : ''}</li>`);
+      const _extras2 = (eid ? '<br>'+btnHtml(eid) : '') + (lblName ? '<br>'+labelBtnHtml(lblName, lblColor, lblRulesStr, lblOp) : '');
+      out.push(`<li style="line-height:1.5">${ulM[1]}${_extras2}</li>`);
     } else if (indM) {
       if (listOpen !== 'ul') { closeList(); out.push('<ul style="margin:4px 0 4px 12px;padding-left:14px;display:flex;flex-direction:column;gap:2px">'); listOpen = 'ul'; }
-      out.push(`<li style="line-height:1.45;font-size:0.95em;opacity:.9">${indM[1]}${eid ? '<br>'+btnHtml(eid) : ''}</li>`);
+      const _extras3 = (eid ? '<br>'+btnHtml(eid) : '') + (lblName ? '<br>'+labelBtnHtml(lblName, lblColor, lblRulesStr, lblOp) : '');
+      out.push(`<li style="line-height:1.45;font-size:0.95em;opacity:.9">${indM[1]}${_extras3}</li>`);
     } else {
       closeList();
-      if (cleanLine.trim() === '' && !eid) {
+      const _extrasE = (eid ? '<br>'+btnHtml(eid) : '') + (lblName ? '<br>'+labelBtnHtml(lblName, lblColor, lblRulesStr, lblOp) : '');
+      if (cleanLine.trim() === '' && !eid && !lblName) {
         out.push('<div style="height:7px"></div>');
       } else if (cleanLine.startsWith('═') || cleanLine.startsWith('---')) {
         out.push('<hr style="border:none;border-top:1px solid rgba(0,0,0,.1);margin:6px 0">');
-        if (eid) out.push(`<div>${btnHtml(eid)}</div>`);
+        if (_extrasE) out.push(`<div>${_extrasE}</div>`);
       } else {
-        out.push(`<div style="line-height:1.55">${cleanLine}${eid ? '<br>'+btnHtml(eid) : ''}</div>`);
+        out.push(`<div style="line-height:1.55">${cleanLine}${_extrasE}</div>`);
       }
     }
   }
   closeList();
   return out.join('');
+}
+
+function _aiEmailsCreateLabel(name, color, rulesStr, operator) {
+  const labels = _labelsLoad();
+  if (labels.find(l => l.name.toLowerCase() === name.toLowerCase())) {
+    showToast('Etiqueta', 'Ya existe "' + name + '"', 'warning');
+    return;
+  }
+  // Parsear reglas del formato: "campo1=valor1,campo2=valor2"
+  const rules = [];
+  if (rulesStr) {
+    rulesStr.split(',').forEach(part => {
+      const eq = part.indexOf('=');
+      const field = eq >= 0 ? part.slice(0, eq).trim() : part.trim();
+      const value = eq >= 0 ? part.slice(eq + 1).trim() : '';
+      if (field) rules.push({ field, op: field === 'attachment' ? 'is' : 'contains', value });
+    });
+  }
+  const lbl = { id: 'lbl_' + Date.now(), name, color, operator: operator || 'AND', rules };
+  labels.push(lbl);
+  _labelsSave(labels);
+  // Aplicar la nueva etiqueta a los emails en caché
+  if (_emailsCache) {
+    _emailsCache.forEach(em => {
+      const computed = _labelsComputeForEmail(em, [lbl]);
+      if (computed.length) em.labels = [...new Set([...(em.labels||[]), ...computed])];
+    });
+  }
+  const ruleDesc = rules.length ? ` (${rules.length} regla${rules.length!==1?'s':''})` : '';
+  showToast('✅ Etiqueta creada', '"' + name + '"' + ruleDesc + ' — aparece en el sidebar', 'success');
+  try { renderMain(); } catch(e) {}
+}
+
+// Renderiza respuestas del asistente personal con soporte de acción [→LABEL:...]
+function _personalChatRenderMsg(text) {
+  let html = typeof _linkifyERPDocs === 'function' ? _linkifyERPDocs(escapeHtml(text || '')) : escapeHtml(text || '');
+  // Reemplazar marcadores [→LABEL:name|color|rules|OP] con botones de acción
+  html = html.replace(/\[→LABEL:([^|\]<]+)\|([^|\]<]+)(?:\|([^|\]<]*))?(?:\|(AND|OR))?\]/g, (_, n, c, r, op) => {
+    const sn = (n||'').trim().replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+    const sc = (c||'').trim();
+    const sr = ((r)||'').trim().replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+    const so = (op||'AND');
+    return '<button onclick="_aiEmailsCreateLabel(\'' + sn + '\',\'' + sc + '\',\'' + sr + '\',\'' + so + '\')" '
+      + 'style="display:inline-flex;align-items:center;gap:6px;margin:4px 2px;padding:6px 14px;border-radius:20px;'
+      + 'background:' + sc + '22;color:' + sc + ';cursor:pointer;font-size:12px;font-weight:600;'
+      + 'border:1px solid ' + sc + '66">'
+      + '<span style="width:10px;height:10px;border-radius:50%;background:' + sc + ';display:inline-block;flex-shrink:0"></span>'
+      + '✚ Crear etiqueta &quot;' + escapeHtml((n||'').trim()) + '&quot;</button>';
+  });
+  return html;
 }
 
 function _aiEmailsSend() {
