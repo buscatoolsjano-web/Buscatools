@@ -7220,6 +7220,12 @@ const AI_WORKER_TOKEN = 'btai_PXSc6xaaXTofXlm6GK0GejbzZ7ZJHsiR';
 // Asistente personal — caché de historial de sesión
 let _personalChatHistory = null; // null=no cargado, []=vacío, [...]= mensajes
 let _personalChatLoading = false;
+// Chat con el clon digital de otra persona (pestaña "X Digital" en Chat) —
+// caché keyed por "asker→owner" (null=cargando, []=vacío, [...]=mensajes) y,
+// para cuando el dueño del clon/ADMIN mira, la lista de quiénes le hablaron.
+let _cloneConvCache = {};
+let _cloneConvAskersCache = {};
+let _cloneConvSending = {};
 function mostrarAiConfigModal(){
   const cfg = loadAiConfig();
   const provider = cfg.provider || 'claude';
@@ -12458,6 +12464,15 @@ function enviarMensaje(){
       leidoPor: [],
       archivadoPor: []
     };
+    // "Mensaje rápido" es solo un acceso rápido: el mensaje en sí también
+    // tiene que quedar en la sección Chat (mismo hilo 1:1 de siempre), para
+    // que el destinatario lo vea ahí y no solo en la bandeja/campanita.
+    if(dest !== state.user && typeof sendChatMessage === 'function'){
+      try{
+        var chatMsg = sendChatMessage(state.user || 'ADMIN', dest, texto);
+        nuevo.chatMsgId = chatMsg && chatMsg.id;
+      }catch(e){ console.warn('mensaje rápido → chat: error', e); }
+    }
     msgs.unshift(nuevo);
     nuevos.push(nuevo);
     if(dest === state.user) selfIncluded = true;
@@ -12489,7 +12504,11 @@ function enviarMensaje(){
           priority: nuevo.tipo === 'urgente' ? 'urgent' : 'normal',
           // Idempotencia: mismo id de mensaje => mismo request_id, así un
           // eventual reintento no genera push duplicado.
-          request_id: nuevo.id
+          request_id: nuevo.id,
+          // El cliente ya escribió este mensaje en Chat (erp_chat_messages +
+          // Firebase) más arriba — le pasamos su id para que la Edge Function
+          // NO vuelva a escribirlo en Firebase con un id propio (evita duplicado).
+          chat_message_id: nuevo.chatMsgId || undefined
         })
       }).catch(function(e){ console.warn('push mensaje rápido: error de conexión', e); });
     }catch(e){ console.warn('push mensaje rápido: error', e); }
@@ -12828,6 +12847,80 @@ async function _persTodayConversations(userId) {
     if (!Array.isArray(data) || data.length === 0) return '';
     return data.map(m => `${m.role === 'user' ? '👤' : '🤖'} ${m.content.slice(0, 300)}`).join('\n');
   } catch(e) { return ''; }
+}
+
+// ─── Helpers Supabase para "hablar con el clon digital de otra persona" ─────
+// A diferencia de erp_ai_conversations (memoria de "mi propio" asistente,
+// un solo user_id), acá se guarda por PAR (quién pregunta, de quién es el
+// clon) — así el dueño del clon (y ADMIN) puede ver después qué le
+// preguntaron, tal como pidió el usuario. Mismo patrón de fetch directo con
+// _supaH que _persLoadHistory/_persSaveMessage.
+async function _cloneConvLoad(asker, owner) {
+  try {
+    const r = await fetch(
+      `${SUPA_URL}/rest/v1/erp_clone_conversations?asker_user_id=eq.${encodeURIComponent(asker)}&clone_owner_user_id=eq.${encodeURIComponent(owner)}&order=created_at.asc&limit=200&select=role,content,created_at`,
+      { headers: _supaH }
+    );
+    const data = await r.json();
+    return Array.isArray(data) ? data : [];
+  } catch(e) { return []; }
+}
+function _cloneConvSave(asker, owner, role, content) {
+  return fetch(`${SUPA_URL}/rest/v1/erp_clone_conversations`, {
+    method: 'POST',
+    headers: { ..._supaH, 'Prefer': 'return=minimal' },
+    body: JSON.stringify({ asker_user_id: asker, clone_owner_user_id: owner, role, content }),
+  }).catch(() => {});
+}
+// Quiénes le hablaron al clon de `owner` — para el selector que ve el dueño
+// del clon (o ADMIN) para elegir qué charla revisar. Más reciente primero.
+async function _cloneConvListAskers(owner) {
+  try {
+    const r = await fetch(
+      `${SUPA_URL}/rest/v1/erp_clone_conversations?clone_owner_user_id=eq.${encodeURIComponent(owner)}&order=created_at.desc&limit=300&select=asker_user_id,content,created_at`,
+      { headers: _supaH }
+    );
+    const data = await r.json();
+    if (!Array.isArray(data)) return [];
+    const seen = {};
+    const out = [];
+    data.forEach(row => {
+      if (seen[row.asker_user_id]) return;
+      seen[row.asker_user_id] = true;
+      out.push({ asker: row.asker_user_id, lastAt: row.created_at, lastContent: row.content });
+    });
+    return out;
+  } catch(e) { return []; }
+}
+
+// Manda un mensaje en la pestaña "X Digital" (chat aparte con el clon de
+// otra persona) — optimista en el cache, guarda ambos lados en Supabase
+// (erp_clone_conversations) para que el dueño del clon y ADMIN lo vean después.
+async function _cloneConvSendMsg(asker, owner, text) {
+  const cacheKey = asker + '→' + owner;
+  const cid = 'AI_' + owner;
+  if (!Array.isArray(_cloneConvCache[cacheKey])) _cloneConvCache[cacheKey] = [];
+  // Historial ANTES de sumar el mensaje nuevo, para pasarle contexto a _cloneAskAI
+  const histForAI = _cloneConvCache[cacheKey].map(m => ({ role: m.role, content: m.content }));
+  _cloneConvCache[cacheKey].push({ role: 'user', content: text, created_at: new Date().toISOString() });
+  _cloneConvSending[cacheKey] = true;
+  renderMain();
+  _cloneConvSave(asker, owner, 'user', text);
+  try {
+    const reply = await _cloneAskAI(cid, text, histForAI);
+    const replyText = reply || 'No pude generar una respuesta, probá de nuevo.';
+    _cloneConvCache[cacheKey].push({ role: 'assistant', content: replyText, created_at: new Date().toISOString() });
+    _cloneConvSave(asker, owner, 'assistant', replyText);
+  } catch(e) {
+    _cloneConvCache[cacheKey].push({ role: 'assistant', content: '❌ ' + (e.message || 'Error al consultar el clon.'), created_at: new Date().toISOString() });
+  }
+  _cloneConvSending[cacheKey] = false;
+  renderMain();
+  // Si el dueño del clon (o ADMIN) tenía cacheada la lista de quién le habló,
+  // invalidarla para que este asker aparezca la próxima vez que la mire.
+  if (Array.isArray(_cloneConvAskersCache[owner]) && !_cloneConvAskersCache[owner].some(a => a.asker === asker)) {
+    _cloneConvAskersCache[owner] = undefined;
+  }
 }
 
 /**
@@ -35561,9 +35654,9 @@ function wireImportacion(){
 // ===========================================
 // CHAT (local — mismo navegador, multi-tab)
 // ===========================================
-const CHAT_USERS = ['ADMIN','JUAN','JANO','FACUNDO','NORBERTO'];
-const CHAT_NOMBRES = { ADMIN:'Administración', JUAN:'Juan', JANO:'Jano', FACUNDO:'Facundo', NORBERTO:'Norberto' };
-const CHAT_COLORS = { ADMIN:'#F37021', JUAN:'#0EA5E9', JANO:'#9B59B6', FACUNDO:'#28A745', NORBERTO:'#EF4444' };
+const CHAT_USERS = ['ADMIN','JUAN','JANO','FACUNDO','NORBERTO','BRIAN'];
+const CHAT_NOMBRES = { ADMIN:'Administración', JUAN:'Juan', JANO:'Jano', FACUNDO:'Facundo', NORBERTO:'Norberto', BRIAN:'Brian' };
+const CHAT_COLORS = { ADMIN:'#F37021', JUAN:'#0EA5E9', JANO:'#9B59B6', FACUNDO:'#28A745', NORBERTO:'#EF4444', BRIAN:'#0F766E' };
 
 // ─── CLONES DIGITALES IA ────────────────────────────────────────────────────
 // Cada clon replica a un miembro del equipo: tiene su perfil de rol y recibe
@@ -36587,6 +36680,8 @@ function _applyInitialChatHash(){
     const withUser = m[1].toUpperCase();
     state.section = 'chat';
     state.chatOpenWith = withUser;
+    state.chatTabMode = 'human';
+    state.chatCloneAsker = null;
     renderSidebar();
     renderMain();
     try { if (typeof markChatRead === 'function') markChatRead(state.user, withUser); } catch(e){}
@@ -36847,6 +36942,8 @@ if (typeof window !== 'undefined'){
         if (m){
           state.section = 'chat';
           state.chatOpenWith = m[1].toUpperCase();
+          state.chatTabMode = 'human';
+          state.chatCloneAsker = null;
           renderSidebar(); renderMain();
         }
       }
@@ -37670,8 +37767,6 @@ function abrirChatGrupoInfoModal(g){
 }
 
 // ── Chat AI-assist helpers ────────────────────────────────────────────────
-window._chatAITimers = window._chatAITimers || {};
-
 function _chatGetLastActivity(user){
   try{
     const log = _trazLoad ? _trazLoad() : JSON.parse(localStorage.getItem('erp_trazabilidad_log')||'[]');
@@ -37681,105 +37776,6 @@ function _chatGetLastActivity(user){
   }catch(e){ return null; }
 }
 function _chatIsOnline(user){ const t = _chatGetLastActivity(user); return t && (Date.now()-t) < 5*60*1000; }
-
-const _CHAT_AI_KEY = 'erp_chat_ai_responses';
-function _chatLoadAIResponses(me, target){
-  try{ const all=JSON.parse(localStorage.getItem(_CHAT_AI_KEY)||'{}'); return all[me+'→'+target]||[]; }catch(e){ return []; }
-}
-function _chatStoreAIResponse(me, target, content){
-  try{
-    const all=JSON.parse(localStorage.getItem(_CHAT_AI_KEY)||'{}');
-    const key=me+'→'+target;
-    if(!all[key]) all[key]=[];
-    all[key].push({ at:Date.now(), content });
-    all[key]=all[key].slice(-20);
-    localStorage.setItem(_CHAT_AI_KEY, JSON.stringify(all));
-  }catch(e){}
-}
-function _chatSaveAIResponses(me, target, responses){
-  try{
-    const all=JSON.parse(localStorage.getItem(_CHAT_AI_KEY)||'{}');
-    all[me+'→'+target]=responses;
-    localStorage.setItem(_CHAT_AI_KEY, JSON.stringify(all));
-  }catch(e){}
-}
-
-async function _chatAIRespondNow(me, target){
-  // Cancel any pending auto-timer
-  if (window._chatAITimers[target]){ clearTimeout(window._chatAITimers[target].tid); delete window._chatAITimers[target]; }
-  const cid = 'AI_' + target;
-  const realUser = target;
-  const cloneLabel = (AI_CLONE_LABEL[cid]||target+' Digital 🤖').replace(' 🤖','');
-  const ccolor = AI_CLONE_COLOR[cid] || '#7C3AED';
-  // Show typing in panel
-  const msgsEl = document.getElementById('chat-msgs');
-  const timerBanner = document.getElementById('chat-ai-timer-banner');
-  if (timerBanner) timerBanner.remove();
-  let typingId = 'cai-typing-' + Date.now();
-  if (msgsEl){
-    msgsEl.insertAdjacentHTML('beforeend',
-      `<div id="${typingId}" style="display:flex;justify-content:flex-start;margin-bottom:10px">` +
-      `<div style="padding:9px 14px;border-radius:12px;background:${ccolor}15;border:1px solid ${ccolor}30;font-size:12px;color:var(--text-soft);font-style:italic">` +
-      `<span style="font-size:11px;font-weight:700;color:${ccolor};display:block;margin-bottom:2px">🤖 ${escapeHtml(cloneLabel)}</span>escribiendo…</div></div>`);
-    msgsEl.scrollTop = msgsEl.scrollHeight;
-  }
-  const btnNow = document.getElementById('chat-ai-btn-now');
-  if (btnNow) { btnNow.disabled = true; btnNow.textContent = '⏳ Respondiendo…'; }
-  try{
-    // Build conversation history (last 10 exchanges) for context
-    const conv = (typeof getChatFor==='function') ? getChatFor(me, target) : [];
-    const aiHist = conv.slice(-10).map(m => ({ role: m.from===me?'user':'assistant', content: m.text||'' })).filter(m=>m.content);
-    const reply = await _cloneAskAI(cid, conv.length ? ('(contexto del chat — respondé al último mensaje)') : '¿Cómo estás?', aiHist);
-    _chatStoreAIResponse(me, target, reply);
-    // Remove typing, inject response
-    document.getElementById(typingId)?.remove();
-    if (msgsEl){
-      const now = new Date().toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'});
-      msgsEl.insertAdjacentHTML('beforeend',
-        `<div class="chat-ai-bubble" style="display:flex;justify-content:flex-start;margin-bottom:10px">` +
-        `<div style="max-width:72%;padding:9px 13px;border-radius:12px;background:${ccolor}12;border:1px solid ${ccolor}30;font-size:13px;color:var(--text)">` +
-        `<div style="font-size:10px;font-weight:700;color:${ccolor};margin-bottom:4px">🤖 ${escapeHtml(cloneLabel)} respondió por ${escapeHtml(realUser.charAt(0)+realUser.slice(1).toLowerCase())}</div>` +
-        `<div style="white-space:pre-wrap;word-wrap:break-word">${escapeHtml(reply)}</div>` +
-        `<div style="font-size:9px;opacity:0.5;margin-top:4px;text-align:right">${now}</div>` +
-        `</div></div>`);
-      msgsEl.scrollTop = msgsEl.scrollHeight;
-    }
-    const btn2 = document.getElementById('chat-ai-btn-now');
-    if (btn2){ btn2.disabled=false; btn2.innerHTML='🤖 Consultar a '+escapeHtml(cloneLabel); }
-  }catch(err){
-    document.getElementById(typingId)?.remove();
-    if (msgsEl) msgsEl.insertAdjacentHTML('beforeend','<div style="text-align:center;color:var(--danger);font-size:12px;padding:8px">Error al conectar con el asistente.</div>');
-    const btn2 = document.getElementById('chat-ai-btn-now');
-    if (btn2){ btn2.disabled=false; btn2.innerHTML='🤖 Reintentar'; }
-  }
-}
-
-function _chatStartAITimer(me, target, seconds){
-  if (window._chatAITimers[target]) { clearTimeout(window._chatAITimers[target].tid); clearInterval(window._chatAITimers[target].iid); }
-  const end = Date.now() + seconds*1000;
-  const banner = document.getElementById('chat-ai-timer-banner');
-  const updateBanner = () => {
-    const rem = Math.max(0, Math.ceil((end - Date.now())/1000));
-    const el = document.getElementById('chat-ai-timer-banner');
-    if (el) el.querySelector('#chat-ai-timer-secs').textContent = rem + 's';
-  };
-  const iid = setInterval(updateBanner, 1000);
-  const tid = setTimeout(async () => {
-    clearInterval(iid);
-    delete window._chatAITimers[target];
-    // Check if real user responded after the last message from me
-    const conv = (typeof getChatFor==='function') ? getChatFor(me, target) : [];
-    const lastMine = conv.filter(m=>m.from===me).pop();
-    const lastTheirs = conv.filter(m=>m.from===target).pop();
-    if (lastMine && lastTheirs && lastTheirs.at > lastMine.at){ // they responded
-      const el = document.getElementById('chat-ai-timer-banner');
-      if (el) el.remove();
-      return;
-    }
-    await _chatAIRespondNow(me, target);
-  }, seconds*1000);
-  window._chatAITimers[target] = { tid, iid, end };
-}
 
 function renderChat(){
   if(!_chkTeam()) return '';
@@ -37803,26 +37799,35 @@ function renderChat(){
   }
   items.sort((a,b) => b.ts - a.ts);
 
-  // ── Chat con tu clon propio — entrada fija al tope de la lista ──────────
-  const myCid    = 'AI_' + me;
-  const myColor  = AI_CLONE_COLOR[myCid] || (CHAT_COLORS[me] || '#7C3AED');
-  const myLabel  = (AI_CLONE_LABEL[myCid] || me + ' Digital').replace(' 🤖','');
-  const selfActive = state.chatOpenWith === '__SELF_FEED__';
-  const selfHist = _chatLoadAIResponses(me, '__SELF_FEED__');
-  const lastSelf = selfHist[selfHist.length - 1];
-  const learnedCount = _cloneLearnedGet(me).trim().split('\n').filter(l=>l.trim()).length;
-  const _pActive = state.chatOpenWith === '__PERSONAL__';
-  const _pLastMsg = (_personalChatHistory && _personalChatHistory.length) ? _personalChatHistory[_personalChatHistory.length-1] : null;
-  let convList = '<div class="chat-conv-item" data-chat-open="__PERSONAL__" style="display:flex;gap:10px;padding:10px 14px;cursor:pointer;border-bottom:2px solid var(--border);background:' + (_pActive ? 'var(--primary-light)' : 'transparent') + '">'
-    + '<div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#0ea5e9,#6366f1);color:white;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">🧠</div>'
-    + '<div style="flex:1;min-width:0">'
-      + '<div style="font-weight:700;font-size:13px;color:#0ea5e9">' + escapeHtml((TEAM_LABELS[me]||me)) + ' Digital</div>'
-      + '<div style="font-size:11px;color:var(--text-soft);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + (_pLastMsg ? escapeHtml((_pLastMsg.content||'').slice(0,45)) : 'Tu versión digital · memoria propia') + '</div>'
-    + '</div>'
-  + '</div>'
-  // __SELF_FEED__ (Admin Digital / clon propio) removido de la lista — solo queda Administración Digital
+  // "Mi clon (revisión)" — entrada fija, separada de las charlas humanas de
+  // arriba. Es la única forma de que el DUEÑO de un clon llegue a la pestaña
+  // "X Digital" para ver qué le preguntó otra gente (no puede abrirse a sí
+  // mismo como si fuera un contacto más, ya que `others` lo excluye). Usa
+  // target = me para reusar exactamente la misma lógica de pestaña "clone"
+  // que ya tienen las charlas humanas con otras personas.
+  const myCid = 'AI_' + me;
+  const iHaveClone = (typeof AI_CLONE_IDS !== 'undefined') && AI_CLONE_IDS.includes(myCid);
+  if (iHaveClone){
+    items.push({ kind:'selfclone', id: me, last:null, ts:0 });
+  }
 
+  // Lista de conversaciones: charlas humanas + grupos, más (fijo, al final)
+  // la entrada para revisar el propio clon.
+  let convList = '';
   for (const it of items){
+    if (it.kind === 'selfclone'){
+      const sLabel = (AI_CLONE_LABEL[myCid] || (CHAT_NOMBRES[me]||me) + ' Digital').replace(' 🤖','');
+      const sColor = AI_CLONE_COLOR[myCid] || '#7C3AED';
+      const isActive = state.chatOpenWith === it.id && state.chatTabMode === 'clone';
+      convList += '<div class="chat-conv-item" data-chat-open="' + escapeHtml(it.id) + '" style="display:flex;gap:10px;padding:10px 14px;cursor:pointer;border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:' + (isActive ? 'rgba(124,58,237,0.08)' : sColor+'08') + '">'
+        + '<div style="width:36px;height:36px;border-radius:50%;background:' + sColor + ';color:white;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0">🤖</div>'
+        + '<div style="flex:1;min-width:0">'
+          + '<div style="font-weight:600;font-size:13px;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + escapeHtml(sLabel) + '</div>'
+          + '<div style="font-size:11px;color:var(--text-soft);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Revisá qué le preguntaron a tu clon</div>'
+        + '</div>'
+      + '</div>';
+      continue;
+    }
     const label = it.kind === 'group' ? (it.group ? it.group.name : 'Grupo') : ((typeof CHAT_NOMBRES !== 'undefined' && CHAT_NOMBRES[it.id]) || it.id);
     const color = it.kind === 'group' ? '#9B59B6' : ((typeof CHAT_COLORS !== 'undefined' && CHAT_COLORS[it.id]) || '#999');
     const initial = (label.charAt(0) || '?').toUpperCase();
@@ -37836,7 +37841,7 @@ function renderChat(){
       if ((prefix + body).length > 50) preview += '...';
     }
     const time = last ? new Date(last.at).toLocaleString('es-AR', { hour:'2-digit', minute:'2-digit' }) : '';
-    const isActive = state.chatOpenWith === it.id;
+    const isActive = state.chatOpenWith === it.id && !(it.id === me);
     convList += '<div class="chat-conv-item" data-chat-open="' + escapeHtml(it.id) + '" style="display:flex;gap:10px;padding:10px 14px;cursor:pointer;border-bottom:1px solid var(--border);' + (isActive ? 'background:rgba(243,112,33,0.08);' : '') + '">'
       + '<div style="width:36px;height:36px;border-radius:50%;background:' + color + ';color:white;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0">' + initial + '</div>'
       + '<div style="flex:1;min-width:0">'
@@ -37855,103 +37860,19 @@ function renderChat(){
 
   // ── Panel de mensajes ─────────────────────────────────────────────────────
   let msgsPanel = '';
-  // ── Panel chat directo con tu clon propio ────────────────────────────────
-  if (state.chatOpenWith === '__SELF_FEED__'){
-    const sfColor  = AI_CLONE_COLOR['AI_' + me] || '#7C3AED';
-    const sfLabel  = (AI_CLONE_LABEL['AI_' + me] || me + ' Digital').replace(' 🤖','');
-    const sfHist   = _chatLoadAIResponses(me, '__SELF_FEED__');
-    const sfLearned = _cloneLearnedGet(me);
-    const sfMsgCount = sfHist.length;
-    let sfHtml = '';
-    sfHist.forEach(function(item){
-      const time = new Date(item.at||0).toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'});
-      // User message
-      if (item.question){
-        sfHtml += '<div style="display:flex;justify-content:flex-end;margin-bottom:8px">'
-          + '<div style="max-width:72%;padding:9px 13px;border-radius:14px 14px 4px 14px;background:' + sfColor + ';color:white;font-size:13px">'
-            + '<div style="white-space:pre-wrap;word-wrap:break-word">' + escapeHtml(item.question) + '</div>'
-            + '<div style="font-size:9px;opacity:0.65;margin-top:3px;text-align:right">' + time + '</div>'
-          + '</div>'
-        + '</div>';
-      }
-      // Clone response
-      sfHtml += '<div style="display:flex;justify-content:flex-start;margin-bottom:12px">'
-        + '<div style="width:28px;height:28px;border-radius:50%;background:' + sfColor + ';color:white;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;margin-right:8px;margin-top:2px">🤖</div>'
-        + '<div style="max-width:70%;padding:9px 13px;border-radius:14px 14px 14px 4px;background:var(--surface);border:1px solid ' + sfColor + '25;font-size:13px;color:var(--text)">'
-          + '<div style="font-size:10px;font-weight:700;color:' + sfColor + ';margin-bottom:4px">' + escapeHtml(sfLabel) + '</div>'
-          + '<div style="word-wrap:break-word">' + _linkifyERPDocs(_aiRichFormat(item.content)) + '</div>'
-          + '<div style="font-size:9px;opacity:0.45;margin-top:4px;text-align:right">' + time + '</div>'
-        + '</div>'
-      + '</div>';
-    });
-    if (!sfHtml) sfHtml = '<div style="text-align:center;padding:40px 24px;color:var(--text-soft)">'
-      + '<div style="font-size:40px;margin-bottom:14px">🤖</div>'
-      + '<div style="font-weight:700;font-size:15px;color:var(--text);margin-bottom:8px">Hola, soy ' + escapeHtml(sfLabel) + '</div>'
-      + '<div style="font-size:13px;line-height:1.7;max-width:320px;margin:0 auto">Soy tu clon digital. Cuanto más hablemos, mejor te voy a conocer.<br><br>Contame sobre vos: cómo trabajás, qué hacés, cuáles son tus clientes, tus preferencias. Todo lo que me digas va formando mi perfil.</div>'
-      + '</div>';
-    // Prompt growth indicator
-    const learnedCount = sfLearned.trim().split('\n').filter(l=>l.trim()).length;
-    const growthBar = learnedCount > 0
-      ? '<div style="padding:4px 14px 6px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--border)">'
-          + '<div style="flex:1;height:4px;background:var(--border);border-radius:2px;overflow:hidden">'
-            + '<div style="height:100%;background:linear-gradient(90deg,' + sfColor + ',' + sfColor + '88);width:' + Math.min(100, learnedCount * 5) + '%;transition:width .4s"></div>'
-          + '</div>'
-          + '<span style="font-size:10px;color:' + sfColor + ';font-weight:600;white-space:nowrap">🧠 ' + learnedCount + ' cosa' + (learnedCount!==1?'s':'') + ' aprendida' + (learnedCount!==1?'s':'') + '</span>'
-          + '<button onclick="mostrarClonePerfilModal(\'AI_' + me + '\')" style="font-size:10px;color:var(--text-soft);background:none;border:none;cursor:pointer;padding:0 2px">ver perfil</button>'
-        + '</div>'
-      : '';
-    msgsPanel = '<div style="display:flex;flex-direction:column;height:100%">'
-      + '<div style="padding:10px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;flex-shrink:0">'
-          + '<div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,' + sfColor + ',' + sfColor + 'bb);color:white;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">🤖</div>'
-          + '<div style="flex:1;min-width:0">'
-            + '<div style="font-weight:700;color:var(--text);font-size:14px">' + escapeHtml(sfLabel) + '</div>'
-            + '<div class="u5">Tu clon digital · ' + sfMsgCount + ' intercambio' + (sfMsgCount!==1?'s':'') + '</div>'
-          + '</div>'
-          + '<button onclick="mostrarClonePerfilModal(\'AI_' + me + '\')" style="padding:6px 11px;font-size:11px;font-weight:600;background:' + sfColor + '12;color:' + sfColor + ';border:1px solid ' + sfColor + '35;border-radius:8px;cursor:pointer;white-space:nowrap">✏ Perfil</button>'
-      + '</div>'
-      + growthBar
-      + '<div id="chat-msgs" style="flex:1;overflow-y:auto;padding:16px;background:var(--bg)">' + sfHtml + '</div>'
-      + '<div style="display:flex;gap:8px;padding:12px;border-top:1px solid var(--border);background:var(--surface)">'
-          + '<input id="sf-chat-input" type="text" placeholder="Hablá con tu clon..." style="flex:1;padding:9px 14px;border:1px solid var(--border);border-radius:20px;background:var(--bg);color:var(--text);font-size:13px;outline:none">'
-          + '<button id="sf-send-btn" style="background:' + sfColor + ';color:white;border:none;border-radius:50%;width:38px;height:38px;cursor:pointer;font-size:16px;flex-shrink:0">›</button>'
-      + '</div>'
-    + '</div>';
-  } else if (state.chatOpenWith === '__PERSONAL__') {
-    const _ph = _personalChatHistory || [];
-    const _bubblesHtml = _personalChatLoading
-      ? '<div style="text-align:center;color:var(--text-soft);padding:40px;font-size:13px">⏳ Cargando historial…</div>'
-      : _ph.length === 0
-        ? '<div style="text-align:center;color:var(--text-soft);padding:40px;font-size:13px">🧠 Empezá tu primera conversación.<br><br>Tengo memoria de todo lo que hablemos.<br>Puedo ayudarte con el ERP, recordar lo que hiciste y darte contexto.</div>'
-        : _ph.map(m => {
-            const isU = m.role === 'user';
-            return '<div style="display:flex;justify-content:' + (isU?'flex-end':'flex-start') + ';margin-bottom:10px">'
-              + '<div style="max-width:75%;background:' + (isU?'var(--primary)':'var(--surface)') + ';color:' + (isU?'white':'var(--text)') + ';padding:10px 14px;border-radius:' + (isU?'18px 18px 4px 18px':'18px 18px 18px 4px') + ';font-size:13px;line-height:1.5;border:' + (isU?'none':'1px solid var(--border)') + ';white-space:pre-wrap;word-break:break-word">'
-              + (isU ? escapeHtml(m.content||'') : _personalChatRenderMsg(m.content||''))
-              + '</div></div>';
-          }).join('');
-    msgsPanel = '<div style="display:flex;flex-direction:column;height:100%">'
-      + '<div style="padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;flex-shrink:0">'
-        + '<div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#0ea5e9,#6366f1);color:white;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">🧠</div>'
-        + '<div><div style="font-weight:700;font-size:14px;color:var(--text)">' + escapeHtml((TEAM_LABELS[me]||me)) + ' Digital</div>'
-        + '<div class="u5">Tu versión digital · memoria solo tuya</div></div>'
-      + '</div>'
-      + '<div id="personal-msgs" style="flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column">' + _bubblesHtml + '</div>'
-      + '<div style="padding:10px 14px;border-top:1px solid var(--border);display:flex;gap:8px;flex-shrink:0;align-items:flex-end">'
-        + '<textarea id="personal-chat-input" rows="1" placeholder="Escribí tu mensaje… (Enter para enviar)" style="flex:1;resize:none;padding:8px 12px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:13px;font-family:inherit;outline:none;min-height:38px;max-height:120px"></textarea>'
-        + '<button id="personal-send-btn" style="padding:8px 18px;background:var(--primary);color:white;border:none;border-radius:8px;cursor:pointer;font-size:13px;height:38px;flex-shrink:0">Enviar</button>'
-      + '</div>'
-    + '</div>';
-  } else if (state.chatOpenWith){
+  if (state.chatOpenWith){
     const target  = state.chatOpenWith;
     const isGroup = target.startsWith('group:');
     const grp     = isGroup ? myGroups.find(g => 'group:' + g.id === target) : null;
-    const title   = isGroup ? (grp ? grp.name : 'Grupo') : (CHAT_NOMBRES[target] || target);
-    const tcolor  = !isGroup ? (CHAT_COLORS[target] || '#999') : '#9B59B6';
+    let title     = isGroup ? (grp ? grp.name : 'Grupo') : (CHAT_NOMBRES[target] || target);
+    let tcolor    = !isGroup ? (CHAT_COLORS[target] || '#999') : '#9B59B6';
     const msgs    = (typeof getChatFor === 'function') ? getChatFor(me, target) : [];
 
-    // Online status (solo para chats 1:1 con usuarios reales)
-    const isOnline  = !isGroup && _chatIsOnline(target);
-    const lastAct   = !isGroup ? _chatGetLastActivity(target) : null;
+    // Online status (solo para chats 1:1 con usuarios reales — no aplica a
+    // la entrada fija "Mi clon", target === me)
+    const isSelfTarget = !isGroup && target === me;
+    const isOnline  = !isGroup && !isSelfTarget && _chatIsOnline(target);
+    const lastAct   = (!isGroup && !isSelfTarget) ? _chatGetLastActivity(target) : null;
     const lastActStr = lastAct ? (() => {
       const diff = Math.floor((Date.now()-lastAct)/60000);
       if (diff < 1)   return 'en línea ahora';
@@ -37961,24 +37882,24 @@ function renderChat(){
       return 'hace ' + days + (days === 1 ? ' día' : ' días');
     })() : null;
 
-    // Clone info for this target
-    const cid      = 'AI_' + target;
-    const ccolor   = AI_CLONE_COLOR[cid] || '#7C3AED';
-    const clabel   = (AI_CLONE_LABEL[cid] || target + ' Digital').replace(' 🤖','');
-    const hasClone = !isGroup && AI_CLONE_IDS.includes(cid);
+    // ── Info del clon de esta persona — ahora es una PESTAÑA aparte, no se
+    // mezcla más con los mensajes reales del hilo humano. ────────────────────
+    const cid       = 'AI_' + target;
+    const ccolor    = AI_CLONE_COLOR[cid] || '#7C3AED';
+    const clabel    = (AI_CLONE_LABEL[cid] || target + ' Digital').replace(' 🤖','');
+    const hasClone  = !isGroup && AI_CLONE_IDS.includes(cid);
+    const cloneRealUser = AI_CLONE_REAL[cid] || '';
+    const currentUserUp = (state.user||'').toUpperCase();
+    // Quién puede revisar charlas ajenas con este clon: su dueño real, o ADMIN.
+    const isCloneOwnerOrAdmin = hasClone && (currentUserUp === cloneRealUser || currentUserUp === 'ADMIN');
+    // "Mi clon (revisión)" (target === me, ver más arriba en convList): no
+    // existe una charla humana "conmigo mismo", así que acá SIEMPRE es la
+    // pestaña del clon — no tiene sentido mostrar la pestaña humana.
+    const isSelfClone = hasClone && target === me;
+    const tabMode = hasClone ? (isSelfClone || state.chatTabMode === 'clone' ? 'clone' : 'human') : 'human';
+    if (isSelfClone){ title = clabel; tcolor = ccolor; }
 
-    // Is there an active auto-timer?
-    const timerActive = !isGroup && window._chatAITimers[target];
-
-    // Build message HTML (real messages + AI responses merged by time)
-    const aiResponses = _chatLoadAIResponses(me, target);
-    const allItems = [
-      ...msgs.map(m => ({ ...m, _kind:'real' })),
-      ...aiResponses.map(r => ({ _kind:'ai', at:r.at, content:r.content }))
-    ].sort((a,b) => (a.at||0)-(b.at||0));
-
-    let msgsHtml = '';
-    let _lastMsgDay = null;
+    // Helpers de render de hilo (compartidos por ambas pestañas)
     const _fmtDayLabel = ts => {
       const d = new Date(ts);
       const today = new Date(); today.setHours(0,0,0,0);
@@ -37990,88 +37911,119 @@ function renderChat(){
       if (diff < 7) return d.toLocaleDateString('es-AR', { weekday:'long' }).replace(/^\w/, c=>c.toUpperCase());
       return d.toLocaleDateString('es-AR', { weekday:'long', day:'numeric', month:'long' }).replace(/^\w/, c=>c.toUpperCase());
     };
-    for (const item of allItems){
-      const time = new Date(item.at||0).toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'});
-      // Separador de día
-      const itemDayKey = new Date(item.at||0).toDateString();
-      if (itemDayKey !== _lastMsgDay) {
-        _lastMsgDay = itemDayKey;
-        const dayLabel = _fmtDayLabel(item.at||0);
-        msgsHtml += '<div style="display:flex;align-items:center;gap:8px;margin:12px 0 8px;opacity:0.55">'
-          + '<div style="flex:1;height:1px;background:var(--border)"></div>'
-          + '<span style="font-size:10px;font-weight:700;color:var(--text-muted);white-space:nowrap;letter-spacing:.3px">' + dayLabel + '</span>'
-          + '<div style="flex:1;height:1px;background:var(--border)"></div>'
-        + '</div>';
-      }
-      if (item._kind === 'ai'){
-        msgsHtml += '<div class="chat-ai-bubble" style="display:flex;justify-content:flex-start;margin-bottom:10px">'
-          + '<div style="max-width:72%;padding:9px 13px;border-radius:12px;background:' + ccolor + '12;border:1px solid ' + ccolor + '30;font-size:13px;color:var(--text)">'
-            + '<div style="font-size:10px;font-weight:700;color:' + ccolor + ';margin-bottom:4px">🤖 ' + escapeHtml(clabel) + ' respondió</div>'
-            + '<div style="word-wrap:break-word">' + _aiRichFormat(item.content||'') + '</div>'
-            + '<div style="font-size:9px;opacity:0.5;margin-top:4px;text-align:right">' + time + '</div>'
-          + '</div>'
-        + '</div>';
-      } else {
-        const isMe   = item.from === me;
-        const sName  = isMe ? 'Vos' : (CHAT_NOMBRES[item.from] || item.from);
-        const body   = item.text ? escapeHtml(item.text) : (item.doc ? '📎 ' + escapeHtml(item.doc.label||item.doc.type||'Doc') : '');
-        msgsHtml += '<div style="display:flex;justify-content:' + (isMe?'flex-end':'flex-start') + ';margin-bottom:8px">'
+    const _renderThread = (list, bubbleFn) => {
+      let html = '';
+      let lastDay = null;
+      list.forEach(item => {
+        const dayKey = new Date(item.at||0).toDateString();
+        if (dayKey !== lastDay){
+          lastDay = dayKey;
+          html += '<div style="display:flex;align-items:center;gap:8px;margin:12px 0 8px;opacity:0.55">'
+            + '<div style="flex:1;height:1px;background:var(--border)"></div>'
+            + '<span style="font-size:10px;font-weight:700;color:var(--text-muted);white-space:nowrap;letter-spacing:.3px">' + _fmtDayLabel(item.at||0) + '</span>'
+            + '<div style="flex:1;height:1px;background:var(--border)"></div>'
+          + '</div>';
+        }
+        html += bubbleFn(item);
+      });
+      return html;
+    };
+
+    // ── Pestañas arriba del panel (solo si esta persona tiene clon, y no es
+    // la entrada fija "Mi clon" — ahí no hay pestaña humana que mostrar) ────
+    const tabBarHtml = (hasClone && !isSelfClone)
+      ? '<div style="display:flex;gap:2px;padding:0 12px;border-bottom:1px solid var(--border);flex-shrink:0;background:var(--surface)">'
+          + '<div data-chat-tab="human" style="padding:10px 12px;font-size:12px;font-weight:700;cursor:pointer;border-bottom:2px solid ' + (tabMode==='human'?'var(--primary)':'transparent') + ';color:' + (tabMode==='human'?'var(--text)':'var(--text-soft)') + '">' + escapeHtml(title) + '</div>'
+          + '<div data-chat-tab="clone" style="padding:10px 12px;font-size:12px;font-weight:700;cursor:pointer;border-bottom:2px solid ' + (tabMode==='clone'?ccolor:'transparent') + ';color:' + (tabMode==='clone'?ccolor:'var(--text-soft)') + '">🤖 ' + escapeHtml(clabel) + '</div>'
+        + '</div>'
+      : '';
+
+    let bodyHtml = '';
+    let footerHtml = '';
+    let extraBarHtml = '';
+    let headerRightHtml = '';
+
+    if (hasClone){
+      const canEditClone = isCloneOwnerOrAdmin;
+      headerRightHtml = '<button onclick="mostrarClonePerfilModal(\'' + cid + '\')" '
+          + 'title="' + (canEditClone ? 'Ver y editar perfil del clon' : 'Ver perfil del clon') + '" '
+          + 'style="display:inline-flex;align-items:center;gap:4px;padding:5px 10px;font-size:11px;font-weight:600;background:var(--surface-alt);color:var(--text-muted);border:1px solid var(--border);border-radius:8px;cursor:pointer;white-space:nowrap">'
+          + (canEditClone ? '✏' : '👁') + ' Perfil'
+        + '</button>';
+    }
+
+    if (tabMode === 'human'){
+      bodyHtml = _renderThread(msgs, item => {
+        const isMe  = item.from === me;
+        const sName = isMe ? 'Vos' : (CHAT_NOMBRES[item.from] || item.from);
+        const body  = item.text ? escapeHtml(item.text) : (item.doc ? '📎 ' + escapeHtml(item.doc.label||item.doc.type||'Doc') : '');
+        const time  = new Date(item.at||0).toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'});
+        return '<div style="display:flex;justify-content:' + (isMe?'flex-end':'flex-start') + ';margin-bottom:8px">'
           + '<div style="max-width:70%;padding:8px 12px;border-radius:14px;background:' + (isMe?'var(--primary)':'#ffffff') + ';color:' + (isMe?'white':'var(--text)') + ';font-size:13px;box-shadow:' + (isMe?'none':'0 1px 2px rgba(0,0,0,0.08)') + '">'
             + (isGroup && !isMe ? '<div style="font-size:10px;font-weight:700;margin-bottom:3px;opacity:0.7">' + escapeHtml(sName) + '</div>' : '')
             + '<div style="white-space:pre-wrap;word-wrap:break-word">' + body + '</div>'
             + '<div style="font-size:9px;opacity:0.6;margin-top:3px;text-align:right">' + time + '</div>'
           + '</div>'
         + '</div>';
+      });
+      if (!bodyHtml) bodyHtml = '<div style="text-align:center;color:var(--text-soft);padding:24px;font-size:12px">No hay mensajes todavia.</div>';
+      footerHtml = '<div style="display:flex;gap:8px;padding:12px;border-top:1px solid var(--border);background:var(--surface)">'
+          + '<input id="chat-input" type="text" placeholder="Escribi un mensaje..." style="flex:1;padding:9px 14px;border:1px solid var(--border);border-radius:20px;background:var(--bg);color:var(--text);font-size:13px;outline:none">'
+          + '<button id="chat-send" style="background:var(--primary);color:white;border:none;border-radius:50%;width:38px;height:38px;cursor:pointer;font-size:16px">&gt;</button>'
+        + '</div>';
+    } else {
+      // ── Pestaña "X Digital" — charla aparte con el clon, respaldada en
+      // Supabase (erp_clone_conversations) para que el dueño del clon y
+      // ADMIN puedan verla después, tal como pidió el usuario. ──────────────
+      let asker = me;
+      if (isCloneOwnerOrAdmin){
+        asker = state.chatCloneAsker || me;
+        const askers = _cloneConvAskersCache[target];
+        if (Array.isArray(askers) && askers.length){
+          extraBarHtml = '<div style="padding:6px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;flex-shrink:0;background:var(--surface-alt)">'
+            + '<span style="font-size:11px;color:var(--text-soft);white-space:nowrap">Charla con:</span>'
+            + '<select id="chat-clone-asker-sel" style="flex:1;font-size:12px;padding:4px 8px;border-radius:6px;border:1px solid var(--border);background:var(--bg);color:var(--text)">'
+              + '<option value="' + escapeHtml(me) + '"' + (asker===me?' selected':'') + '>Yo (' + escapeHtml(TEAM_LABELS[me]||me) + ')</option>'
+              + askers.filter(a => a.asker !== me).map(a => '<option value="' + escapeHtml(a.asker) + '"' + (asker===a.asker?' selected':'') + '>' + escapeHtml(TEAM_LABELS[a.asker]||a.asker) + '</option>').join('')
+            + '</select>'
+          + '</div>';
+        }
+      }
+      const cacheKey = asker + '→' + target;
+      const cached = _cloneConvCache[cacheKey];
+      if (!Array.isArray(cached)){
+        bodyHtml = '<div style="text-align:center;color:var(--text-soft);padding:40px;font-size:13px">⏳ Cargando conversación…</div>';
+      } else if (!cached.length){
+        bodyHtml = '<div style="text-align:center;color:var(--text-soft);padding:40px 24px;font-size:13px">🤖 Hola, soy ' + escapeHtml(clabel) + '.<br><br>Preguntame lo que quieras' + (isCloneOwnerOrAdmin && asker!==me ? '' : ' sobre mi actividad, mis documentos o cómo trabajo') + '.</div>';
+      } else {
+        bodyHtml = _renderThread(cached.map(m => ({ at: new Date(m.created_at).getTime(), role:m.role, content:m.content })), item => {
+          const isU = item.role === 'user';
+          const time = new Date(item.at||0).toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'});
+          return '<div class="chat-ai-bubble" style="display:flex;justify-content:' + (isU?'flex-end':'flex-start') + ';margin-bottom:10px">'
+            + '<div style="max-width:72%;padding:9px 13px;border-radius:12px;background:' + (isU?'var(--primary)':(ccolor+'12')) + ';color:' + (isU?'white':'var(--text)') + ';font-size:13px;border:' + (isU?'none':('1px solid '+ccolor+'30')) + '">'
+              + (!isU ? '<div style="font-size:10px;font-weight:700;color:' + ccolor + ';margin-bottom:4px">🤖 ' + escapeHtml(clabel) + '</div>' : '')
+              + '<div style="word-wrap:break-word;white-space:pre-wrap">' + (isU ? escapeHtml(item.content||'') : _aiRichFormat(item.content||'')) + '</div>'
+              + '<div style="font-size:9px;opacity:0.6;margin-top:4px;text-align:right">' + time + '</div>'
+            + '</div>'
+          + '</div>';
+        });
+      }
+      if (_cloneConvSending[cacheKey]){
+        bodyHtml += '<div style="display:flex;justify-content:flex-start;margin-bottom:10px">'
+          + '<div style="padding:9px 13px;border-radius:12px;background:' + ccolor + '12;border:1px solid ' + ccolor + '30;font-size:12px;color:var(--text-soft);font-style:italic">'
+            + '<span style="font-size:10px;font-weight:700;color:' + ccolor + ';display:block;margin-bottom:2px">🤖 ' + escapeHtml(clabel) + '</span>escribiendo…'
+          + '</div>'
+        + '</div>';
+      }
+      if (asker === me){
+        footerHtml = '<div style="display:flex;gap:8px;padding:12px;border-top:1px solid var(--border);background:var(--surface)">'
+            + '<input id="chat-input" type="text" placeholder="Preguntale a ' + escapeHtml(clabel) + '..." style="flex:1;padding:9px 14px;border:1px solid var(--border);border-radius:20px;background:var(--bg);color:var(--text);font-size:13px;outline:none">'
+            + '<button id="chat-send" style="background:' + ccolor + ';color:white;border:none;border-radius:50%;width:38px;height:38px;cursor:pointer;font-size:16px">&gt;</button>'
+          + '</div>';
+      } else {
+        footerHtml = '<div style="padding:10px 16px;text-align:center;font-size:11px;color:var(--text-soft);border-top:1px solid var(--border);background:var(--surface)">Estás viendo la charla que tuvo ' + escapeHtml(TEAM_LABELS[asker]||asker) + ' con este clon. Elegí "Yo" arriba para hablarle vos.</div>';
       }
     }
-    if (!msgsHtml) msgsHtml = '<div style="text-align:center;color:var(--text-soft);padding:24px;font-size:12px">No hay mensajes todavia.</div>';
-
-    // Header clone button(s)
-    const currentUserUp = (state.user||'').toUpperCase();
-    const cloneRealUser = AI_CLONE_REAL[cid] || '';
-    const canEditClone  = hasClone && (currentUserUp === cloneRealUser || currentUserUp === 'ADMIN');
-    const cloneBtn = hasClone
-      ? '<button onclick="mostrarClonePerfilModal(\'' + cid + '\')" '
-          + 'title="' + (canEditClone ? 'Ver y editar perfil del clon' : 'Ver perfil del clon') + '" '
-          + 'style="display:inline-flex;align-items:center;gap:4px;padding:5px 10px;font-size:11px;font-weight:600;background:var(--surface-alt);color:var(--text-muted);border:1px solid var(--border);border-radius:8px;cursor:pointer;white-space:nowrap">'
-          + (canEditClone ? '✏' : '👁') + ' Perfil'
-        + '</button>'
-      : '';
-    // Botón "Consultar" — preguntarle al clon sobre la actividad real del usuario
-    const consultBtn = !isGroup
-      ? '<button onclick="_openUserContextAI(\'' + target + '\')" title="Preguntarle al clon de ' + escapeHtml(title) + ' sobre su actividad" '
-          + 'style="display:inline-flex;align-items:center;gap:4px;padding:5px 10px;font-size:11px;font-weight:600;background:' + ccolor + '15;color:' + ccolor + ';border:1px solid ' + ccolor + '35;border-radius:8px;cursor:pointer;white-space:nowrap">'
-          + '🔍 Consultar'
-        + '</button>'
-      : '';
-
-    // Improved timer banner with progress ring
-    const timerBannerHtmlV2 = timerActive
-      ? '<div id="chat-ai-timer-banner" style="display:flex;align-items:center;gap:10px;padding:8px 16px;background:linear-gradient(90deg,' + ccolor + '10,transparent);border-bottom:1px solid ' + ccolor + '20;font-size:12px">'
-          + '<div style="width:28px;height:28px;flex-shrink:0;position:relative">'
-            + '<svg width="28" height="28" viewBox="0 0 28 28"><circle cx="14" cy="14" r="11" stroke="' + ccolor + '25" stroke-width="3" fill="none"/><circle id="chat-ai-timer-ring" cx="14" cy="14" r="11" stroke="' + ccolor + '" stroke-width="3" fill="none" stroke-linecap="round" stroke-dasharray="69" stroke-dashoffset="0" transform="rotate(-90 14 14)" style="transition:stroke-dashoffset .5s"/></svg>'
-            + '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:' + ccolor + '" id="chat-ai-timer-secs">…</div>'
-          + '</div>'
-          + '<div style="flex:1;min-width:0">'
-            + '<div style="font-weight:600;color:var(--text)">🤖 ' + escapeHtml(clabel) + ' va a responder pronto</div>'
-            + '<div class="u5">Si el usuario real responde primero, el timer se cancela.</div>'
-          + '</div>'
-          + '<button onclick="_chatAIRespondNow(\'' + me + '\',\'' + target + '\')" style="padding:5px 12px;font-size:11px;font-weight:700;background:' + ccolor + ';color:#fff;border:none;border-radius:6px;cursor:pointer;white-space:nowrap;flex-shrink:0">Responder ya</button>'
-        + '</div>'
-      : '';
-
-    // AI strip above input (always visible when clone exists)
-    const aiStripHtml = hasClone
-      ? '<div style="display:flex;align-items:center;gap:8px;padding:6px 12px;background:' + ccolor + '08;border-top:1px solid ' + ccolor + '20">'
-          + '<div style="width:22px;height:22px;border-radius:50%;background:' + ccolor + ';color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0">🤖</div>'
-          + '<span style="font-size:11px;color:' + ccolor + ';font-weight:600">' + escapeHtml(clabel) + '</span>'
-          + '<span style="font-size:11px;color:var(--text-muted);flex:1">' + (timerActive ? 'respondiendo automáticamente…' : 'disponible para responder') + '</span>'
-          + '<button id="chat-ai-btn-now" onclick="_chatAIRespondNow(\'' + escapeHtml(me) + '\',\'' + escapeHtml(target) + '\')" '
-              + 'style="padding:4px 10px;font-size:11px;font-weight:700;background:' + ccolor + ';color:#fff;border:none;border-radius:6px;cursor:pointer;white-space:nowrap">'
-              + (timerActive ? 'Responder ya' : 'Consultar IA')
-          + '</button>'
-        + '</div>'
-      : '';
 
     msgsPanel = '<div style="display:flex;flex-direction:column;height:100%">'
       + '<div style="padding:10px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;flex-shrink:0">'
@@ -38080,15 +38032,12 @@ function renderChat(){
             + '<div style="font-weight:700;color:var(--text);font-size:14px">' + escapeHtml(title) + '</div>'
             + (lastActStr ? '<div style="font-size:11px;color:' + (isOnline?'#16A34A':'var(--text-soft)') + '">' + (isOnline?'🟢 ':'⚪ ') + lastActStr + '</div>' : '')
           + '</div>'
-          + '<div style="display:flex;gap:6px;flex-shrink:0">' + cloneBtn + consultBtn + '</div>'
+          + '<div style="display:flex;gap:6px;flex-shrink:0">' + headerRightHtml + '</div>'
         + '</div>'
-      + (timerActive ? timerBannerHtmlV2 : '')
-      + '<div id="chat-msgs" style="flex:1;overflow-y:auto;padding:16px;background:var(--bg)">' + msgsHtml + '</div>'
-      + aiStripHtml
-      + '<div style="display:flex;gap:8px;padding:12px;border-top:1px solid var(--border);background:var(--surface)">'
-          + '<input id="chat-input" type="text" placeholder="Escribi un mensaje..." style="flex:1;padding:9px 14px;border:1px solid var(--border);border-radius:20px;background:var(--bg);color:var(--text);font-size:13px;outline:none">'
-          + '<button id="chat-send" style="background:var(--primary);color:white;border:none;border-radius:50%;width:38px;height:38px;cursor:pointer;font-size:16px">&gt;</button>'
-        + '</div>'
+      + tabBarHtml
+      + extraBarHtml
+      + '<div id="chat-msgs" style="flex:1;overflow-y:auto;padding:16px;background:var(--bg)">' + bodyHtml + '</div>'
+      + footerHtml
     + '</div>';
   } else {
     msgsPanel = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--text-soft);font-size:14px;text-align:center;padding:40px">💬<br><br>Elegi una conversacion</div>';
@@ -38100,105 +38049,6 @@ function renderChat(){
       + '<div style="overflow:hidden">' + msgsPanel + '</div>'
     + '</div>'
   + '</div>';
-}
-
-// ── Consultar sobre otro usuario con IA ──────────────────────────────────────
-const _uCtxAIHistory = {};
-
-function _renderUCtxAIMsgs(targetUser, msgsBox) {
-  const hist = _uCtxAIHistory[targetUser] || [];
-  const label = (typeof TEAM_LABELS !== 'undefined' && TEAM_LABELS[targetUser]) || targetUser;
-  if (hist.length === 0) {
-    msgsBox.innerHTML = '<div style="text-align:center;color:var(--text-muted);font-size:12px;padding:20px 14px">Preguntame sobre ' + escapeHtml(label) + ':<br>¿Qué hizo hoy? ¿Qué tiene pendiente? ¿Sus documentos recientes?</div>';
-    return;
-  }
-  msgsBox.innerHTML = hist.map(m => {
-    const isU = m.role === 'user';
-    const body = isU ? escapeHtml(m.content||'').replace(/\n/g,'<br>') : _aiRichFormat(m.content||'');
-    return '<div style="display:flex;justify-content:' + (isU?'flex-end':'flex-start') + ';margin-bottom:7px">'
-      + '<div style="max-width:88%;padding:8px 11px;border-radius:' + (isU?'12px 12px 3px 12px':'12px 12px 12px 3px') + ';background:' + (isU?'rgba(124,58,237,.13)':'var(--surface)') + ';border:1px solid var(--border);font-size:12px;line-height:1.5;word-break:break-word">' + body + '</div>'
-    + '</div>';
-  }).join('');
-  msgsBox.scrollTop = msgsBox.scrollHeight;
-}
-
-async function _sendUserContextAI(targetUser) {
-  const panel = document.querySelector('[data-user-context-ai="' + targetUser + '"]');
-  if (!panel) return;
-  const inp = panel.querySelector('[data-ucai-input]');
-  const msgsBox = panel.querySelector('[data-ucai-msgs]');
-  if (!inp || !msgsBox) return;
-  const txt = (inp.value || '').trim();
-  if (!txt) return;
-  if (!_uCtxAIHistory[targetUser]) _uCtxAIHistory[targetUser] = [];
-  _uCtxAIHistory[targetUser].push({ role:'user', content:txt });
-  inp.value = '';
-  _renderUCtxAIMsgs(targetUser, msgsBox);
-  const tid = 'ucai-think-' + Date.now();
-  msgsBox.insertAdjacentHTML('beforeend', '<div id="' + tid + '" style="font-size:11px;color:var(--text-muted);padding:6px;font-style:italic">Consultando…</div>');
-  msgsBox.scrollTop = msgsBox.scrollHeight;
-  try {
-    const label = (typeof TEAM_LABELS !== 'undefined' && TEAM_LABELS[targetUser]) || targetUser;
-    const weekAgo = new Date(Date.now() - 7*24*60*60*1000).toISOString().slice(0,10);
-    let activity = '';
-    try {
-      const r = await fetch(SUPA_URL + '/rest/v1/erp_activity_log?user_id=eq.' + encodeURIComponent(targetUser) + '&created_at=gte.' + weekAgo + 'T00:00:00Z&order=created_at.desc&limit=60&select=action_type,entity,description,created_at', { headers: _supaH });
-      const data = await r.json();
-      if (Array.isArray(data) && data.length > 0) {
-        const _noisy = new Set(['navegar','sesion','consultar']);
-        activity = data.filter(a => !_noisy.has(a.action_type)).map(a => {
-          const ts = new Date(a.created_at).toLocaleString('es-AR', { timeZone:'America/Argentina/Buenos_Aires', day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit' });
-          return '[' + ts + '] ' + a.action_type + (a.entity ? ' (' + a.entity + ')' : '') + ': ' + a.description;
-        }).join('\n');
-      }
-    } catch(_ea) {}
-    const cloneLearned = (typeof _cloneLearnedGet === 'function') ? (_cloneLearnedGet(targetUser) || '') : '';
-    const sysPrompt = 'Sos el asistente que tiene información sobre ' + label + ' en BuscaTools ERP.\n'
-      + 'Cuando te consulten sobre ' + label + ', respondé SOLO basándote en los datos reales de abajo.\n\n'
-      + 'PERFIL DE ' + label.toUpperCase() + ':\n' + (cloneLearned || '(sin perfil cargado)') + '\n\n'
-      + 'ACTIVIDAD RECIENTE DE ' + label.toUpperCase() + ' (última semana, solo acciones concretas):\n' + (activity || 'Sin actividad concreta registrada.') + '\n\n'
-      + 'INSTRUCCIONES:\n'
-      + '- Máximo 3-4 oraciones, sé concreto y directo\n'
-      + '- Citá números exactos (COTI00001, PDV00001, etc.) cuando los haya\n'
-      + '- Si no tenés datos suficientes, decilo\n'
-      + '- NO inventes información\n'
-      + '- Respondé en español, tono de trabajo interno';
-    const workerUrl = (typeof loadAiConfig === 'function' ? (loadAiConfig().workerUrl || '') : (AI_WORKER_URL || '')).trim();
-    const res = await fetch(workerUrl, {
-      method:'POST',
-      headers:{ 'Content-Type':'application/json', 'X-Worker-Token': AI_WORKER_TOKEN },
-      body: JSON.stringify({ systemPrompt: sysPrompt, messages: _uCtxAIHistory[targetUser].slice(-8) })
-    });
-    const raw = await res.json();
-    const reply = (raw.content || (raw.choices && raw.choices[0] && raw.choices[0].message && raw.choices[0].message.content) || '').trim();
-    _uCtxAIHistory[targetUser].push({ role:'assistant', content: reply || '(sin respuesta)' });
-    document.getElementById(tid)?.remove();
-    _renderUCtxAIMsgs(targetUser, msgsBox);
-  } catch(err) {
-    document.getElementById(tid)?.remove();
-    msgsBox.insertAdjacentHTML('beforeend', '<div style="font-size:11px;color:var(--danger);padding:6px">Error al consultar.</div>');
-  }
-}
-
-function _openUserContextAI(targetUser) {
-  document.querySelectorAll('[data-user-context-ai]').forEach(el => el.remove());
-  const label = (typeof TEAM_LABELS !== 'undefined' && TEAM_LABELS[targetUser]) || targetUser;
-  const color = (typeof CHAT_COLORS !== 'undefined' && CHAT_COLORS[targetUser]) || '#7C3AED';
-  const panel = document.createElement('div');
-  panel.setAttribute('data-user-context-ai', targetUser);
-  panel.style.cssText = 'position:fixed;top:56px;right:0;width:400px;height:calc(100vh - 56px);z-index:1000;background:var(--surface);border-left:1px solid var(--border);box-shadow:-4px 0 24px rgba(0,0,0,.15);display:flex;flex-direction:column;overflow:hidden';
-  panel.innerHTML = '<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:' + color + '12;border-bottom:1px solid var(--border)">'
-    + '<span style="font-size:13px;font-weight:700;color:' + color + '">🔍 Consultar sobre ' + escapeHtml(label) + '</span>'
-    + '<button onclick="document.querySelectorAll(\'[data-user-context-ai]\').forEach(el=>el.remove())" style="background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:18px;padding:0 4px">✕</button>'
-  + '</div>'
-  + '<div data-ucai-msgs style="flex:1;overflow-y:auto;padding:10px;display:flex;flex-direction:column">'
-    + '<div style="text-align:center;color:var(--text-muted);font-size:12px;padding:20px 14px">Preguntame sobre ' + escapeHtml(label) + ':<br>¿Qué hizo hoy? ¿Qué tiene pendiente? ¿Sus documentos recientes?</div>'
-  + '</div>'
-  + '<div style="display:flex;gap:7px;padding:8px 10px;border-top:1px solid var(--border);align-items:flex-end">'
-    + '<textarea data-ucai-input rows="2" placeholder="¿Qué hizo ' + escapeHtml(label) + ' hoy?…" onkeydown="if(event.key===\'Enter\'&&!event.shiftKey){event.preventDefault();_sendUserContextAI(\'' + targetUser + '\');}" style="flex:1;resize:none;border:1px solid var(--border);border-radius:8px;padding:7px;font-size:13px;background:var(--bg);color:var(--text);font-family:inherit"></textarea>'
-    + '<button onclick="_sendUserContextAI(\'' + targetUser + '\')" style="padding:7px 13px;background:' + color + ';color:#fff;border:none;border-radius:8px;font-size:14px;cursor:pointer;font-weight:700">→</button>'
-  + '</div>';
-  document.body.appendChild(panel);
 }
 
 // ── Navegar a un documento ERP desde cualquier contexto (clon, asistente personal) ──
@@ -38250,182 +38100,64 @@ function wireChat(){
   const me = state.user || 'ADMIN';
   document.querySelectorAll('[data-chat-open]').forEach(el => {
     el.addEventListener('click', () => {
-      state.chatOpenWith = el.dataset.chatOpen;
-      try { if (el.dataset.chatOpen !== '__SELF_FEED__' && typeof markChatRead === 'function') markChatRead(me, el.dataset.chatOpen); } catch(e){}
+      const openId = el.dataset.chatOpen;
+      state.chatOpenWith = openId;
+      // La entrada fija "Mi clon" (target === yo mismo) no tiene pestaña
+      // humana — siempre entra directo en la pestaña del clon.
+      state.chatTabMode = (openId === me) ? 'clone' : 'human';
+      state.chatCloneAsker = null;
+      try { if (typeof markChatRead === 'function' && openId !== me) markChatRead(me, openId); } catch(e){}
       renderMain();
     });
   });
 
-  // ── Chat directo con tu clon propio ─────────────────────────────────────
-  if (state.chatOpenWith === '__SELF_FEED__'){
-    const sfInput = document.getElementById('sf-chat-input');
-    const sfSend  = document.getElementById('sf-send-btn');
-    const sfSendMsg = async () => {
-      if (window._sfClonatSending) return;
-      const txt = (sfInput ? sfInput.value : '').trim();
-      if (!txt) return;
-      window._sfClonatSending = true;
-      if (sfInput) sfInput.value = '';
-      const sendBtn = document.getElementById('sf-send-btn');
-      if (sendBtn) { sendBtn.disabled = true; sendBtn.textContent = '⏳'; }
-      // Guardar pregunta en historial
-      const cloneId = 'AI_' + me;
-      const hist = _chatLoadAIResponses(me, '__SELF_FEED__');
-      // Armar historial de conversación para contexto
-      const convHist = hist.slice(-8).map(r => ([
-        { role:'user', content: r.question || '' },
-        { role:'assistant', content: r.content }
-      ])).flat().filter(m => m.content);
-      try {
-        const response = await _cloneAskAI(cloneId, txt, convHist);
-        if (response){
-          const updated = _chatLoadAIResponses(me, '__SELF_FEED__');
-          updated.push({ at: Date.now(), question: txt, content: response });
-          _chatSaveAIResponses(me, '__SELF_FEED__', updated.slice(-60));
-          // Aprendizaje en background: extraer lo que el clon aprende del usuario
-          _cloneLearnFromExchange(me, txt, response);
-          // Guardar en Supabase (memoria compartida con asistente personal)
-          _persSaveMessage(me, 'user', txt).catch(() => {});
-          _persSaveMessage(me, 'assistant', response).catch(() => {});
-          // Cada 5 intercambios, generar resumen diario
-          if (updated.length % 5 === 0) {
-            const _lbl = (typeof TEAM_LABELS !== 'undefined' && TEAM_LABELS[me]) || me;
-            _persGenerateDailySummary(me, _lbl).catch(() => {});
-          }
-        }
-      } catch(e){ console.error('Self clone chat error', e); }
-      window._sfClonatSending = false;
+  // ── Pestañas "<Nombre>" / "<Nombre> Digital" ────────────────────────────
+  document.querySelectorAll('[data-chat-tab]').forEach(el => {
+    el.addEventListener('click', () => {
+      const mode = el.dataset.chatTab;
+      if (state.chatTabMode === mode) return;
+      state.chatTabMode = mode;
+      if (mode !== 'clone') state.chatCloneAsker = null;
       renderMain();
-      setTimeout(() => { const msgs = document.getElementById('chat-msgs'); if (msgs) msgs.scrollTop = msgs.scrollHeight; }, 80);
-    };
-    if (sfSend){
-      // mousedown + preventDefault evita que el input pierda el foco antes de enviar
-      sfSend.addEventListener('mousedown', e => { e.preventDefault(); sfSendMsg(); });
-    }
-    if (sfInput){
-      sfInput.addEventListener('keydown', e => { if (e.key === 'Enter'){ e.preventDefault(); sfSendMsg(); } });
-      sfInput.focus();
-    }
-    // Scroll to bottom
-    setTimeout(() => { const msgs = document.getElementById('chat-msgs'); if (msgs) msgs.scrollTop = msgs.scrollHeight; }, 50);
-    return; // no seguir con el wiring normal
+    });
+  });
+
+  // ── Selector "Charla con:" (solo lo ve el dueño del clon / ADMIN) ───────
+  const askerSel = document.getElementById('chat-clone-asker-sel');
+  if (askerSel){
+    askerSel.addEventListener('change', () => {
+      state.chatCloneAsker = askerSel.value;
+      renderMain();
+    });
   }
 
-  // ── Asistente personal (client-side via Supabase + Worker POST /) ──
-  if (state.chatOpenWith === '__PERSONAL__') {
-    // Cargar historial directo desde Supabase si no está cargado todavía
-    if (_personalChatHistory === null && !_personalChatLoading) {
-      _personalChatLoading = true;
-      _persLoadHistory(me).then(hist => {
-        _personalChatHistory = hist;
-        _personalChatLoading = false;
-        renderMain();
-        setTimeout(() => { const m = document.getElementById('personal-msgs'); if (m) m.scrollTop = m.scrollHeight; }, 80);
-      });
-    }
-
-    const pInput = document.getElementById('personal-chat-input');
-    const pSend  = document.getElementById('personal-send-btn');
-
-    const sendPersonal = async () => {
-      const txt = (pInput?.value || '').trim();
-      if (!txt) return;
-      if (_personalChatHistory === null) _personalChatHistory = [];
-      _personalChatHistory.push({ role: 'user', content: txt });
-      if (pInput) pInput.value = '';
-      if (pSend) { pSend.disabled = true; pSend.textContent = '⏳'; }
-      try { logActivity(me, 'Consulta asistente personal', txt.slice(0,200), { action_type:'ia_personal', entity:'asistente', section: state.section }); } catch(_){}
-      renderMain();
-      setTimeout(() => { const m = document.getElementById('personal-msgs'); if (m) m.scrollTop = m.scrollHeight; }, 50);
-      try {
-        // Cargar contexto en paralelo
-        const [mem, act] = await Promise.all([_persLoadMemory(me), _persLoadActivity(me)]);
-        const label2 = (typeof TEAM_LABELS !== 'undefined' && TEAM_LABELS[me]) || me;
-        const now2 = new Date().toLocaleString('es-AR', { timeZone:'America/Argentina/Buenos_Aires' });
-        const _rolesMap2 = {
-          JUAN:'Dueño — exportación/importación y nuevos clientes',
-          FACUNDO:'Ventas — cotizaciones y pedidos',
-          NORBERTO:'Ventas — cotizaciones y pedidos',
-          JANO:'IT — desarrollo web, ERP y automatizaciones',
-          BRIAN:'Depósito — preparación y despacho de pedidos',
-          ADMIN:'Administración — acceso total al sistema',
-        };
-        const rolDesc2 = _rolesMap2[me] || me;
-        let agentInput2 = `[USUARIO: ${label2} | Rol: ${rolDesc2} | ${now2}]`;
-        if (act) agentInput2 += `\n\n[ACTIVIDAD RECIENTE EN ERP]\n${act}`;
-        if (mem) agentInput2 += `\n\n[MEMORIA PERSONAL DE ${label2.toUpperCase()}]\n${mem}`;
-        agentInput2 += `\n\n[MENSAJE]\n${txt}`;
-
-        const cfg2 = typeof loadAiConfig === 'function' ? loadAiConfig() : {};
-        const workerUrl2 = (cfg2.workerUrl || AI_WORKER_URL || '').replace(/\/$/, '');
-
-        const systemPrompt2 = `Sos el asistente personal interno de ${label2} en BuscaTools.
-BuscaTools es una importadora y distribuidora argentina de herramientas industriales.
-Marcas: Speedrill, TECNA, FEIN, Chicago Pneumatic, Ingersoll Rand, Gedore, Durofix, Torero.
-Clientes: Trafigura, Mirgor, Unilever, YPF, Atlas Copco, SMC, Whirlpool, WEG, Mabe, Raizen, Newsan, IVECO, Liesa.
-Equipo: Juan (dueño, compras/importación), Facundo y Norberto (ventas), Jano (IT + automatizaciones), Brian (depósito), Admin (sistema).
-Flujo: cotización → pedido de venta → nota de entrega (remito). Moneda principal: USD.
-Rol de ${label2}: ${rolDesc2}.
-Tu tarea: ayudar a ${label2} con su trabajo diario. Sé conciso, directo y útil. Citá referencias exactas (COTI00001, PDV00001, RT00001).
-
-ACCIONES QUE PODÉS EJECUTAR DIRECTAMENTE — Usá estos marcadores en tu respuesta y el sistema los ejecutará automáticamente:
-
-▸ CREAR ETIQUETA DE EMAIL: [→LABEL:NombreEtiqueta|#hexcolor|campo=valor,campo2=valor2|AND_OR]
-  Campos: from=remitente, to=destinatario, subject=asunto, body=cuerpo, attachment= (sin valor = tiene adjunto), any=cualquier campo
-  Operador: AND (todas las reglas) | OR (cualquiera)
-  Jerarquía: usá "/" en el nombre para subcategorías estilo Gmail (ej: "OC/Con Adjunto")
-  Colores: #ef4444 rojo · #f59e0b naranja · #22c55e verde · #3b82f6 azul · #8b5cf6 violeta · #ec4899 rosa · #14b8a6 teal · #6b7280 gris
-  Etiquetas existentes: ${JSON.stringify((typeof _labelsLoad==='function'?_labelsLoad():[]).map(l=>({name:l.name,rules:(l.rules||[]).length})))}
-  IMPORTANTE: NUNCA digas que no podés crear etiquetas. Siempre usá el marcador directamente.
-  Ejemplo — "etiqueta para órdenes de compra con adjunto":
-  Claro, la creo ahora: [→LABEL:OC/Con Adjunto|#f59e0b|subject=orden de compra,attachment=|AND]`;
-
-        const messagesForWorker2 = [
-          ...(_personalChatHistory || [])
-            .filter(m => m.content && (m.role === 'user' || m.role === 'assistant'))
-            .slice(-10)
-            .map(m => ({ role: m.role, content: String(m.content) })),
-          { role: 'user', content: agentInput2 }
-        ];
-
-        const r = await fetch(workerUrl2, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'X-Worker-Token': AI_WORKER_TOKEN },
-          body: JSON.stringify({
-            provider: 'openai',
-            model: 'gpt-4o-mini',
-            messages: [{ role: 'system', content: systemPrompt2 }, ...messagesForWorker2],
-          }),
+  // ── Si estamos en la pestaña "X Digital", cargar la charla (y, si
+  // corresponde, la lista de quién le habló al clon) la primera vez ──────
+  const openTarget = state.chatOpenWith;
+  if (openTarget && state.chatTabMode === 'clone' && !openTarget.startsWith('group:')){
+    const cid = 'AI_' + openTarget;
+    if (typeof AI_CLONE_IDS !== 'undefined' && AI_CLONE_IDS.includes(cid)){
+      const cloneRealUser = AI_CLONE_REAL[cid] || '';
+      const currentUserUp = (state.user||'').toUpperCase();
+      const isCloneOwnerOrAdmin = currentUserUp === cloneRealUser || currentUserUp === 'ADMIN';
+      const asker = isCloneOwnerOrAdmin ? (state.chatCloneAsker || me) : me;
+      const cacheKey = asker + '→' + openTarget;
+      if (_cloneConvCache[cacheKey] === undefined){
+        _cloneConvCache[cacheKey] = null; // marca "cargando"
+        _cloneConvLoad(asker, openTarget).then(hist => {
+          _cloneConvCache[cacheKey] = hist;
+          renderMain();
         });
-        const d = await r.json();
-        if (d.error) throw new Error(d.error);
-        const reply2 = d.choices?.[0]?.message?.content || d.content?.[0]?.text || d.output || '';
-        if (!reply2) throw new Error('Respuesta vacía');
-
-        _personalChatHistory.push({ role: 'assistant', content: reply2 });
-        // Guardar en Supabase (fire-and-forget)
-        _persSaveMessage(me, 'user', txt);
-        _persSaveMessage(me, 'assistant', reply2);
-      } catch(e) {
-        _personalChatHistory.push({ role: 'assistant', content: '❌ Error: ' + e.message });
       }
-      if (pSend) { pSend.disabled = false; pSend.textContent = 'Enviar'; }
-      renderMain();
-      setTimeout(() => { const m = document.getElementById('personal-msgs'); if (m) m.scrollTop = m.scrollHeight; }, 80);
-    };
-
-    if (pSend) {
-      pSend.addEventListener('mousedown', e => e.preventDefault());
-      pSend.addEventListener('click', sendPersonal);
+      if (isCloneOwnerOrAdmin && _cloneConvAskersCache[openTarget] === undefined){
+        _cloneConvAskersCache[openTarget] = null;
+        _cloneConvListAskers(openTarget).then(list => {
+          _cloneConvAskersCache[openTarget] = list;
+          renderMain();
+        });
+      }
     }
-    if (pInput) {
-      pInput.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendPersonal(); } });
-      pInput.focus();
-    }
-    setTimeout(() => { const m = document.getElementById('personal-msgs'); if (m) m.scrollTop = m.scrollHeight; }, 50);
-    return;
   }
-  // ─────────────────────────────────────────────────────────────────
 
   const inp = document.getElementById('chat-input');
   const btn = document.getElementById('chat-send');
@@ -38433,42 +38165,27 @@ ACCIONES QUE PODÉS EJECUTAR DIRECTAMENTE — Usá estos marcadores en tu respue
     const txt = (inp ? inp.value : '').trim();
     if (!txt) return;
     const target = state.chatOpenWith;
-    if (typeof sendChatMessage === 'function'){ sendChatMessage(me, target, txt); }
+    if (!target) return;
     if (inp) inp.value = '';
-    // If target was online in the last 5 min, start auto-AI timer (5 min wait)
-    const isGroup = target && target.startsWith('group:');
-    const hasClone = !isGroup && AI_CLONE_IDS.includes('AI_' + target);
-    if (hasClone && _chatIsOnline(target) && !window._chatAITimers[target]){
-      // Re-render to show the timer banner, then start the timer
-      renderMain();
-      setTimeout(() => _chatStartAITimer(me, target, 300), 100); // 5 min
-    } else if (hasClone && !_chatIsOnline(target)){
-      // Offline → auto-respond after 15 sec (simulate quick reply)
-      if (!window._chatAITimers[target]){
-        renderMain();
-        setTimeout(() => _chatStartAITimer(me, target, 15), 100);
+
+    if (state.chatTabMode === 'clone' && !target.startsWith('group:')){
+      const cid = 'AI_' + target;
+      if (typeof AI_CLONE_IDS !== 'undefined' && AI_CLONE_IDS.includes(cid)){
+        const cloneRealUser = AI_CLONE_REAL[cid] || '';
+        const currentUserUp = (state.user||'').toUpperCase();
+        const isCloneOwnerOrAdmin = currentUserUp === cloneRealUser || currentUserUp === 'ADMIN';
+        const asker = isCloneOwnerOrAdmin ? (state.chatCloneAsker || me) : me;
+        if (asker === me) _cloneConvSendMsg(me, target, txt);
+        return;
       }
-    } else {
-      renderMain();
     }
+    if (typeof sendChatMessage === 'function'){ sendChatMessage(me, target, txt); }
+    renderMain();
   };
   if (btn) btn.addEventListener('click', send);
   if (inp){
     inp.addEventListener('keydown', (e) => { if (e.key === 'Enter'){ e.preventDefault(); send(); } });
     inp.focus();
-  }
-  // Restart countdown display if timer already active
-  const target = state.chatOpenWith;
-  if (target && window._chatAITimers[target]){
-    const { end, iid } = window._chatAITimers[target];
-    const updateNow = () => {
-      const rem = Math.max(0, Math.ceil((end - Date.now())/1000));
-      const el = document.getElementById('chat-ai-timer-secs');
-      if (el) el.textContent = rem + 's';
-    };
-    clearInterval(window._chatAITimers[target].iid);
-    window._chatAITimers[target].iid = setInterval(updateNow, 1000);
-    updateNow();
   }
   const msgs = document.getElementById('chat-msgs');
   if (msgs) msgs.scrollTop = msgs.scrollHeight;
