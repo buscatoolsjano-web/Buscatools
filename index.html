@@ -759,6 +759,7 @@
   }
 
   * { box-sizing: border-box; }
+  html { overflow-x: hidden; }
   body { margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
     background: var(--bg); color: var(--text); transition: background 0.2s, color 0.2s; overflow-x: hidden; }
   .topnav { background: var(--topnav-bg); color: var(--topnav-text); display: flex;
@@ -2285,8 +2286,16 @@ body[data-section-theme] #th-page-title { color: var(--primary); }
     max-width: 90px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
   }
   /* Dropdown repositionado desde top-header */
+  /* Geometría (position/top/right/left/width/max-height) queda SIN !important
+     a propósito: se recalcula en JS (ver _posicionarUserDropdown) con valores
+     inline según el botón que lo abrió y el tamaño real de pantalla, y un
+     inline style sin !important ya gana por especificidad sobre esta regla.
+     Estos valores son solo un fallback razonable si por algo JS no corre. */
   #user-dropdown.th-open {
-    position: fixed !important; top: 52px !important; right: 16px !important; left: auto !important;
+    position: fixed; top: 52px; right: 16px; left: auto;
+    max-width: calc(100vw - 16px);
+    max-height: calc(100vh - 64px);
+    overflow-y: auto;
     background: var(--surface) !important;
     z-index: 9999 !important;
     visibility: visible !important;
@@ -39859,6 +39868,48 @@ function _ocShowResults(pfx, tipoDoc, items, cliente, moneda, closeModal, showUp
   }, 0);
 }
 
+// Posiciona el menú de usuario (#user-dropdown) de forma segura dentro del
+// viewport visible, sin importar qué botón lo abrió: el del topnav viejo
+// (usado en mobile, donde #top-header queda oculto) o el del top-header
+// nuevo (desktop/tablet). Se calcula con getBoundingClientRect() del botón
+// real en vez de un "right: Npx" fijo, para no depender de si el viewport
+// de layout coincide con el visual (causa típica de menús que se ven
+// "cortados" en el borde izquierdo en navegadores mobile cuando hay algún
+// overflow horizontal en otra parte de la página).
+function _posicionarUserDropdown(triggerEl, dropdownEl){
+  var margin = 8;
+  var vw = window.innerWidth, vh = window.innerHeight;
+  var maxW = Math.min(280, vw - margin * 2);
+  var rect = triggerEl.getBoundingClientRect();
+  var top = Math.min(rect.bottom + 6, vh - margin);
+  var right = Math.max(margin, vw - rect.right);
+  if (vw - right - maxW < margin) right = Math.max(margin, vw - margin - maxW);
+  dropdownEl.style.position = 'fixed';
+  dropdownEl.style.width = maxW + 'px';
+  dropdownEl.style.maxWidth = maxW + 'px';
+  dropdownEl.style.left = 'auto';
+  dropdownEl.style.right = right + 'px';
+  dropdownEl.style.top = top + 'px';
+  dropdownEl.style.maxHeight = Math.max(160, vh - top - margin) + 'px';
+  dropdownEl.style.overflowY = 'auto';
+  dropdownEl.style.zIndex = '9999';
+  dropdownEl.style.visibility = 'visible';
+  dropdownEl.style.opacity = '1';
+  dropdownEl.style.pointerEvents = 'auto';
+  dropdownEl.style.boxShadow = '0 8px 32px rgba(0,0,0,.18), 0 2px 8px rgba(0,0,0,.12)';
+  dropdownEl.style.background = 'var(--surface)';
+  // Doble chequeo tras el reflow, por si igual quedó con el borde
+  // izquierdo fuera de pantalla (p.ej. contenido interno más ancho de lo
+  // previsto): lo anclamos directamente por la izquierda.
+  requestAnimationFrame(function(){
+    var r = dropdownEl.getBoundingClientRect();
+    if (r.left < margin){
+      dropdownEl.style.right = 'auto';
+      dropdownEl.style.left = margin + 'px';
+    }
+  });
+}
+
 function wireTopnav(){
   document.querySelectorAll('.topnav-item').forEach(item => {
     item.addEventListener('click', () => {
@@ -39871,7 +39922,16 @@ function wireTopnav(){
   const userBtn = document.getElementById('btn-user');
   const dropdown = document.getElementById('user-dropdown');
   if (userBtn && dropdown){
-    userBtn.addEventListener('click', (e) => { e.stopPropagation(); dropdown.style.display = (dropdown.style.display === 'block') ? 'none' : 'block'; });
+    userBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isOpen = dropdown.style.display === 'block';
+      if (isOpen){
+        dropdown.style.display = 'none';
+      } else {
+        dropdown.style.display = 'block';
+        _posicionarUserDropdown(userBtn, dropdown);
+      }
+    });
     document.addEventListener('click', (e) => {
       const insideByTarget = e.target.closest('#btn-user') || e.target.closest('#user-dropdown');
       // Red de seguridad: al elegir una opción de un <select> nativo (Usuario/Empresa)
@@ -39961,6 +40021,7 @@ function wireLeftNav(){
       } else {
         dropdown.classList.add('th-open');
         dropdown.style.display = 'block';
+        _posicionarUserDropdown(thMini, dropdown);
       }
     });
     document.addEventListener('click', (e) => {
