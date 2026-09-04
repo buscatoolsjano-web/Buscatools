@@ -12221,6 +12221,8 @@ function abrirComposeMensaje(paraPreset){
   modal.querySelectorAll('.msg-tipo-btn').forEach(function(b){ b.classList.remove('selected','sel-urgente','sel-tarea'); });
   var infoBtn = modal.querySelector('[data-tipo="info"]');
   if(infoBtn) infoBtn.classList.add('selected');
+  var sendBtn = modal.querySelector('#msg-send');
+  if(sendBtn) sendBtn.disabled = false;
   modal.classList.add('open');
   setTimeout(function(){ var t=modal.querySelector('#msg-texto'); if(t) t.focus(); }, 50);
 }
@@ -12233,6 +12235,15 @@ function cerrarComposeMensaje(){
 function enviarMensaje(){
   var modal = document.getElementById('msg-compose-modal');
   if(!modal) return;
+  // Guarda extra contra doble envío (p.ej. doble click/doble tap real del
+  // usuario en el botón, no solo el bug de doble listener ya corregido más
+  // arriba): mientras se está procesando un envío, se ignora cualquier
+  // click adicional. Se rehabilita al reabrir el modal (abrirComposeMensaje).
+  var sendBtn = modal.querySelector('#msg-send');
+  if(sendBtn){
+    if(sendBtn.disabled) return;
+    sendBtn.disabled = true;
+  }
   // Recolectar destinatarios seleccionados
   var destinos = [];
   modal.querySelectorAll('input[name="msg-dest"]:checked').forEach(function(cb){ destinos.push(cb.value); });
@@ -12244,11 +12255,13 @@ function enviarMensaje(){
                 modal.querySelector('.msg-tipo-btn.selected');
   var tipo = tipoSel ? tipoSel.dataset.tipo : 'info';
   if(!destinos.length){
+    if(sendBtn) sendBtn.disabled = false;
     if(typeof showToast === 'function') showToast('Sin destinatario','Tildá al menos un usuario','error');
     else alert('Tildá al menos un usuario');
     return;
   }
   if(!texto){
+    if(sendBtn) sendBtn.disabled = false;
     if(typeof showToast === 'function') showToast('Mensaje vacío','Escribí algo antes de enviar','error');
     else alert('Escribí un mensaje');
     return;
@@ -12307,8 +12320,21 @@ function enviarMensaje(){
 }
 
 function wireMensajes(){
+  // btn-nuevo-msg y el modal de compose (#msg-compose-modal y sus hijos fijos:
+  // #msg-send, #msg-cancel, .msg-tipo-btn) son nodos ÚNICOS y permanentes del
+  // DOM — no se recrean en cada render. wireMensajes() en cambio se vuelve a
+  // llamar cada vez que se renderiza "Inicio" (ver wireBandejaInicio). Sin el
+  // guard data-wired de abajo, cada visita a Inicio agregaba OTRO listener de
+  // click encima de los anteriores (y encima del onclick inline que además
+  // tenía el botón en el HTML) — un solo click en "Enviar" terminaba
+  // disparando enviarMensaje() más de una vez, duplicando el mensaje, la
+  // notificación y el push. Ver también: se sacó el onclick inline del HTML
+  // del modal (línea con id="msg-compose-modal") por la misma razón.
   var btnNuevo = document.getElementById('btn-nuevo-msg');
-  if(btnNuevo) btnNuevo.addEventListener('click', abrirComposeMensaje);
+  if(btnNuevo && !btnNuevo.dataset.wired){
+    btnNuevo.dataset.wired = '1';
+    btnNuevo.addEventListener('click', abrirComposeMensaje);
+  }
 
   document.querySelectorAll('[data-msg-ok]').forEach(function(btn){
     btn.addEventListener('click', function(){
@@ -12335,9 +12361,10 @@ function wireMensajes(){
     });
   });
 
-  // Modal compose
+  // Modal compose — cablear una sola vez (ver comentario arriba).
   var modal = document.getElementById('msg-compose-modal');
-  if(!modal) return;
+  if(!modal || modal.dataset.wired) return;
+  modal.dataset.wired = '1';
   modal.querySelector('#msg-cancel')?.addEventListener('click', cerrarComposeMensaje);
   modal.querySelector('#msg-send')?.addEventListener('click', enviarMensaje);
   modal.addEventListener('click', function(e){ if(e.target===modal) cerrarComposeMensaje(); });
@@ -45192,9 +45219,9 @@ _appInit();
     <div class="msg-form-row">
       <label>Tipo</label>
       <div class="msg-form-tipos">
-        <button type="button" class="msg-tipo-btn selected" data-tipo="info" onclick="document.querySelectorAll(&#39;.msg-tipo-btn&#39;).forEach(function(b){b.classList.remove(&#39;selected&#39;,&#39;sel-urgente&#39;,&#39;sel-tarea&#39;)});this.classList.add(&#39;selected&#39;)">💬 Mensaje</button>
-        <button type="button" class="msg-tipo-btn" data-tipo="tarea" onclick="document.querySelectorAll(&#39;.msg-tipo-btn&#39;).forEach(function(b){b.classList.remove(&#39;selected&#39;,&#39;sel-urgente&#39;,&#39;sel-tarea&#39;)});this.classList.add(&#39;sel-tarea&#39;)">📌 Tarea</button>
-        <button type="button" class="msg-tipo-btn" data-tipo="urgente" onclick="document.querySelectorAll(&#39;.msg-tipo-btn&#39;).forEach(function(b){b.classList.remove(&#39;selected&#39;,&#39;sel-urgente&#39;,&#39;sel-tarea&#39;)});this.classList.add(&#39;sel-urgente&#39;)">🚨 Urgente</button>
+        <button type="button" class="msg-tipo-btn selected" data-tipo="info">💬 Mensaje</button>
+        <button type="button" class="msg-tipo-btn" data-tipo="tarea">📌 Tarea</button>
+        <button type="button" class="msg-tipo-btn" data-tipo="urgente">🚨 Urgente</button>
       </div>
     </div>
     <div class="msg-form-row">
@@ -45202,8 +45229,8 @@ _appInit();
       <textarea id="msg-texto" placeholder="Escribí tu mensaje acá…" rows="4"></textarea>
     </div>
     <div class="msg-form-btns">
-      <button type="button" id="msg-cancel" class="msg-btn-cancel" onclick="cerrarComposeMensaje()">Cancelar</button>
-      <button type="button" id="msg-send" class="msg-btn-send" onclick="enviarMensaje()">Enviar →</button>
+      <button type="button" id="msg-cancel" class="msg-btn-cancel">Cancelar</button>
+      <button type="button" id="msg-send" class="msg-btn-send">Enviar →</button>
     </div>
   </div>
 </div>
