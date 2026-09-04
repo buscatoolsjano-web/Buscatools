@@ -19234,7 +19234,7 @@ function _clientes_buildRow(c, idx, start, i){
   const rubroOpts = '<option value="">Sin especificar</option>' +
     getRubrosDisponibles().map(r => '<option value="'+escapeHtml(r)+'"'+((c.rubro||'')===r?' selected':'')+'>'+escapeHtml(r)+'</option>').join('');
   return '<tr data-cl-open="'+idx+'" style="cursor:pointer">'+
-    '<td><input type="checkbox" onclick="event.stopPropagation()"></td>'+
+    '<td><input type="checkbox" class="cl-row-check" onclick="event.stopPropagation()"></td>'+
     '<td><span class="ref-code">'+escapeHtml(c.ref||'CLI'+(start+i+1).toString().padStart(5,'0'))+'</span></td>'+
     '<td><b>'+escapeHtml(c.nj||'')+'</b></td>'+
     '<td>'+escapeHtml(c.nc||'')+'</td>'+
@@ -19328,10 +19328,37 @@ function renderClientes(){
     document.querySelectorAll('[data-cl-page]').forEach(b=>b.addEventListener('click',()=>{ clientesPage=parseInt(b.dataset.clPage,10); renderMain(); }));
     document.querySelectorAll('[data-cl-open]').forEach(tr=>tr.addEventListener('click',()=>{ state.editingClienteIdx=parseInt(tr.dataset.clOpen,10); state.clienteTab='info'; renderMain(); }));
     _wireClientesRowRubroSelects();
+    // "+ Nuevo" y "Más ▾" de la lista de Clientes — antes estos dos botones
+    // no tenían id ni handler, así que no hacían nada al hacer click.
+    document.getElementById('clientes-list-new')?.addEventListener('click', () => { _openNuevoClienteModal(); });
+    document.getElementById('clientes-list-mas-btn')?.addEventListener('click', e => {
+      e.stopPropagation();
+      const m = document.getElementById('clientes-list-mas-menu');
+      document.querySelectorAll('.mas-menu.open').forEach(o => { if (o !== m) o.classList.remove('open'); });
+      m.classList.toggle('open');
+    });
+    document.querySelectorAll('[data-cl-list-mas]').forEach(it => it.addEventListener('click', () => {
+      const action = it.dataset.clListMas;
+      document.getElementById('clientes-list-mas-menu')?.classList.remove('open');
+      if (action === 'exportar'){ _clientesExportCSV(); }
+      else if (action === 'select-all'){
+        const boxes = document.querySelectorAll('.cl-row-check');
+        const allChecked = boxes.length > 0 && Array.from(boxes).every(b => b.checked);
+        boxes.forEach(b => { b.checked = !allChecked; });
+      }
+    }));
   }, 0);
 
   return `<div style="padding:24px 32px"><div class="page-header" style="padding:0 0 12px">
-    <div class="u3"><button class="btn-primary">+ Nuevo</button><button class="btn-secondary">Más ▾</button></div>
+    <div class="u3"><button class="btn-primary" id="clientes-list-new">+ Nuevo</button>
+      <div class="mas-wrap">
+        <button class="btn-secondary" id="clientes-list-mas-btn">Más ▾</button>
+        <div class="mas-menu" id="clientes-list-mas-menu">
+          <div class="mas-item" data-cl-list-mas="exportar">📥 Exportar a CSV</div>
+          <div class="mas-item" data-cl-list-mas="select-all">☑ Seleccionar todas</div>
+        </div>
+      </div>
+    </div>
     <div class="u3">
       <input type="text" id="clientes-search" placeholder="Buscar..." value="${escapeHtml(clientesSearch)}" style="padding:8px 12px;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--text);font-size:13px;min-width:260px;outline:none">
       <button class="btn-secondary" onclick="clientesColFilters={ref:'',nj:'',nc:'',cif:'',email:'',dom:''};clientesSortCol=null;clientesSortDir='asc';clientesSearch='';clientesPage=1;renderMain()" title="Limpiar filtros" style="padding:8px 10px">✕</button>
@@ -19365,6 +19392,78 @@ function renderClientes(){
       <div class="table-footer"><div>Mostrando ${filtered.length?start+1:0} a ${Math.min(start+PAGE,filtered.length)} de ${filtered.length}</div>
         <div style="display:flex;gap:4px">${[...Array(Math.min(5,totalPages)).keys()].map(i=>{ const p=i+1; return `<button class="btn-secondary" data-cl-page="${p}" style="padding:4px 10px;${p===clientesPage?'background:var(--primary);color:white;border-color:var(--primary);':''}">${p}</button>`; }).join('')}</div>
       </div></div></div>`;
+}
+
+// Modal "Nuevo cliente" para el botón "+ Nuevo" de la lista de Clientes —
+// antes ese botón no tenía ni id ni handler. Reusa _mantModal (mismo modal
+// genérico que ya usa, por ejemplo, "Nuevo cliente" de Mantenimientos) y el
+// mismo patrón cc-* de razón social opcional + nextClienteRef() ya usado en
+// el alta rápida de clientes desde Ventas.
+function _openNuevoClienteModal(){
+  const rubroOpts = '<option value="">Sin especificar</option>' +
+    getRubrosDisponibles().map(r => '<option value="'+escapeHtml(r)+'">'+escapeHtml(r)+'</option>').join('');
+  const fld = (id, label, opts) => {
+    opts = opts || {};
+    return '<div style="'+(opts.full?'grid-column:1/-1;':'')+'">'
+      + '<label style="font-size:10px;color:#888;text-transform:uppercase;font-weight:700">'+label+'</label>'
+      + '<input id="'+id+'" placeholder="'+(opts.placeholder||'')+'" style="width:100%;padding:8px;border:1px solid #ddd;border-radius:6px;font-size:13px;margin-top:4px;box-sizing:border-box;color:#111;background:#fff">'
+      + '</div>';
+  };
+  const body = '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">'
+    + fld('ncl-nj', 'RAZÓN SOCIAL <span style="font-weight:400;text-transform:none;color:#999">(opcional)</span>', {full:true, placeholder:'Si no la tenés, dejalo vacío'})
+    + fld('ncl-nc', 'NOMBRE COMERCIAL', {full:true})
+    + fld('ncl-cif', 'CUIT')
+    + fld('ncl-tel', 'TELÉFONO')
+    + fld('ncl-email', 'EMAIL', {full:true})
+    + fld('ncl-dir', 'DIRECCIÓN', {full:true})
+    + '<div style="grid-column:1/-1"><label style="font-size:10px;color:#888;text-transform:uppercase;font-weight:700">RUBRO</label>'
+    + '<select id="ncl-rubro" style="width:100%;padding:8px;border:1px solid #ddd;border-radius:6px;font-size:13px;margin-top:4px;box-sizing:border-box;color:#111;background:#fff">'+rubroOpts+'</select></div>'
+    + '</div>';
+  _mantModal('Nuevo cliente', body, (ov) => {
+    const njRaw = (ov.querySelector('#ncl-nj').value || '').trim();
+    const nc = (ov.querySelector('#ncl-nc').value || '').trim();
+    // Razón social opcional: si no la cargaron, el nombre comercial hace de identificador.
+    const nj = njRaw || nc;
+    if (!nj){ showToast('Falta un nombre', 'Cargá al menos la razón social o el nombre comercial', 'error'); return false; }
+    if (typeof CLIENTES !== 'undefined' && CLIENTES.some(c => c.nj === nj)){
+      showToast('Ya existe', 'Ya hay un cliente con ese nombre', 'error'); return false;
+    }
+    const cif = (ov.querySelector('#ncl-cif').value || '').trim();
+    const tel = (ov.querySelector('#ncl-tel').value || '').trim();
+    const dir = (ov.querySelector('#ncl-dir').value || '').trim();
+    const rubro = (ov.querySelector('#ncl-rubro').value || '').trim();
+    const emailVal = (ov.querySelector('#ncl-email').value || '').trim();
+    const emails = emailVal ? [emailVal] : [];
+    const doms = emailVal && emailVal.includes('@') ? [emailVal.split('@')[1]] : [];
+    saveClienteObj(nj, { nc, cif, emails, doms, tel, dir, rubro, nj_n: nj.toLowerCase(), nc_n: nc.toLowerCase() });
+    showToast('Cliente creado', escapeHtml(nj), 'success');
+    // Abrir directamente la ficha del cliente recién creado
+    const idx = CLIENTES.findIndex(c => c.nj === nj);
+    if (idx >= 0){ state.editingClienteIdx = idx; state.clienteTab = 'info'; }
+    renderMain();
+    return true;
+  });
+}
+
+// Exporta a CSV la lista de clientes actualmente filtrada (mismo filtro que
+// se ve en pantalla) — acción del menú "Más ▾" de la lista de Clientes.
+function _clientesExportCSV(){
+  const filtered = _clientes_applyFilters();
+  if (!filtered.length){ showToast('Sin datos', 'No hay clientes para exportar', 'error'); return; }
+  const head = ['Referencia','Razón social','Nombre comercial','CUIT','Email','Dominio','Rubro'];
+  const esc = (v) => {
+    const s = String(v == null ? '' : v);
+    return /[",;\n]/.test(s) ? '"'+s.replace(/"/g,'""')+'"' : s;
+  };
+  const rows = filtered.map(c => [c.ref||'', c.nj||'', c.nc||'', c.cif||'', (c.emails&&c.emails[0])||'', (c.doms&&c.doms[0])||'', c.rubro||''].map(esc).join(';'));
+  const csv = '﻿' + [head.join(';')].concat(rows).join('\r\n');
+  const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'clientes_' + new Date().toISOString().slice(0,10) + '.csv';
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+  showToast('Exportado', filtered.length + ' cliente(s)', 'success');
 }
 
 // ── Personas de Contacto — lista y formulario ─────────────────────────────────
@@ -21940,9 +22039,13 @@ document.querySelectorAll('[data-cot-tab]').forEach(t => t.addEventListener('cli
   });
   // Card save
   document.getElementById('cc-save')?.addEventListener('click', () => {
-    const nj = (document.getElementById('cc-nj')?.value || '').trim();
-    if (!nj) { showToast('Falta la razón social', '', 'error'); return; }
+    const njRaw = (document.getElementById('cc-nj')?.value || '').trim();
     const nc = (document.getElementById('cc-nc')?.value || '').trim();
+    // La razón social ya no es obligatoria: si no la cargaron, usamos el
+    // nombre comercial como identificador del cliente (sigue siendo la
+    // clave interna, nj, pero ya no bloquea el guardado).
+    const nj = njRaw || nc;
+    if (!nj) { showToast('Falta un nombre', 'Cargá al menos la razón social o el nombre comercial', 'error'); return; }
     const cif = (document.getElementById('cc-cif')?.value || '').trim();
     const emailVal = (document.getElementById('cc-email')?.value || '').trim();
     const tel = (document.getElementById('cc-tel')?.value || '').trim();
@@ -21973,8 +22076,11 @@ document.querySelectorAll('[data-cot-tab]').forEach(t => t.addEventListener('cli
   // Live preview refresh as user types in client card
   ['cc-nj','cc-nc','cc-cif','cc-email','cc-tel','cc-dir','cc-rubro'].forEach(id => {
     document.getElementById(id)?.addEventListener('input', () => {
-      // Update getClienteObj cache so buildPrintHTML picks up new values
-      const nj = (document.getElementById('cc-nj')?.value || cotizacionBorrador.cliente || '').trim();
+      // Update getClienteObj cache so buildPrintHTML picks up new values.
+      // Razón social ya no es obligatoria acá tampoco: si no la tipearon
+      // todavía, usamos el nombre comercial (o el cliente del borrador)
+      // como clave provisoria para la vista previa.
+      const nj = (document.getElementById('cc-nj')?.value || document.getElementById('cc-nc')?.value || cotizacionBorrador.cliente || '').trim();
       if (!nj) return;
       const draft = {
         nc:  (document.getElementById('cc-nc')?.value  || '').trim(),
@@ -21984,12 +22090,17 @@ document.querySelectorAll('[data-cot-tab]').forEach(t => t.addEventListener('cli
         dir: (document.getElementById('cc-dir')?.value || '').trim(),
         rubro: (document.getElementById('cc-rubro')?.value || '').trim(),
       };
-      // Temporarily apply to CLIENTES in memory so getClienteObj reflects it
-      if (typeof CLIENTES !== 'undefined'){
-        const idx = CLIENTES.findIndex(c => c.nj === nj);
-        if (idx >= 0) Object.assign(CLIENTES[idx], draft);
-        else CLIENTES.push(Object.assign({nj, nc:'', cif:'', emails:[], doms:[], nj_n:nj.toLowerCase(), nc_n:'', ref:'CLI-DRAFT'}, draft));
-      }
+      // Guardar el borrador SOLO en erp_clientes_extra (el mismo store que
+      // getClienteObj() ya mezcla por encima de CLIENTES) — nunca tocar el
+      // array CLIENTES en memoria acá. Antes esto empujaba un cliente nuevo
+      // a CLIENTES en CADA tecleo (uno por cada nj parcial distinto que no
+      // coincidía con nada), con ref:'CLI-DRAFT' fijo para todos — esa era
+      // la causa de las filas "CLI-DRAFT" duplicadas en la lista de Clientes.
+      try {
+        const ext = loadClientesExtra();
+        ext[nj] = Object.assign(ext[nj]||{}, draft);
+        saveClientesExtra(ext);
+      } catch(e){}
       if (state.cotLivePreview && typeof _refreshLivePreview === 'function') _refreshLivePreview();
     });
   });
@@ -25096,11 +25207,25 @@ function getClienteObj(nj){
   if (!base && !Object.keys(extra).length) return null;
   return Object.assign({}, base || { nj, nc:'', cif:'', emails:[], doms:[] }, extra);
 }
+// Próxima referencia CLIxxxxx (5 dígitos) para un cliente nuevo — mismo
+// patrón que nextCotRef()/nextPedRef()/nextNeRef(): busca el número más
+// alto ya usado en CLIENTES y sigue de ahí, para que los clientes nuevos
+// tengan un id estable y único en vez de 'CLI-DRAFT' o 'CLI-'+Date.now().
+function nextClienteRef(){
+  let max = 0;
+  if (typeof CLIENTES !== 'undefined'){
+    for (const c of CLIENTES){
+      const m = (c.ref||'').match(/CLI(\d+)/);
+      if (m) max = Math.max(max, parseInt(m[1], 10));
+    }
+  }
+  return 'CLI' + String(max + 1).padStart(5, '0');
+}
 function saveClienteObj(nj, fields){
   if (typeof CLIENTES !== 'undefined'){
     const idx = CLIENTES.findIndex(c => c.nj === nj);
     if (idx >= 0) Object.assign(CLIENTES[idx], fields);
-    else CLIENTES.push(Object.assign({ nj, nc:'', cif:'', emails:[], doms:[], nj_n:nj.toLowerCase(), nc_n:'', ref:'CLI-'+Date.now() }, fields));
+    else CLIENTES.push(Object.assign({ nj, nc:'', cif:'', emails:[], doms:[], nj_n:nj.toLowerCase(), nc_n:'', ref:nextClienteRef() }, fields));
     try{ if(typeof _persistEmpresaClientesSiCorresponde==='function') _persistEmpresaClientesSiCorresponde(); }catch(e){}
   }
   const ext = loadClientesExtra();
