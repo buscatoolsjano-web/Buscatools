@@ -762,6 +762,21 @@
   html { overflow-x: hidden; }
   body { margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
     background: var(--bg); color: var(--text); transition: background 0.2s, color 0.2s; overflow-x: hidden; }
+
+  /* Pull-to-refresh (mobile): indicador que aparece al deslizar hacia abajo
+     desde el tope del contenido — dispara un location.reload() al soltar. */
+  #ptr-indicator {
+    position: fixed; left: 50%; top: 0; z-index: 5000;
+    width: 40px; height: 40px; margin-left: -20px; margin-top: -50px;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--surface, #fff); border-radius: 50%;
+    box-shadow: 0 2px 10px rgba(0,0,0,.18);
+    transition: transform .15s ease, opacity .15s ease;
+    opacity: 0; pointer-events: none;
+  }
+  #ptr-indicator svg { width: 20px; height: 20px; transform-origin: center; }
+  #ptr-indicator.ptr-refreshing svg { animation: ptr-spin .7s linear infinite; }
+  @keyframes ptr-spin { to { transform: rotate(360deg); } }
   .topnav { background: var(--topnav-bg); color: var(--topnav-text); display: flex;
     align-items: stretch; height: 56px; padding: 0; position: sticky; top: 0; z-index: 100; }
   .topnav-item { flex: auto; min-width: 0; padding: 0 8px; display: flex; align-items: center; justify-content: center;
@@ -2867,12 +2882,90 @@ function _asignarCatalogoTecna(){
   }
 }
 setTimeout(() => _asignarCatalogoTecna(), 0);
+
+// ─── Pull-to-refresh (mobile) ──────────────────────────────────────────────
+// Pedido explícito del usuario: deslizando hacia abajo desde el tope del
+// contenido, en el teléfono, tiene que refrescar la web (recarga completa,
+// así se traen código y datos frescos — el pedido fue literalmente "quiero
+// que se refresque la web", no un refresco liviano de solo-datos).
+function _anyModalOpen(){
+  const nodes = document.querySelectorAll('.modal-backdrop, .apps-modal-backdrop, .widget-picker-modal');
+  for (const el of nodes) {
+    if (el.offsetParent === null) continue; // display:none / desmontado
+    const cs = getComputedStyle(el);
+    if (cs.display !== 'none' && cs.visibility !== 'hidden') return true;
+  }
+  return false;
+}
+function _wirePullToRefresh(){
+  const main = document.getElementById('main');
+  if (!main || main.dataset.ptrWired) return;
+  main.dataset.ptrWired = '1';
+
+  const THRESHOLD = 72; // px de arrastre para disparar el refresh
+  const MAX_PULL = 110;
+  let startY = null, pulling = false, refreshing = false, lastDist = 0;
+
+  const indicator = document.createElement('div');
+  indicator.id = 'ptr-indicator';
+  indicator.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="var(--primary,#F37021)" stroke-width="2.4" stroke-linecap="round"><path d="M21 12a9 9 0 1 1-3.2-6.9"/><path d="M21 3v6h-6"/></svg>';
+  document.body.appendChild(indicator);
+
+  function setPull(dist){
+    const clamped = Math.min(dist, MAX_PULL);
+    lastDist = clamped;
+    indicator.style.opacity = String(Math.min(1, clamped / THRESHOLD));
+    indicator.style.transform = 'translateY(' + (50 + clamped) + 'px) rotate(' + (clamped * 2.4) + 'deg)';
+  }
+  function reset(){
+    pulling = false; startY = null; lastDist = 0;
+    indicator.style.opacity = '0';
+    indicator.style.transform = 'translateY(0)';
+  }
+
+  main.addEventListener('touchstart', (e) => {
+    if (refreshing || e.touches.length !== 1) return;
+    if (main.scrollTop > 0) { startY = null; return; }
+    if (typeof state !== 'undefined' && state.dashEditMode) { startY = null; return; }
+    if (_anyModalOpen()) { startY = null; return; }
+    startY = e.touches[0].clientY;
+    pulling = false;
+  }, { passive: true });
+
+  main.addEventListener('touchmove', (e) => {
+    if (startY === null || refreshing) return;
+    const dy = e.touches[0].clientY - startY;
+    if (dy <= 0) { if (pulling) reset(); return; }
+    if (main.scrollTop > 0) { reset(); return; }
+    pulling = true;
+    e.preventDefault(); // evita el rebote nativo mientras arrastramos para refrescar
+    setPull(dy * 0.55); // resistencia, como el pull-to-refresh nativo
+  }, { passive: false });
+
+  main.addEventListener('touchend', () => {
+    if (!pulling){ startY = null; return; }
+    if (lastDist >= THRESHOLD * 0.55 && !refreshing) {
+      refreshing = true;
+      indicator.classList.add('ptr-refreshing');
+      indicator.style.opacity = '1';
+      indicator.style.transform = 'translateY(' + (50 + THRESHOLD * 0.55) + 'px)';
+      setTimeout(() => location.reload(), 300);
+    } else {
+      reset();
+    }
+    pulling = false; startY = null;
+  }, { passive: true });
+
+  main.addEventListener('touchcancel', reset, { passive: true });
+}
+
 // Mobile drawer wiring
 document.addEventListener('DOMContentLoaded', () => {
   // Initial sidebar messages render (after a tick to let PRODUCTOS etc. load)
   setTimeout(function(){ if(typeof refreshSidebarMessages==='function') refreshSidebarMessages(); }, 100);
   // Email unread badge — fetch lightweight count on startup
   setTimeout(function(){ if(typeof _emailsFetchBadge==='function') _emailsFetchBadge(); }, 800);
+  _wirePullToRefresh();
   const btn = document.getElementById('mob-menu-btn');
   const ov = document.getElementById('mob-overlay');
   if (btn) btn.addEventListener('click', () => {
@@ -6104,6 +6197,41 @@ function _svgDonutChart(items, opts){
   }).join('') + '</div>';
   return '<div style="display:flex;align-items:center;gap:18px;flex-wrap:wrap">'+svg+legend+'</div>';
 }
+// Gráfico de línea con coloreado por tramo (verde si sube, rojo si baja,
+// como un gráfico de acciones) — mismo formato de items que _svgBarChart.
+function _svgLineChart(items, opts){
+  opts = opts || {};
+  const w = opts.width || 480, h = opts.height || 170, pad = 10;
+  const topPad = 22, zeroY = h - 24;
+  const vals = items.map(it => it.value || 0);
+  const max = Math.max(1, ...vals);
+  const min = Math.min(0, ...vals);
+  const n = items.length || 1;
+  const usableW = w - pad*2;
+  const stepX = n > 1 ? usableW / (n - 1) : 0;
+  const range = (max - min) || 1;
+  const scaleY = v => zeroY - (v - min) / range * (zeroY - topPad);
+  const pts = items.map((it, i) => ({ x: pad + i*stepX, y: scaleY(it.value||0), it }));
+  const up = 'var(--success)', down = 'var(--danger)', flat = 'var(--primary)';
+  let segs = '';
+  for (let i = 1; i < pts.length; i++){
+    const a = pts[i-1], b = pts[i];
+    const color = b.it.value > a.it.value ? up : (b.it.value < a.it.value ? down : flat);
+    segs += '<line x1="'+a.x.toFixed(1)+'" y1="'+a.y.toFixed(1)+'" x2="'+b.x.toFixed(1)+'" y2="'+b.y.toFixed(1)+'" stroke="'+color+'" stroke-width="2.5" stroke-linecap="round"/>';
+  }
+  let dots = '', labels = '';
+  pts.forEach((p, i) => {
+    const val = opts.money ? ('$'+fmtNum(p.it.value||0)) : String(p.it.value||0);
+    const dotColor = i===0 ? flat : (p.it.value > pts[i-1].it.value ? up : (p.it.value < pts[i-1].it.value ? down : flat));
+    dots += '<circle cx="'+p.x.toFixed(1)+'" cy="'+p.y.toFixed(1)+'" r="3.5" fill="'+dotColor+'"><title>'+escapeHtml(p.it.label)+': '+val+'</title></circle>';
+    labels += '<text x="'+p.x.toFixed(1)+'" y="'+(zeroY+13).toFixed(1)+'" text-anchor="middle" font-size="9.5" fill="var(--text-soft)">'+escapeHtml(p.it.label)+'</text>';
+    if (p.it.value) labels += '<text x="'+p.x.toFixed(1)+'" y="'+Math.max(11, p.y-8).toFixed(1)+'" text-anchor="middle" font-size="9.5" font-weight="700" fill="var(--text)">'+val+'</text>';
+  });
+  return '<svg viewBox="0 0 '+w+' '+h+'" style="width:100%;height:auto;display:block" preserveAspectRatio="xMidYMid meet">'
+    + '<line x1="'+pad+'" y1="'+zeroY+'" x2="'+(w-pad)+'" y2="'+zeroY+'" stroke="var(--border)" stroke-width="1"/>'
+    + segs + dots + labels
+    + '</svg>';
+}
 // En modo "Todas las empresas" agrega vía _todasEmpresasCollect; si no, usa el
 // loader normal (ya filtrado por _ekey a la empresa activa).
 function _dashLoad(loaderFn){
@@ -6433,6 +6561,25 @@ function saveDashboardLayout(layout){
   try { layout.version = DASHBOARD_LAYOUT_VERSION; localStorage.setItem('erp_dashboard_' + state.user, JSON.stringify(layout)); } catch(e){}
 }
 
+// Config por widget (tipo de gráfico elegido, filtro de cliente, etc.) —
+// mismo patrón por-usuario en localStorage que el layout del dashboard.
+function loadWidgetCfg(){
+  try { return JSON.parse(localStorage.getItem('erp_dash_widget_cfg_' + state.user) || '{}') || {}; } catch(e){ return {}; }
+}
+function saveWidgetCfg(cfg){
+  try { localStorage.setItem('erp_dash_widget_cfg_' + state.user, JSON.stringify(cfg||{})); } catch(e){}
+}
+function getWidgetCfg(widgetId){
+  const all = loadWidgetCfg();
+  return all[widgetId] || {};
+}
+function setWidgetCfg(widgetId, key, value){
+  const all = loadWidgetCfg();
+  all[widgetId] = all[widgetId] || {};
+  all[widgetId][key] = value;
+  saveWidgetCfg(all);
+}
+
 // === Widget renderers ===
 function dashWidgetBienvenida(){
   const now = new Date();
@@ -6619,7 +6766,11 @@ function dashWidgetTopProductos(){
 // Vendido por mes = Pedidos de Venta (lo que realmente se convirtió en venta),
 // no cotizaciones — una cotización todavía no es una venta.
 function dashWidgetVentasMesChart(){
-  const peds = _dashLoad(loadPedidos);
+  const todosPeds = _dashLoad(loadPedidos);
+  const cfg = getWidgetCfg('ventas-mes-chart');
+  const tipo = cfg.tipo === 'linea' ? 'linea' : 'barras';
+  const cliente = cfg.cliente || '';
+  const peds = cliente ? todosPeds.filter(p => p.cliente === cliente) : todosPeds;
   const now = new Date();
   const MESES = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
   const buckets = [];
@@ -6634,8 +6785,24 @@ function dashWidgetVentasMesChart(){
     if (b) b.value += (p.total || 0);
   });
   const esTodas = state.empresa===EMPRESA_TODAS;
+  const clientesUnicos = Array.from(new Set(todosPeds.map(p => p.cliente).filter(Boolean))).sort((a,b) => a.localeCompare(b));
+  const toolbar = '<div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:2px 0 0">' +
+      '<select data-chartcfg="ventas-mes-chart" data-cfgkey="tipo" style="font-size:11px;padding:3px 6px;border-radius:6px;border:1px solid var(--border);background:var(--bg-card);color:var(--text)">' +
+        '<option value="barras"' + (tipo==='barras' ? ' selected' : '') + '>📊 Barras</option>' +
+        '<option value="linea"' + (tipo==='linea' ? ' selected' : '') + '>📈 Línea (subidas/bajadas)</option>' +
+      '</select>' +
+      '<select data-chartcfg="ventas-mes-chart" data-cfgkey="cliente" style="font-size:11px;padding:3px 6px;border-radius:6px;border:1px solid var(--border);background:var(--bg-card);color:var(--text);max-width:140px">' +
+        '<option value="">Todos los clientes</option>' +
+        clientesUnicos.map(c => '<option value="' + escapeHtml(c) + '"' + (c===cliente ? ' selected' : '') + '>' + escapeHtml(c) + '</option>').join('') +
+      '</select>' +
+    '</div>';
+  const chartData = buckets.map(b => ({ label:b.label, value:Math.round(b.value) }));
+  const chartHtml = tipo === 'linea'
+    ? _svgLineChart(chartData, { height:150, money:true })
+    : _svgBarChart(chartData, { height:150, money:true });
   return '<h3>Vendido — últimos 6 meses' + (esTodas ? ' <span style="font-size:10px;font-weight:600;color:var(--text-soft)">(todas las empresas)</span>' : '') + '</h3>'
-    + '<div style="padding:8px 4px 0">' + _svgBarChart(buckets.map(b => ({ label:b.label, value:Math.round(b.value) })), { height:150, money:true }) + '</div>';
+    + toolbar
+    + '<div style="padding:8px 4px 0">' + chartHtml + '</div>';
 }
 // Donut: cotizaciones cerradas vs pendientes — tasa de conversión de un vistazo.
 function dashWidgetCotizEstadoChart(){
@@ -6779,6 +6946,16 @@ function wireDashboardWidgets(){
       if (op === 'open-cot') navigateToRelated('cot', ref);
       else if (op === 'open-ped') navigateToRelated('ped', ref);
       else if (op === 'open-ne') navigateToRelated('ne', ref);
+    });
+  });
+  document.querySelectorAll('[data-chartcfg]').forEach(sel => {
+    if (sel._wired) return;
+    sel._wired = true;
+    sel.addEventListener('click', e => e.stopPropagation());
+    sel.addEventListener('change', e => {
+      e.stopPropagation();
+      setWidgetCfg(sel.dataset.chartcfg, sel.dataset.cfgkey, sel.value);
+      renderMain();
     });
   });
 }
