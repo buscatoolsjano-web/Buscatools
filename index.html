@@ -2338,6 +2338,29 @@ body[data-section-theme] #th-page-title { color: var(--primary); }
   .ln-sub-item:hover { background: var(--primary-light); color: var(--primary-text); }
   .ln-sub-item.active { color: var(--primary); font-weight: 700; background: var(--primary-light); }
 
+  /* ── Flyout de subsecciones: aparece al pasar el mouse sobre un ícono
+     del left-nav colapsado, ya que ahí no hay lugar para los .ln-sub-item ── */
+  .ln-flyout {
+    position: fixed; z-index: 500; min-width: 190px; max-width: 260px;
+    background: var(--sidebar-bg); border: 1px solid var(--sidebar-border);
+    border-radius: 10px; box-shadow: 0 8px 28px rgba(0,0,0,.22);
+    padding: 6px; display: none;
+  }
+  .ln-flyout.show { display: block; }
+  .ln-flyout-title {
+    font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px;
+    color: var(--text-soft); padding: 6px 10px 4px; opacity: .65;
+  }
+  .ln-flyout-item {
+    display: flex; align-items: center;
+    padding: 7px 10px; margin: 1px 0; border-radius: 6px; cursor: pointer;
+    font-size: 12.5px; font-weight: 600; color: var(--text);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    transition: background .1s, color .1s;
+  }
+  .ln-flyout-item:hover { background: var(--primary-light); color: var(--primary-text); }
+  .ln-flyout-item.active { color: var(--primary); font-weight: 700; background: var(--primary-light); }
+
   /* Slot de mensajes del equipo en el left-nav */
   #ln-msg-slot { padding: 0; }
   #ln-msg-slot #sidebar-msg-slot {
@@ -3681,6 +3704,7 @@ function _toggleLeftNav(){
   const collapsed = document.body.classList.toggle('ln-collapsed');
   try { localStorage.setItem('erp_ln_collapsed', collapsed?'1':'0'); } catch(e){}
   const btn = document.getElementById('ln-collapse-btn'); if(btn) btn.textContent = collapsed?'>':'<';
+  try { if (typeof _hideLnFlyoutNow === 'function') _hideLnFlyoutNow(); } catch(e){}
 }
 function _initLeftNavCollapse(){
   try { if (localStorage.getItem('erp_ln_collapsed')==='1') document.body.classList.add('ln-collapsed'); } catch(e){}
@@ -12469,7 +12493,7 @@ function enviarMensaje(){
     // que el destinatario lo vea ahí y no solo en la bandeja/campanita.
     if(dest !== state.user && typeof sendChatMessage === 'function'){
       try{
-        var chatMsg = sendChatMessage(state.user || 'ADMIN', dest, texto);
+        var chatMsg = sendChatMessage(state.user || 'ADMIN', dest, texto, undefined, {priority: tipo === 'urgente' ? 'urgent' : 'normal'});
         nuevo.chatMsgId = chatMsg && chatMsg.id;
       }catch(e){ console.warn('mensaje rápido → chat: error', e); }
     }
@@ -12485,34 +12509,10 @@ function enviarMensaje(){
   }
   updateMsgBadge();
   renderMain();
-  // Además de guardarlo en Buscatools (arriba), dispara la notificación push
-  // real por cada destinatario (mismo camino que usa el asistente IA:
-  // Edge Function send-employee-message → Firebase Cloud Messaging). Fire-and-forget:
-  // si falla el push, el mensaje ya quedó guardado igual, así que no bloqueamos
-  // ni le mostramos un error al usuario por esto.
-  nuevos.forEach(function(nuevo){
-    if(nuevo.para === state.user) return; // no hace falta avisarse push a uno mismo
-    try{
-      fetch(PUSH_EDGE_FUNCTION_URL, {
-        method: 'POST',
-        headers: { 'Content-Type':'application/json', 'Authorization':'Bearer ' + SUPA_KEY },
-        body: JSON.stringify({
-          org_id: SUPA_ORG_ID,
-          sender_user_id: state.user,
-          recipient_user_id: nuevo.para,
-          message: nuevo.texto,
-          priority: nuevo.tipo === 'urgente' ? 'urgent' : 'normal',
-          // Idempotencia: mismo id de mensaje => mismo request_id, así un
-          // eventual reintento no genera push duplicado.
-          request_id: nuevo.id,
-          // El cliente ya escribió este mensaje en Chat (erp_chat_messages +
-          // Firebase) más arriba — le pasamos su id para que la Edge Function
-          // NO vuelva a escribirlo en Firebase con un id propio (evita duplicado).
-          chat_message_id: nuevo.chatMsgId || undefined
-        })
-      }).catch(function(e){ console.warn('push mensaje rápido: error de conexión', e); });
-    }catch(e){ console.warn('push mensaje rápido: error', e); }
-  });
+  // La notificación push real (FCM) ya se disparó dentro de sendChatMessage()
+  // más arriba, para cada destinatario distinto de uno mismo — no hace falta
+  // repetirla acá (antes se hacía dos veces: una en sendChatMessage y otra
+  // acá, con riesgo de push duplicado).
 }
 
 function wireMensajes(){
@@ -37060,7 +37060,7 @@ function markChatRead(forUser, target){
     for (const m of toSync) _fbUpdateMessage(m);
   }
 }
-function sendChatMessage(from, to, text, doc){
+function sendChatMessage(from, to, text, doc, opts){
   text = (text || '').trim();
   if (!text && !doc) return null;
   const msg = { id: 'MSG-'+Date.now()+'-'+Math.random().toString(36).slice(2,8), from, to, text, at: Date.now(), read: false };
@@ -37072,6 +37072,36 @@ function sendChatMessage(from, to, text, doc){
   saveChatMessages(all);
   broadcastChat();
   _fbPushMessage(msg);
+  // Notificación push real (FCM) al destinatario — antes esto sólo pasaba
+  // cuando el mensaje salía por "Mensaje rápido" (enviarMensaje() hacía su
+  // propio fetch acá abajo). Centralizado acá para que CUALQUIER mensaje de
+  // Chat (escrito directo en la sección, adjuntos, o disparado por el
+  // asistente IA) también dispare el push — no solo el acceso rápido.
+  // Se salta para grupos (la Edge Function espera un usuario real) y para
+  // mensajes a uno mismo. Fire-and-forget: si falla el push, el mensaje ya
+  // quedó guardado en Chat igual.
+  if (!(opts && opts.skipPush) && from && to && from !== to && !String(to).startsWith('group:')
+      && typeof PUSH_EDGE_FUNCTION_URL !== 'undefined'){
+    try {
+      fetch(PUSH_EDGE_FUNCTION_URL, {
+        method: 'POST',
+        headers: { 'Content-Type':'application/json', 'Authorization':'Bearer ' + SUPA_KEY },
+        body: JSON.stringify({
+          org_id: SUPA_ORG_ID,
+          sender_user_id: from,
+          recipient_user_id: to,
+          message: text,
+          priority: (opts && opts.priority === 'urgent') ? 'urgent' : 'normal',
+          // Idempotencia: mismo id de mensaje => mismo request_id.
+          request_id: msg.id,
+          // El cliente ya escribió este mensaje en Chat (erp_chat_messages +
+          // Firebase) más arriba — le pasamos su id para que la Edge Function
+          // NO vuelva a escribirlo en Firebase con un id propio (evita duplicado).
+          chat_message_id: msg.id
+        })
+      }).catch(function(e){ console.warn('push chat: error de conexión', e); });
+    } catch(e){ console.warn('push chat: error', e); }
+  }
   return msg;
 }
 
@@ -40015,6 +40045,99 @@ function wireLeftNav(){
   try { renderLeftNavSubItems(); } catch(e){}
 }
 
+// === Flyout de subsecciones para el left-nav colapsado ─────────────────
+// Cuando el sidebar está colapsado (solo íconos) los .ln-sub-item quedan
+// ocultos por CSS y no hay forma de cambiar de subsección (ej. Ventas →
+// Cotizaciones/Pedidos/Notas de entrega). Este panel flotante compartido
+// aparece al pasar el mouse sobre el ícono de una sección con subsecciones.
+var _lnFlyoutEl = null;
+var _lnFlyoutHideTimer = null;
+function _hideLnFlyoutNow(){
+  if (_lnFlyoutHideTimer){ clearTimeout(_lnFlyoutHideTimer); _lnFlyoutHideTimer = null; }
+  if (_lnFlyoutEl) _lnFlyoutEl.classList.remove('show');
+}
+function wireLnFlyouts(){
+  var _NAV_LABELS = { inicio:'Inicio', catalogo:'Catálogo', clientes:'Clientes', ventas:'Ventas', mantenimientos:'Mantenimientos', proyectos:'Proyectos', facturacion:'Facturación', compras:'Compras', importacion:'Importación', agenda:'Agenda', informes:'Informes', finanzas:'Finanzas', crm:'CRM', chat:'Chat', trazabilidad:'Trazabilidad', conexiones:'Conexiones', micotizacion:'Mi Cotización', emails:'Emails' };
+
+  function cancelHide(){
+    if (_lnFlyoutHideTimer){ clearTimeout(_lnFlyoutHideTimer); _lnFlyoutHideTimer = null; }
+  }
+  function scheduleHide(){
+    cancelHide();
+    _lnFlyoutHideTimer = setTimeout(function(){ if (_lnFlyoutEl) _lnFlyoutEl.classList.remove('show'); }, 220);
+  }
+  function ensureFlyout(){
+    if (_lnFlyoutEl) return _lnFlyoutEl;
+    _lnFlyoutEl = document.createElement('div');
+    _lnFlyoutEl.className = 'ln-flyout';
+    _lnFlyoutEl.id = 'ln-flyout';
+    document.body.appendChild(_lnFlyoutEl);
+    _lnFlyoutEl.addEventListener('mouseenter', cancelHide);
+    _lnFlyoutEl.addEventListener('mouseleave', scheduleHide);
+    return _lnFlyoutEl;
+  }
+  function buildItems(sec, secDef, isMant){
+    var items = secDef.items || [];
+    var activeKey = isMant ? (state.mantView || 'dashboard') : state.subsection;
+    var isActiveSection = (state.section === sec);
+    var frag = document.createDocumentFragment();
+    items.forEach(function(it){
+      var el = document.createElement('div');
+      var isActive = isActiveSection && !state.mantFichaId && activeKey === it.key;
+      el.className = 'ln-flyout-item' + (isActive ? ' active' : '');
+      el.textContent = it.label;
+      el.addEventListener('click', function(e){
+        e.stopPropagation();
+        if (sec === 'emails' && (it.key === 'inbox' || it.key === 'enviados') && typeof _emailsNavReset === 'function') _emailsNavReset();
+        if (isMant) { state.mantFichaId = null; state.mantView = it.key; }
+        try { navigateTo(sec, it.key); } catch(err){}
+        _hideLnFlyoutNow();
+        if (window.innerWidth <= 768 && typeof closeMobDrawer === 'function') closeMobDrawer();
+      });
+      frag.appendChild(el);
+    });
+    return frag;
+  }
+  function showFor(itemEl, sec){
+    if (!document.body.classList.contains('ln-collapsed')) return;
+    var secDef = (typeof SECTIONS !== 'undefined') ? SECTIONS[sec] : null;
+    if (!secDef || !secDef.items || secDef.items.length <= 1) return;
+    cancelHide();
+    var fl = ensureFlyout();
+    fl.innerHTML = '';
+    var title = document.createElement('div');
+    title.className = 'ln-flyout-title';
+    title.textContent = _NAV_LABELS[sec] || sec;
+    fl.appendChild(title);
+    fl.appendChild(buildItems(sec, secDef, sec === 'mantenimientos'));
+    var rect = itemEl.getBoundingClientRect();
+    fl.style.left = (rect.right + 8) + 'px';
+    fl.style.top = Math.max(8, rect.top) + 'px';
+    fl.classList.add('show');
+    requestAnimationFrame(function(){
+      var flRect = fl.getBoundingClientRect();
+      if (flRect.bottom > window.innerHeight - 8) {
+        fl.style.top = Math.max(8, window.innerHeight - flRect.height - 8) + 'px';
+      }
+    });
+  }
+
+  document.querySelectorAll('#left-nav .ln-item[data-lnav-section]').forEach(function(item){
+    var sec = item.dataset.lnavSection;
+    if (!sec) return;
+    item.addEventListener('mouseenter', function(){ showFor(item, sec); });
+    item.addEventListener('mouseleave', scheduleHide);
+  });
+
+  document.addEventListener('click', function(e){
+    if (!_lnFlyoutEl) return;
+    if (e.target.closest && (e.target.closest('#ln-flyout') || e.target.closest('#left-nav .ln-item'))) return;
+    _hideLnFlyoutNow();
+  });
+  window.addEventListener('scroll', _hideLnFlyoutNow, true);
+  window.addEventListener('resize', _hideLnFlyoutNow);
+}
+
 // === LIGHTBOX para imagen de detalle de producto ===
 function _openImgLightbox(src){
   var existing = document.getElementById('img-lightbox-overlay');
@@ -40082,6 +40205,7 @@ async function _appInit(){
 
   wireTopnav();
   try { wireLeftNav(); } catch(e){ console.warn('wireLeftNav', e); }
+  try { wireLnFlyouts(); } catch(e){ console.warn('wireLnFlyouts', e); }
   wireAuthButtons();
   ensureAuthSeed();
   const _sessionUser = loadSessionUser();
